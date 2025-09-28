@@ -1,0 +1,182 @@
+// src/app/features/stocks/mouvements-stock/mouvements-stock.component.scss
+.mouvements-container {
+  .page-header {
+    .page-title {
+      font-size: 2rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .page-subtitle {
+      font-size: 1.1rem;
+    }
+  }
+  
+  .filters-card {
+    mat-card-content {
+      padding: 1.5rem;
+    }
+  }
+  
+  .table-card {
+    mat-card-content {
+      padding: 0;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+      
+      table {
+        width: 100%;
+        
+        th {
+          background: linear-gradient(135deg, var(--primary-color), #1e4a73);
+          color: white;
+          font-weight: 600;
+          padding: 1rem;
+          position: sticky;
+          top: 0;
+          z-index: 1;
+          border: none;
+        }
+        
+        td {
+          padding: 1rem;
+          border-bottom: 1px solid #e0e0e0;
+          vertical-align: middle;
+        }
+        
+        tr {
+          transition: all 0.2s ease;
+          
+          &:hover {
+            background-color: #f8f9fa;
+            transform: translateX(2px);
+          }
+        }
+      }
+    }
+  }
+  
+  .product-info {
+    .fw-semibold {
+      color: var(--primary-color);
+      margin-bottom: 0.25rem;
+      font-size: 1rem;
+    }
+    
+    .text-muted {
+      font-size: 0.875rem;
+    }
+  }
+  
+  // Type movement chips
+  .bg-success {
+    background: linear-gradient(135deg, #28a745, #20c997) !important;
+  }
+  
+  .bg-danger {
+    background: linear-gradient(135deg, #dc3545, #e83e8c) !important;
+  }
+  
+  .bg-info {
+    background: linear-gradient(135deg, #17a2b8, #6f42c1) !important;
+  }
+  
+  .bg-warning {
+    background: linear-gradient(135deg, #ffc107, #fd7e14) !important;
+    color: #000 !important;
+  }
+  
+  mat-chip {
+    font-weight: 500;
+    border-radius: 15px;
+    padding: 0.5rem 1rem;
+    
+    mat-icon {
+      margin-right: 0.25rem;
+    }
+  }
+  
+  // Quantity indicators
+  .text-success {
+    color: #28a745 !important;
+    font-weight: 600;
+  }
+  
+  .text-danger {
+    color: #dc3545 !important;
+    font-weight: 600;
+  }
+  
+  .text-warning {
+    color: #ffc107 !important;
+    font-weight: 600;
+  }
+  
+  .fw-semibold {
+    font-size: 1.1rem;
+  }
+  
+  .empty-icon {
+    font-size: 4rem;
+    color: #ccc;
+    margin-bottom: 1rem;
+  }
+  
+  mat-paginator {
+    border-top: 1px solid #e0e0e0;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  }
+}
+
+// Animation for movement rows
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.mouvements-container {
+  .table-container {
+    tr {
+      animation: slideIn 0.3s ease-out;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .mouvements-container {
+    .table-container {
+      font-size: 0.875rem;
+      
+      th, td {
+        padding: 0.5rem;
+      }
+      
+      .product-info {
+        .fw-semibold {
+          font-size: 0.9rem;
+        }
+      }
+    }
+    
+    .filters-card .row {
+      .col-md-3, .col-md-2 {
+        margin-bottom: 1rem;
+      }
+    }
+    
+    mat-chip {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+  }
+}

@@ -1,0 +1,181 @@
+// src/app/features/stocks/stocks-list/stocks-list.component.scss
+.stocks-container {
+  .page-header {
+    .page-title {
+      font-size: 2rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .page-subtitle {
+      font-size: 1.1rem;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 1rem;
+      }
+    }
+  }
+  
+  .filters-card {
+    mat-card-content {
+      padding: 1.5rem;
+    }
+    
+    .row {
+      align-items: end;
+    }
+  }
+  
+  .table-card {
+    mat-card-content {
+      padding: 0;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+      
+      table {
+        width: 100%;
+        
+        th {
+          background-color: var(--primary-color);
+          color: white;
+          font-weight: 600;
+          padding: 1rem;
+          position: sticky;
+          top: 0;
+          z-index: 1;
+        }
+        
+        td {
+          padding: 1rem;
+          border-bottom: 1px solid #e0e0e0;
+          vertical-align: middle;
+        }
+        
+        tr:hover {
+          background-color: #f8f9fa;
+        }
+      }
+    }
+  }
+  
+  .product-info {
+    .fw-semibold {
+      color: var(--primary-color);
+      margin-bottom: 0.25rem;
+    }
+    
+    .text-muted {
+      font-size: 0.875rem;
+    }
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+    
+    button {
+      min-width: 36px;
+      height: 36px;
+      
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+  
+  .empty-icon {
+    font-size: 4rem;
+    color: #ccc;
+    margin-bottom: 1rem;
+  }
+  
+  mat-paginator {
+    border-top: 1px solid #e0e0e0;
+    background-color: #f8f9fa;
+  }
+  
+  // Status indicators
+  .bg-success {
+    background-color: #28a745 !important;
+  }
+  
+  .bg-warning {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+  }
+  
+  .bg-danger {
+    background-color: #dc3545 !important;
+  }
+  
+  .bg-info {
+    background-color: #17a2b8 !important;
+  }
+  
+  // Stock value highlighting
+  .text-success {
+    color: #28a745 !important;
+  }
+  
+  .text-warning {
+    color: #ffc107 !important;
+  }
+  
+  .text-danger {
+    color: #dc3545 !important;
+  }
+  
+  .text-info {
+    color: #17a2b8 !important;
+  }
+}
+
+@media (max-width: 1200px) {
+  .stocks-container {
+    .page-header {
+      .d-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .stocks-container {
+    .table-container {
+      font-size: 0.875rem;
+      
+      th, td {
+        padding: 0.5rem;
+      }
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+      
+      button {
+        margin-bottom: 0.25rem;
+      }
+    }
+    
+    .filters-card .row {
+      .col-md-4, .col-md-3, .col-md-2 {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+}

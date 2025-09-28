@@ -1,0 +1,179 @@
+// src/app/features/stocks/stock-ajustement-dialog/stock-ajustement-dialog.component.scss
+.ajustement-dialog {
+  min-width: 500px;
+  
+  @media (max-width: 768px) {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  h2[mat-dialog-title] {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    
+    i {
+      margin-right: 0.5rem;
+    }
+  }
+  
+  .product-info {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    
+    h6 {
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .current-stock {
+      label {
+        font-size: 0.75rem;
+        color: #666;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      
+      .fw-bold {
+        font-size: 1.5rem;
+      }
+    }
+  }
+  
+  .ajustement-form {
+    .w-100 {
+      margin-bottom: 1rem;
+    }
+    
+    mat-form-field {
+      .mat-mdc-form-field-outline {
+        border-radius: 8px;
+      }
+      
+      mat-label {
+        color: var(--primary-color);
+        font-weight: 500;
+      }
+    }
+  }
+  
+  .ajustement-preview {
+    border: 2px solid;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    
+    &.bg-success-subtle {
+      background-color: #d4edda;
+      border-color: #28a745;
+      
+      .text-success {
+        color: #155724 !important;
+      }
+    }
+    
+    &.bg-danger-subtle {
+      background-color: #f8d7da;
+      border-color: #dc3545;
+      
+      .text-danger {
+        color: #721c24 !important;
+      }
+    }
+    
+    &.bg-info-subtle {
+      background-color: #d1ecf1;
+      border-color: #17a2b8;
+      
+      .text-info {
+        color: #0c5460 !important;
+      }
+    }
+    
+    .d-flex {
+      align-items: center;
+      
+      .fw-semibold {
+        font-size: 1.1rem;
+      }
+      
+      .fs-6 {
+        font-size: 1.2rem !important;
+        font-weight: 600;
+      }
+    }
+  }
+  
+  mat-dialog-actions {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 1rem;
+    margin-top: 1.5rem;
+    
+    button {
+      border-radius: 20px;
+      padding: 0.5rem 2rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+      
+      &[color="primary"] {
+        background: linear-gradient(135deg, var(--primary-color), #1e4a73);
+        
+        &:hover {
+          background: linear-gradient(135deg, #1e4a73, var(--primary-color));
+        }
+      }
+    }
+  }
+  
+  .spin {
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Mobile responsiveness
+@media (max-width: 480px) {
+  .ajustement-dialog {
+    .product-info {
+      .row {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .col-md-8 {
+        margin-bottom: 1rem;
+      }
+    }
+    
+    .ajustement-preview {
+      .d-flex {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+      }
+    }
+    
+    mat-dialog-actions {
+      flex-direction: column;
+      
+      button {
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+}

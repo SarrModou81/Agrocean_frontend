@@ -1,0 +1,205 @@
+<div class="stock-detail-container" *ngIf="!loading && stock">
+  <!-- Header -->
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <button mat-icon-button (click)="goBack()" class="me-3">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span class="page-title">
+          <i class="fas fa-warehouse me-2"></i>
+          Stock - {{ stock.produit?.nom }}
+        </span>
+      </div>
+      <div class="header-actions">
+        <button mat-raised-button 
+                color="primary"
+                (click)="openAjustementDialog()">
+          <mat-icon>tune</mat-icon>
+          Ajuster Stock
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Informations principales -->
+    <div class="col-lg-8">
+      <mat-card class="detail-card mb-4">
+        <mat-card-header>
+          <mat-card-title>Informations du stock</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="info-item">
+                <label>Produit</label>
+                <div class="value fw-semibold">{{ stock.produit?.nom }}</div>
+                <div class="text-muted small">{{ stock.produit?.code_produit }}</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="info-item">
+                <label>Catégorie</label>
+                <div class="value">
+                  <mat-chip>{{ getCategoryLabel(stock.produit?.categorie) }}</mat-chip>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="info-item">
+                <label>Quantité disponible</label>
+                <div class="value fw-bold fs-4" 
+                     [ngClass]="{
+                       'text-danger': stock.quantite_disponible <= 0,
+                       'text-warning': stock.quantite_disponible > 0 && stock.quantite_disponible <= stock.seuil_alerte,
+                       'text-success': stock.quantite_disponible > stock.seuil_alerte
+                     }">
+                  {{ stock.quantite_disponible }} {{ stock.produit?.unite_mesure }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="info-item">
+                <label>Quantité réservée</label>
+                <div class="value fw-semibold text-info">
+                  {{ stock.quantite_reservee }} {{ stock.produit?.unite_mesure }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="info-item">
+                <label>Seuil d'alerte</label>
+                <div class="value">{{ stock.seuil_alerte }} {{ stock.produit?.unite_mesure }}</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="info-item">
+                <label>Emplacement</label>
+                <div class="value">{{ stock.emplacement }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <label>Valeur du stock</label>
+            <div class="value fw-bold text-success fs-5">
+              {{ formatCurrency(calculateStockValue()) }}
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Mouvements récents -->
+      <mat-card class="detail-card">
+        <mat-card-header>
+          <mat-card-title>Mouvements récents</mat-card-title>
+          <div class="ms-auto">
+            <button mat-button routerLink="/stocks/mouvements" [queryParams]="{produit_id: stock.produit_id}">
+              Voir tout
+            </button>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="mouvements.length === 0" class="text-center py-3 text-muted">
+            <i class="fas fa-history fa-2x mb-2"></i>
+            <p>Aucun mouvement récent</p>
+          </div>
+
+          <div *ngFor="let mouvement of mouvements" class="mouvement-item d-flex align-items-center mb-3 p-2 rounded bg-light">
+            <div class="mouvement-icon me-3">
+              <mat-icon [ngClass]="'text-' + getMouvementColor(mouvement.type_mouvement)">
+                {{ getMouvementIcon(mouvement.type_mouvement) }}
+              </mat-icon>
+            </div>
+            
+            <div class="mouvement-info flex-grow-1">
+              <div class="fw-semibold">{{ mouvement.motif }}</div>
+              <div class="text-muted small">
+                {{ mouvement.date_mouvement | date:'dd/MM/yyyy HH:mm' }} - 
+                {{ mouvement.user?.prenom }} {{ mouvement.user?.nom }}
+              </div>
+            </div>
+            
+            <div class="mouvement-quantite text-end">
+              <span class="fw-semibold" 
+                    [ngClass]="{
+                      'text-success': mouvement.type_mouvement === 'Entree',
+                      'text-danger': mouvement.type_mouvement === 'Sortie' || mouvement.type_mouvement === 'Perte',
+                      'text-warning': mouvement.type_mouvement === 'Ajustement'
+                    }">
+                <span *ngIf="mouvement.type_mouvement === 'Entree'">+</span>
+                <span *ngIf="mouvement.type_mouvement === 'Sortie' || mouvement.type_mouvement === 'Perte'">-</span>
+                {{ mouvement.quantite }} {{ stock.produit?.unite_mesure }}
+              </span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Statut et alertes -->
+    <div class="col-lg-4">
+      <!-- Statut du stock -->
+      <mat-card class="mb-3">
+        <mat-card-header>
+          <mat-card-title>Statut</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="status-badge-large">
+            <mat-chip-set>
+              <mat-chip [ngClass]="'bg-' + getStockStatus().color + ' text-white'">
+                <mat-icon matChipAvatar>{{ getStockStatus().icon }}</mat-icon>
+                {{ getStockStatus().label }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+          
+          <div class="mt-3" *ngIf="stock.alerte_active">
+            <div class="alert alert-warning">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              Alerte stock active
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Statistiques -->
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Statistiques</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-item">
+            <label>Rotation estimée</label>
+            <div class="value">{{ calculateRotation() }} jours</div>
+          </div>
+          <div class="stat-item">
+            <label>Pourcentage d'alerte</label>
+            <div class="value">
+              {{ calculateAlertPercentage() }}%
+            </div>
+          </div>
+          <div class="stat-item">
+            <label>Total stock (disp. + rés.)</label>
+            <div class="value fw-semibold">
+              {{ stock.quantite_disponible + stock.quantite_reservee }} {{ stock.produit?.unite_mesure }}
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<!-- Loading state -->
+<div *ngIf="loading" class="text-center py-5">
+  <mat-spinner diameter="50"></mat-spinner>
+  <p class="mt-3 text-muted">Chargement du stock...</p>
+</div>
