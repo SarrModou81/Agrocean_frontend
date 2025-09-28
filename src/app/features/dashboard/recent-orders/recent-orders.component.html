@@ -1,0 +1,47 @@
+<mat-card class="recent-orders-card">
+  <mat-card-header>
+    <mat-card-title>
+      <i class="fas fa-shopping-bag me-2"></i>
+      Commandes récentes
+    </mat-card-title>
+    <div class="ms-auto">
+      <a mat-button routerLink="/commandes" color="primary">
+        Voir tout
+      </a>
+    </div>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <div *ngIf="loading" class="text-center py-3">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
+    
+    <div *ngIf="!loading" class="orders-list">
+      <div *ngIf="recentOrders.length === 0" class="text-center py-3 text-muted">
+        <i class="fas fa-inbox fa-2x mb-2"></i>
+        <p>Aucune commande récente</p>
+      </div>
+      
+      <div *ngFor="let order of recentOrders" 
+           class="order-item d-flex align-items-center mb-3 p-2 rounded bg-light">
+        <div class="order-info flex-grow-1">
+          <div class="order-number fw-semibold">{{ order.numero_commande }}</div>
+          <div class="order-client text-muted small">{{ order.client?.nom }}</div>
+          <div class="order-date text-muted small">
+            {{ order.date_commande | date:'dd/MM/yyyy' }}
+          </div>
+        </div>
+        
+        <div class="order-amount text-end me-3">
+          <div class="fw-semibold">{{ formatCurrency(order.montant_total) }}</div>
+        </div>
+        
+        <div class="order-status">
+          <span class="badge" [ngClass]="'bg-' + getStatusColor(order.statut_commande)">
+            {{ getStatusLabel(order.statut_commande) }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

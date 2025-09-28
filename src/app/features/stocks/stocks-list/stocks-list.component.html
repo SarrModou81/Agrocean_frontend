@@ -1,0 +1,204 @@
+<div class="stocks-container">
+  <!-- Page header -->
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="page-title">
+          <i class="fas fa-warehouse me-3"></i>
+          Gestion des Stocks
+        </h1>
+        <p class="page-subtitle text-muted">
+          {{ totalItems }} produit(s) en stock
+        </p>
+      </div>
+      <div class="header-actions">
+        <button mat-raised-button 
+                color="primary" 
+                routerLink="/stocks/mouvements">
+          <mat-icon>history</mat-icon>
+          Mouvements
+        </button>
+        <button mat-raised-button 
+                color="warn" 
+                routerLink="/stocks/alertes"
+                class="ms-2">
+          <mat-icon>warning</mat-icon>
+          Alertes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <mat-card class="filters-card mb-4">
+    <mat-card-content>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Rechercher</mat-label>
+            <input matInput 
+                   [formControl]="searchControl"
+                   placeholder="Nom produit, emplacement...">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </div>
+        
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Alertes actives</mat-label>
+            <mat-select [formControl]="alerteControl">
+              <mat-option value="">Tous</mat-option>
+              <mat-option value="true">Avec alertes</mat-option>
+              <mat-option value="false">Sans alerte</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Seuil atteint</mat-label>
+            <mat-select [formControl]="seuilControl">
+              <mat-option value="">Tous</mat-option>
+              <mat-option value="true">Seuil atteint</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        
+        <div class="col-md-2 d-flex align-items-center">
+          <button mat-button 
+                  color="warn" 
+                  (click)="clearFilters()"
+                  class="w-100">
+            <mat-icon>clear</mat-icon>
+            Effacer
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Table des stocks -->
+  <mat-card class="table-card">
+    <mat-card-content class="p-0">
+      <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+          <!-- Produit -->
+          <ng-container matColumnDef="produit">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Produit</th>
+            <td mat-cell *matCellDef="let stock">
+              <div class="product-info">
+                <div class="fw-semibold">{{ stock.produit?.nom }}</div>
+                <div class="text-muted small">{{ stock.produit?.code_produit }}</div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Quantité disponible -->
+          <ng-container matColumnDef="quantite_disponible">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Disponible</th>
+            <td mat-cell *matCellDef="let stock">
+              <span class="fw-semibold fs-6" 
+                    [ngClass]="{
+                      'text-danger': stock.quantite_disponible <= 0,
+                      'text-warning': stock.quantite_disponible > 0 && stock.quantite_disponible <= stock.seuil_alerte,
+                      'text-success': stock.quantite_disponible > stock.seuil_alerte
+                    }">
+                {{ stock.quantite_disponible }} {{ stock.produit?.unite_mesure }}
+              </span>
+              <div class="text-muted small">
+                Valeur: {{ formatCurrency(calculateStockValue(stock)) }}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Quantité réservée -->
+          <ng-container matColumnDef="quantite_reservee">
+            <th mat-header-cell *matHeaderCellDef>Réservée</th>
+            <td mat-cell *matCellDef="let stock">
+              <span class="text-info">
+                {{ stock.quantite_reservee }} {{ stock.produit?.unite_mesure }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Seuil d'alerte -->
+          <ng-container matColumnDef="seuil_alerte">
+            <th mat-header-cell *matHeaderCellDef>Seuil alerte</th>
+            <td mat-cell *matCellDef="let stock">
+              {{ stock.seuil_alerte }} {{ stock.produit?.unite_mesure }}
+            </td>
+          </ng-container>
+
+          <!-- Emplacement -->
+          <ng-container matColumnDef="emplacement">
+            <th mat-header-cell *matHeaderCellDef>Emplacement</th>
+            <td mat-cell *matCellDef="let stock">
+              <mat-chip>{{ stock.emplacement }}</mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Statut -->
+          <ng-container matColumnDef="statut">
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
+            <td mat-cell *matCellDef="let stock">
+              <mat-chip-set>
+                <mat-chip [ngClass]="'bg-' + getStockStatus(stock).color + ' text-white'">
+                  <mat-icon matChipAvatar>{{ getStockStatus(stock).icon }}</mat-icon>
+                  {{ getStockStatus(stock).label }}
+                </mat-chip>
+              </mat-chip-set>
+            </td>
+          </ng-container>
+
+          <!-- Actions -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let stock">
+              <div class="action-buttons">
+                <button mat-icon-button 
+                        [routerLink]="['/stocks/detail', stock.id]"
+                        matTooltip="Voir détails">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                
+                <button mat-icon-button 
+                        color="primary"
+                        (click)="openAjustementDialog(stock)"
+                        matTooltip="Ajuster stock">
+                  <mat-icon>tune</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <!-- Loading state -->
+        <div *ngIf="loading" class="text-center py-4">
+          <mat-spinner diameter="50"></mat-spinner>
+          <p class="mt-2 text-muted">Chargement des stocks...</p>
+        </div>
+
+        <!-- Empty state -->
+        <div *ngIf="!loading && dataSource.data.length === 0" class="text-center py-5">
+          <mat-icon class="empty-icon">inventory</mat-icon>
+          <h3 class="mt-3">Aucun stock trouvé</h3>
+          <p class="text-muted">Aucun stock ne correspond à vos critères</p>
+          <button mat-raised-button color="primary" (click)="clearFilters()">
+            Effacer les filtres
+          </button>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <mat-paginator [length]="totalItems"
+                     [pageSize]="pageSize"
+                     [pageSizeOptions]="[10, 15, 25, 50]"
+                     (page)="onPageChange($event)"
+                     showFirstLastButtons>
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

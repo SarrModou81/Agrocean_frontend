@@ -1,0 +1,42 @@
+<mat-card class="top-products-card">
+  <mat-card-header>
+    <mat-card-title>
+      <i class="fas fa-trophy me-2"></i>
+      Top Produits
+    </mat-card-title>
+    <mat-card-subtitle>Meilleurs ventes du mois</mat-card-subtitle>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <div *ngIf="loading" class="text-center py-3">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
+    
+    <div *ngIf="!loading" class="products-list">
+      <div *ngIf="topProducts.length === 0" class="text-center py-3 text-muted">
+        <i class="fas fa-inbox fa-2x mb-2"></i>
+        <p>Aucune donnée disponible</p>
+      </div>
+      
+      <div *ngFor="let product of topProducts; let i = index" 
+           class="product-item d-flex align-items-center mb-3">
+        <div class="product-rank me-3">
+          <span class="rank-badge" [ngClass]="'rank-' + (i + 1)">{{ i + 1 }}</span>
+        </div>
+        
+        <div class="product-info flex-grow-1">
+          <div class="product-name fw-semibold">{{ product.nom }}</div>
+          <div class="product-code text-muted small">{{ product.code_produit }}</div>
+          <div class="product-stats">
+            <span class="badge bg-primary me-1">{{ product.quantite_vendue }} vendus</span>
+            <span class="text-success fw-semibold">{{ formatCurrency(product.chiffre_affaires) }}</span>
+          </div>
+        </div>
+        
+        <div class="product-trend">
+          <i class="fas fa-arrow-up text-success"></i>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

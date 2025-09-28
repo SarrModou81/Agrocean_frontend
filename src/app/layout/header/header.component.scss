@@ -1,0 +1,49 @@
+// src/app/layout/header/header.component.scss
+.navbar {
+  height: var(--header-height);
+  padding: 0 1rem;
+  
+  .navbar-brand {
+    font-size: 1.5rem;
+    
+    i {
+      color: var(--secondary-color);
+    }
+  }
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    i {
+      color: white;
+    }
+  }
+  
+  .user-info {
+    text-align: left;
+    line-height: 1.2;
+  }
+  
+  .dropdown-menu {
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    margin-top: 10px;
+    
+    .dropdown-item {
+      padding: 10px 20px;
+      
+      &:hover {
+        background-color: #f8f9fa;
+      }
+      
+      i {
+        width: 20px;
+      }
+    }
+  }
+}

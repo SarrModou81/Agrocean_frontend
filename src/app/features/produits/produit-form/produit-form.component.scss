@@ -1,0 +1,44 @@
+.product-form {
+  min-width: 400px;
+  max-width: 800px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.description-field {
+  min-height: 100px;
+}
+
+.price-field {
+  max-width: 200px;
+}
+
+.stock-field {
+  max-width: 150px;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .product-form {
+    min-width: auto;
+  }
+}

@@ -1,0 +1,101 @@
+<div class="ajustement-dialog">
+  <h2 mat-dialog-title>
+    <i class="fas fa-tune me-2"></i>
+    Ajustement de stock
+  </h2>
+
+  <mat-dialog-content>
+    <!-- Informations du produit -->
+    <div class="product-info mb-4 p-3 bg-light rounded">
+      <div class="row">
+        <div class="col-md-8">
+          <h6 class="fw-semibold">{{ stock.produit?.nom }}</h6>
+          <p class="text-muted mb-1">Code: {{ stock.produit?.code_produit }}</p>
+          <p class="text-muted mb-0">Emplacement: {{ stock.emplacement }}</p>
+        </div>
+        <div class="col-md-4 text-end">
+          <div class="current-stock">
+            <label class="small text-muted">Stock actuel</label>
+            <div class="fw-bold fs-5 text-primary">
+              {{ stock.quantite_disponible }} {{ stock.produit?.unite_mesure }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulaire d'ajustement -->
+    <form [formGroup]="ajustementForm" class="ajustement-form">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Nouvelle quantité</mat-label>
+        <input matInput 
+               type="number"
+               formControlName="nouvelle_quantite"
+               [placeholder]="stock.quantite_disponible.toString()">
+        <span matSuffix>{{ stock.produit?.unite_mesure }}</span>
+        <mat-error *ngIf="ajustementForm.get('nouvelle_quantite')?.touched && ajustementForm.get('nouvelle_quantite')?.errors">
+          {{ getErrorMessage('nouvelle_quantite') }}
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Aperçu de l'ajustement -->
+      <div class="ajustement-preview mb-3 p-3 rounded" 
+           [ngClass]="{
+             'bg-success-subtle': differenceQuantite > 0,
+             'bg-danger-subtle': differenceQuantite < 0,
+             'bg-info-subtle': differenceQuantite === 0
+           }">
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="fw-semibold">{{ typeAjustement }}</span>
+          <span class="fs-6" 
+                [ngClass]="{
+                  'text-success': differenceQuantite > 0,
+                  'text-danger': differenceQuantite < 0,
+                  'text-info': differenceQuantite === 0
+                }">
+            <span *ngIf="differenceQuantite > 0">+</span>{{ differenceQuantite }} {{ stock.produit?.unite_mesure }}
+          </span>
+        </div>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Motif de l'ajustement</mat-label>
+        <mat-select formControlName="motif">
+          <mat-option *ngFor="let motif of motifs" [value]="motif">
+            {{ motif }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="ajustementForm.get('motif')?.touched && ajustementForm.get('motif')?.errors">
+          {{ getErrorMessage('motif') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Justification (optionnel)</mat-label>
+        <textarea matInput 
+                  formControlName="justification"
+                  rows="3"
+                  placeholder="Détails sur l'ajustement..."></textarea>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button 
+            (click)="onCancel()" 
+            [disabled]="loading">
+      Annuler
+    </button>
+    
+    <button mat-raised-button 
+            color="primary" 
+            (click)="onSubmit()"
+            [disabled]="loading || ajustementForm.invalid || differenceQuantite === 0">
+      <span *ngIf="!loading">Ajuster le stock</span>
+      <span *ngIf="loading">
+        <mat-icon class="spin">refresh</mat-icon>
+        Ajustement...
+      </span>
+    </button>
+  </mat-dialog-actions>
+</div>

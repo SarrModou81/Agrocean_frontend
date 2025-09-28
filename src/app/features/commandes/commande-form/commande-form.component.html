@@ -1,0 +1,145 @@
+<div class="commande-form-dialog">
+  <h2 mat-dialog-title>
+    <i class="fas fa-shopping-bag me-2"></i>
+    Nouvelle Commande
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="commandeForm" class="commande-form">
+      <!-- Informations générales -->
+      <div class="section mb-4">
+        <h5 class="section-title">Informations générales</h5>
+        
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Client</mat-label>
+              <mat-select formControlName="client_id">
+                <mat-option *ngFor="let client of clients" [value]="client.id">
+                  {{ client.nom }} - {{ client.type_client }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="commandeForm.get('client_id')?.touched && commandeForm.get('client_id')?.errors">
+                Client requis
+              </mat-error>
+            </mat-form-field>
+          </div>
+          
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Date de livraison prévue</mat-label>
+              <input matInput 
+                     type="date"
+                     formControlName="date_livraison_prevue"
+                     [min]="new Date().toISOString().split('T')[0]">
+              <mat-error *ngIf="commandeForm.get('date_livraison_prevue')?.touched && commandeForm.get('date_livraison_prevue')?.errors">
+                Date de livraison requise
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Notes (optionnel)</mat-label>
+          <textarea matInput 
+                    formControlName="notes"
+                    rows="2"
+                    placeholder="Notes concernant la commande..."></textarea>
+        </mat-form-field>
+      </div>
+
+      <!-- Lignes de commande -->
+      <div class="section">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="section-title mb-0">Produits commandés</h5>
+          <button mat-button 
+                  color="primary" 
+                  type="button"
+                  (click)="addLigneCommande()">
+            <mat-icon>add</mat-icon>
+            Ajouter un produit
+          </button>
+        </div>
+
+        <div formArrayName="lignes">
+          <div *ngFor="let ligne of lignesArray.controls; let i = index" 
+               [formGroupName]="i" 
+               class="ligne-commande mb-3 p-3 border rounded">
+            <div class="d-flex align-items-end gap-3">
+              <mat-form-field appearance="outline" class="flex-grow-1">
+                <mat-label>Produit</mat-label>
+                <mat-select formControlName="produit_id">
+                  <mat-option *ngFor="let produit of produits" [value]="produit.id">
+                    {{ produit.nom }} - {{ produit.code_produit }}
+                    <span class="text-muted ms-2">({{ produit.prix_unitaire | currency:'XOF':'symbol':'1.0-0' }})</span>
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="ligne.get('produit_id')?.touched && ligne.get('produit_id')?.errors">
+                  Produit requis
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" style="width: 150px;">
+                <mat-label>Quantité</mat-label>
+                <input matInput 
+                       type="number"
+                       formControlName="quantite"
+                       placeholder="0"
+                       step="0.01"
+                       min="0.01">
+                <mat-error *ngIf="ligne.get('quantite')?.touched && ligne.get('quantite')?.errors">
+                  Quantité requise
+                </mat-error>
+              </mat-form-field>
+
+              <div class="prix-info" style="width: 120px;">
+                <ng-container *ngIf="ligne.get('produit_id')?.value && ligne.get('quantite')?.value">
+                  <div class="text-muted small">Sous-total</div>
+                  <div class="fw-semibold text-success">
+                    {{ formatCurrency((ligne.get('quantite')?.value || 0) * (getProduitById(ligne.get('produit_id')?.value)?.prix_unitaire || 0)) }}
+                  </div>
+                </ng-container>
+              </div>
+
+              <button mat-icon-button 
+                      color="warn"
+                      type="button"
+                      (click)="removeLigneCommande(i)"
+                      [disabled]="lignesArray.length === 1"
+                      matTooltip="Supprimer cette ligne">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total de la commande -->
+        <div class="total-section mt-4 p-3 bg-light rounded">
+          <div class="d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">Total de la commande :</h6>
+            <h5 class="mb-0 text-success fw-bold">{{ formatCurrency(calculateTotal()) }}</h5>
+          </div>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button 
+            (click)="onCancel()" 
+            [disabled]="loading">
+      Annuler
+    </button>
+    
+    <button mat-raised-button 
+            color="primary" 
+            (click)="onSubmit()"
+            [disabled]="loading || commandeForm.invalid || calculateTotal() === 0">
+      <span *ngIf="!loading">Créer la commande</span>
+      <span *ngIf="loading">
+        <mat-icon class="spin">refresh</mat-icon>
+        Création...
+      </span>
+    </button>
+  </mat-dialog-actions>
+</div>

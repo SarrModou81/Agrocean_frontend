@@ -1,0 +1,204 @@
+<div class="commandes-container">
+  <!-- Page header -->
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="page-title">
+          <i class="fas fa-shopping-bag me-3"></i>
+          Gestion des Commandes
+        </h1>
+        <p class="page-subtitle text-muted">
+          {{ totalItems }} commande(s) au total
+        </p>
+      </div>
+      <button mat-raised-button 
+              color="primary" 
+              (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon>
+        Nouvelle Commande
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <mat-card class="filters-card mb-4">
+    <mat-card-content>
+      <div class="row g-3">
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Statut</mat-label>
+            <mat-select [formControl]="statutControl">
+              <mat-option value="">Tous</mat-option>
+              <mat-option *ngFor="let statut of statuts" [value]="statut.value">
+                <mat-chip [ngClass]="'bg-' + statut.color + ' text-white me-2'">
+                  {{ statut.label }}
+                </mat-chip>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Client</mat-label>
+            <mat-select [formControl]="clientControl">
+              <mat-option value="">Tous</mat-option>
+              <mat-option *ngFor="let client of clients" [value]="client.id">
+                {{ client.nom }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Date début</mat-label>
+            <input matInput 
+                   type="date"
+                   [formControl]="dateDebutControl">
+          </mat-form-field>
+        </div>
+        
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Date fin</mat-label>
+            <input matInput 
+                   type="date"
+                   [formControl]="dateFinControl">
+          </mat-form-field>
+        </div>
+        
+        <div class="col-md-2 d-flex align-items-center">
+          <button mat-button 
+                  color="warn" 
+                  (click)="clearFilters()"
+                  class="w-100">
+            <mat-icon>clear</mat-icon>
+            Effacer
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Table des commandes -->
+  <mat-card class="table-card">
+    <mat-card-content class="p-0">
+      <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+          <!-- Numéro commande -->
+          <ng-container matColumnDef="numero_commande">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>N° Commande</th>
+            <td mat-cell *matCellDef="let commande">
+              <span class="fw-semibold text-primary">{{ commande.numero_commande }}</span>
+            </td>
+          </ng-container>
+
+          <!-- Client -->
+          <ng-container matColumnDef="client">
+            <th mat-header-cell *matHeaderCellDef>Client</th>
+            <td mat-cell *matCellDef="let commande">
+              <div class="client-info">
+                <div class="fw-semibold">{{ commande.client?.nom }}</div>
+                <div class="text-muted small">{{ commande.client?.type_client }}</div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Date commande -->
+          <ng-container matColumnDef="date_commande">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+            <td mat-cell *matCellDef="let commande">
+              {{ commande.date_commande | date:'dd/MM/yyyy' }}
+            </td>
+          </ng-container>
+
+          <!-- Date livraison prévue -->
+          <ng-container matColumnDef="date_livraison_prevue">
+            <th mat-header-cell *matHeaderCellDef>Livraison prévue</th>
+            <td mat-cell *matCellDef="let commande">
+              {{ commande.date_livraison_prevue | date:'dd/MM/yyyy' }}
+            </td>
+          </ng-container>
+
+          <!-- Montant total -->
+          <ng-container matColumnDef="montant_total">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Montant</th>
+            <td mat-cell *matCellDef="let commande">
+              <span class="fw-semibold text-success">
+                {{ formatCurrency(commande.montant_total) }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Statut -->
+          <ng-container matColumnDef="statut_commande">
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
+            <td mat-cell *matCellDef="let commande">
+              <mat-chip [ngClass]="'bg-' + getStatutInfo(commande.statut_commande).color + ' text-white'">
+                {{ getStatutInfo(commande.statut_commande).label }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Actions -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let commande">
+              <div class="action-buttons">
+                <button mat-icon-button 
+                        [routerLink]="['/commandes/detail', commande.id]"
+                        matTooltip="Voir détails">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                
+                <button mat-icon-button 
+                        color="primary"
+                        *ngIf="canConfirm(commande)"
+                        (click)="openStatusDialog(commande, 'confirmer')"
+                        matTooltip="Confirmer">
+                  <mat-icon>check</mat-icon>
+                </button>
+                
+                <button mat-icon-button 
+                        color="warn"
+                        *ngIf="canCancel(commande)"
+                        (click)="openStatusDialog(commande, 'annuler')"
+                        matTooltip="Annuler">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <!-- Loading state -->
+        <div *ngIf="loading" class="text-center py-4">
+          <mat-spinner diameter="50"></mat-spinner>
+          <p class="mt-2 text-muted">Chargement des commandes...</p>
+        </div>
+
+        <!-- Empty state -->
+        <div *ngIf="!loading && dataSource.data.length === 0" class="text-center py-5">
+          <mat-icon class="empty-icon">shopping_bag</mat-icon>
+          <h3 class="mt-3">Aucune commande trouvée</h3>
+          <p class="text-muted">Aucune commande ne correspond à vos critères</p>
+          <button mat-raised-button color="primary" (click)="clearFilters()">
+            Effacer les filtres
+          </button>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <mat-paginator [length]="totalItems"
+                     [pageSize]="pageSize"
+                     [pageSizeOptions]="[10, 15, 25, 50]"
+                     (page)="onPageChange($event)"
+                     showFirstLastButtons>
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

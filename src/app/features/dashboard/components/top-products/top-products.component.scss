@@ -1,0 +1,65 @@
+// src/app/features/dashboard/components/top-products/top-products.component.scss
+.top-products-card {
+  height: 100%;
+  
+  .products-list {
+    .product-item {
+      padding: 10px;
+      border-radius: 8px;
+      transition: background-color 0.2s ease;
+      
+      &:hover {
+        background-color: #f8f9fa;
+      }
+      
+      .product-rank {
+        .rank-badge {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          color: white;
+          
+          &.rank-1 {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+          }
+          
+          &.rank-2 {
+            background: linear-gradient(135deg, #c0c0c0, #e2e2e2);
+            color: #333;
+          }
+          
+          &.rank-3 {
+            background: linear-gradient(135deg, #cd7f32, #daa520);
+          }
+          
+          &.rank-4,
+          &.rank-5 {
+            background: linear-gradient(135deg, #6c757d, #adb5bd);
+          }
+        }
+      }
+      
+      .product-info {
+        .product-name {
+          font-size: 1rem;
+          margin-bottom: 0.25rem;
+        }
+        
+        .product-code {
+          margin-bottom: 0.5rem;
+        }
+        
+        .product-stats {
+          .badge {
+            font-size: 0.75rem;
+          }
+        }
+      }
+    }
+  }
+}

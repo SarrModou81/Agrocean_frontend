@@ -1,0 +1,91 @@
+<div class="client-form-dialog">
+  <h2 mat-dialog-title>
+    <i class="fas fa-user-plus me-2"></i>
+    {{ title }}
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="clientForm" class="client-form">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Nom du client</mat-label>
+        <input matInput 
+               formControlName="nom"
+               placeholder="Ex: Restaurant Teranga">
+        <mat-error *ngIf="clientForm.get('nom')?.touched && clientForm.get('nom')?.errors">
+          {{ getErrorMessage('nom') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Type de client</mat-label>
+        <mat-select formControlName="type_client">
+          <mat-option *ngFor="let type of typesClient" [value]="type.value">
+            {{ type.label }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="clientForm.get('type_client')?.touched && clientForm.get('type_client')?.errors">
+          {{ getErrorMessage('type_client') }}
+        </mat-error>
+      </mat-form-field>
+
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Téléphone</mat-label>
+            <input matInput 
+                   formControlName="telephone"
+                   placeholder="+221 XX XXX XX XX">
+            <mat-icon matSuffix>phone</mat-icon>
+            <mat-error *ngIf="clientForm.get('telephone')?.touched && clientForm.get('telephone')?.errors">
+              {{ getErrorMessage('telephone') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Email (optionnel)</mat-label>
+            <input matInput 
+                   type="email"
+                   formControlName="email"
+                   placeholder="client@email.com">
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="clientForm.get('email')?.touched && clientForm.get('email')?.errors">
+              {{ getErrorMessage('email') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Adresse</mat-label>
+        <textarea matInput 
+                  formControlName="adresse"
+                  rows="3"
+                  placeholder="Adresse complète du client..."></textarea>
+        <mat-error *ngIf="clientForm.get('adresse')?.touched && clientForm.get('adresse')?.errors">
+          {{ getErrorMessage('adresse') }}
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button 
+            (click)="onCancel()" 
+            [disabled]="loading">
+      Annuler
+    </button>
+    
+    <button mat-raised-button 
+            color="primary" 
+            (click)="onSubmit()"
+            [disabled]="loading || clientForm.invalid">
+      <span *ngIf="!loading">{{ isEditMode ? 'Modifier' : 'Créer' }}</span>
+      <span *ngIf="loading">
+        <mat-icon class="spin">refresh</mat-icon>
+        Sauvegarde...
+      </span>
+    </button>
+  </mat-dialog-actions>
+</div>

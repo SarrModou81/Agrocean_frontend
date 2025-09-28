@@ -1,0 +1,144 @@
+// src/app/features/auth/login/login.component.scss
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.auth-card-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-card {
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  
+  .auth-logo {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    i {
+      font-size: 2rem;
+      color: white;
+    }
+  }
+  
+  mat-card-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  mat-card-subtitle {
+    font-size: 1rem;
+    color: #666;
+  }
+}
+
+.auth-form {
+  .full-width {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 1rem;
+    
+    .half-width {
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+  }
+  
+  mat-form-field {
+    mat-label {
+      color: #666;
+    }
+    
+    .mat-mdc-form-field-outline {
+      border-radius: 12px;
+    }
+  }
+}
+
+.auth-submit-btn {
+  height: 48px;
+  border-radius: 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.auth-actions {
+  text-align: center;
+  padding-top: 1rem;
+  
+  p {
+    margin: 0;
+    color: #666;
+  }
+  
+  .auth-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.5rem;
+  }
+  
+  .auth-header {
+    margin-bottom: 1.5rem;
+    
+    .auth-logo {
+      width: 60px;
+      height: 60px;
+      
+      i {
+        font-size: 1.5rem;
+      }
+    }
+    
+    mat-card-title {
+      font-size: 1.5rem;
+    }
+  }
+  
+  .auth-form .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}

@@ -1,0 +1,19 @@
+// src/app/features/dashboard/dashboard.component.scss
+.dashboard-container {
+  .page-header {
+    .page-title {
+      font-size: 2rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .page-subtitle {
+      font-size: 1.1rem;
+    }
+  }
+  
+  .error-icon {
+    font-size: 4rem;
+    opacity: 0.5;
+  }
+}

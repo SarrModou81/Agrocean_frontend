@@ -1,0 +1,66 @@
+// src/app/features/dashboard/components/stats-cards/stats-cards.component.scss
+.stats-cards {
+  .stat-card {
+    border-radius: 15px;
+    border: none;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+    position: relative;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    &.stat-success {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: white;
+    }
+    
+    &.stat-warning {
+      background: linear-gradient(135deg, #ffc107, #fd7e14);
+      color: white;
+    }
+    
+    &.stat-info {
+      background: linear-gradient(135deg, #17a2b8, #6f42c1);
+      color: white;
+    }
+    
+    &.stat-danger {
+      background: linear-gradient(135deg, #dc3545, #e83e8c);
+      color: white;
+    }
+    
+    .stat-content {
+      display: flex;
+      align-items: center;
+      
+      .stat-text {
+        flex: 1;
+        
+        .stat-value {
+          font-size: 2.5rem;
+          font-weight: bold;
+          margin-bottom: 0.5rem;
+        }
+        
+        .stat-title {
+          font-size: 1rem;
+          margin-bottom: 0.25rem;
+        }
+        
+        .stat-subtitle {
+          font-size: 0.875rem;
+          opacity: 0.8;
+        }
+      }
+      
+      .stat-icon {
+        font-size: 3rem;
+        opacity: 0.3;
+        margin-left: 1rem;
+      }
+    }
+  }
+}

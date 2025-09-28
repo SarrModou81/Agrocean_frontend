@@ -1,0 +1,42 @@
+<div class="delete-dialog">
+  <h2 mat-dialog-title class="text-danger">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    Confirmer la suppression
+  </h2>
+
+  <mat-dialog-content>
+    <div class="alert alert-warning">
+      <p class="mb-2">
+        <strong>Êtes-vous sûr de vouloir supprimer ce client ?</strong>
+      </p>
+      <div class="client-info bg-light p-3 rounded">
+        <div><strong>Nom :</strong> {{ client.nom }}</div>
+        <div><strong>Type :</strong> {{ client.type_client }}</div>
+        <div><strong>Téléphone :</strong> {{ client.telephone }}</div>
+      </div>
+      <p class="mt-2 text-danger">
+        <i class="fas fa-warning me-1"></i>
+        Cette action est irréversible.
+      </p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button 
+            (click)="onCancel()" 
+            [disabled]="loading">
+      Annuler
+    </button>
+    
+    <button mat-raised-button 
+            color="warn" 
+            (click)="onConfirm()"
+            [disabled]="loading">
+      <span *ngIf="!loading">Supprimer</span>
+      <span *ngIf="loading">
+        <mat-icon class="spin">refresh</mat-icon>
+        Suppression...
+      </span>
+    </button>
+  </mat-dialog-actions>
+</div>

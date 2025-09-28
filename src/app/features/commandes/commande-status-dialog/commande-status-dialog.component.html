@@ -1,0 +1,54 @@
+<div class="status-dialog">
+  <h2 mat-dialog-title 
+      [ngClass]="data.action === 'confirmer' ? 'text-primary' : 'text-danger'">
+    <i class="fas" 
+       [ngClass]="data.action === 'confirmer' ? 'fa-check-circle' : 'fa-times-circle'"></i>
+    {{ title }}
+  </h2>
+
+  <mat-dialog-content>
+    <p class="mb-3">{{ message }}</p>
+    
+    <div class="commande-info bg-light p-3 rounded">
+      <div class="row">
+        <div class="col-md-6">
+          <div><strong>N° Commande :</strong> {{ data.commande.numero_commande }}</div>
+          <div><strong>Client :</strong> {{ data.commande.client?.nom }}</div>
+        </div>
+        <div class="col-md-6">
+          <div><strong>Montant :</strong> {{ data.commande.montant_total | currency:'XOF':'symbol':'1.0-0' }}</div>
+          <div><strong>Date :</strong> {{ data.commande.date_commande | date:'dd/MM/yyyy' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="data.action === 'confirmer'" class="alert alert-info mt-3">
+      <i class="fas fa-info-circle me-2"></i>
+      La confirmation de cette commande va générer une facture et réserver les stocks.
+    </div>
+
+    <div *ngIf="data.action === 'annuler'" class="alert alert-warning mt-3">
+      <i class="fas fa-exclamation-triangle me-2"></i>
+      L'annulation de cette commande libérera les stocks réservés.
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button 
+            (click)="onCancel()" 
+            [disabled]="loading">
+      Retour
+    </button>
+    
+    <button mat-raised-button 
+            [color]="buttonColor"
+            (click)="onConfirm()"
+            [disabled]="loading">
+      <span *ngIf="!loading">{{ buttonText }}</span>
+      <span *ngIf="loading">
+        <mat-icon class="spin">refresh</mat-icon>
+        Traitement...
+      </span>
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,50 @@
+<mat-card class="alerts-card">
+  <mat-card-header>
+    <mat-card-title>
+      <i class="fas fa-bell me-2"></i>
+      Alertes récentes
+    </mat-card-title>
+    <div class="ms-auto">
+      <a mat-button routerLink="/alertes" color="primary">
+        Voir tout
+      </a>
+    </div>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <div *ngIf="loading" class="text-center py-3">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
+    
+    <div *ngIf="!loading" class="alerts-list">
+      <div *ngIf="alerts.length === 0" class="text-center py-3 text-muted">
+        <i class="fas fa-check-circle fa-2x mb-2 text-success"></i>
+        <p>Aucune alerte récente</p>
+      </div>
+      
+      <div *ngFor="let alert of alerts" 
+           class="alert-item d-flex align-items-start mb-3 p-2 rounded"
+           [ngClass]="{'bg-light': !alert.lu}">
+        <div class="alert-icon me-2">
+          <i [class]="getAlertIcon(alert.type_alerte) + ' text-' + getAlertColor(alert.type_alerte)"></i>
+        </div>
+        
+        <div class="alert-content flex-grow-1">
+          <div class="alert-message">{{ alert.message }}</div>
+          <div class="alert-date text-muted small">
+            {{ alert.date_alerte | date:'dd/MM/yyyy HH:mm' }}
+          </div>
+        </div>
+        
+        <div class="alert-actions">
+          <button *ngIf="!alert.lu" 
+                  mat-icon-button 
+                  (click)="markAsRead(alert.id)"
+                  matTooltip="Marquer comme lu">
+            <mat-icon>check</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

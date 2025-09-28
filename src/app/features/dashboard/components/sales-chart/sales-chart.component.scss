@@ -1,0 +1,21 @@
+// src/app/features/dashboard/components/sales-chart/sales-chart.component.scss
+.chart-card {
+  height: 450px;
+  
+  mat-card-header {
+    display: flex;
+    align-items: center;
+    
+    .chart-controls {
+      .year-select {
+        width: 120px;
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  .chart-container {
+    height: 350px;
+    position: relative;
+  }
+}

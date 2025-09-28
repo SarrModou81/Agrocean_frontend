@@ -1,0 +1,48 @@
+.product-detail-container {
+  padding: 16px;
+}
+
+.detail-card {
+  margin-bottom: 16px;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.detail-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.detail-field {
+  margin-bottom: 12px;
+}
+
+.field-label {
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.875rem;
+}
+
+.field-value {
+  font-size: 1rem;
+  margin-top: 4px;
+}
+
+.actions-toolbar {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .detail-content {
+    grid-template-columns: 1fr;
+  }
+}
