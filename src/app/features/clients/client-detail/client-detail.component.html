@@ -1,0 +1,100 @@
+<div class="client-detail-container" *ngIf="!loading && client">
+  <!-- Header -->
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <button mat-icon-button (click)="goBack()" class="me-3">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span class="page-title">
+          <i class="fas fa-user me-2"></i>
+          {{ client.nom }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Informations principales -->
+    <div class="col-lg-8">
+      <mat-card class="detail-card">
+        <mat-card-header>
+          <mat-card-title>Informations du client</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="info-item">
+                <label>Type de client</label>
+                <div class="value">
+                  <mat-chip>{{ client.type_client }}</mat-chip>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="info-item">
+                <label>Date de création</label>
+                <div class="value">{{ client.date_creation | date:'dd/MM/yyyy' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <label>Adresse</label>
+            <div class="value">{{ client.adresse }}</div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="info-item">
+                <label>Téléphone</label>
+                <div class="value">
+                  <a href="tel:{{ client.telephone }}">{{ client.telephone }}</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="info-item">
+                <label>Email</label>
+                <div class="value">
+                  <a *ngIf="client.email" href="mailto:{{ client.email }}">{{ client.email }}</a>
+                  <span *ngIf="!client.email" class="text-muted">Non renseigné</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="col-lg-4">
+      <mat-card *ngIf="statistics">
+        <mat-card-header>
+          <mat-card-title>Statistiques</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-item">
+            <label>Total commandes</label>
+            <div class="value fw-bold">{{ statistics.total_commandes }}</div>
+          </div>
+          <div class="stat-item">
+            <label>Montant total achats</label>
+            <div class="value fw-bold text-success">
+              {{ formatCurrency(statistics.montant_total_achats) }}
+            </div>
+          </div>
+          <div class="stat-item">
+            <label>Commande moyenne</label>
+            <div class="value">{{ formatCurrency(statistics.commande_moyenne) }}</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading" class="text-center py-5">
+  <mat-spinner diameter="50"></mat-spinner>
+  <p class="mt-3 text-muted">Chargement du client...</p>
+</div>

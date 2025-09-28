@@ -107,7 +107,7 @@ export class CommandesListComponent implements OnInit {
     }
     
     if (this.clientControl.value) {
-      filters.client_id = this.clientControl.value;
+      filters.client_id = Number(this.clientControl.value);
     }
     
     if (this.dateDebutControl.value) {

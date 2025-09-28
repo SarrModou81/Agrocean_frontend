@@ -1,0 +1,40 @@
+.client-detail-container {
+  .info-item {
+    margin-bottom: 1rem;
+    
+    label {
+      font-weight: 500;
+      color: #666;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    
+    .value {
+      font-size: 1rem;
+      
+      a {
+        color: var(--primary-color);
+        text-decoration: none;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  
+  .stat-item {
+    margin-bottom: 1rem;
+    
+    label {
+      font-size: 0.875rem;
+      color: #666;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    
+    .value {
+      font-size: 1.125rem;
+    }
+  }
+}

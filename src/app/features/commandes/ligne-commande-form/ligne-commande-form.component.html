@@ -1,0 +1,36 @@
+<div class="ligne-commande-form p-3 border rounded mb-3">
+  <div class="d-flex align-items-end gap-3">
+    <mat-form-field appearance="outline" class="flex-grow-1">
+      <mat-label>Produit</mat-label>
+      <mat-select formControlName="produit_id">
+        <mat-option *ngFor="let produit of produits" [value]="produit.id">
+          {{ produit.nom }} - {{ produit.code_produit }}
+          <span class="text-muted ms-2">({{ formatCurrency(produit.prix_unitaire) }})</span>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 150px;">
+      <mat-label>Quantité</mat-label>
+      <input matInput 
+             type="number"
+             formControlName="quantite"
+             step="0.01"
+             min="0.01">
+    </mat-form-field>
+
+    <div class="prix-info" style="width: 120px;">
+      <div class="text-muted small">Sous-total</div>
+      <div class="fw-semibold text-success">
+        {{ formatCurrency(calculateSousTotal()) }}
+      </div>
+    </div>
+
+    <button mat-icon-button 
+            color="warn"
+            (click)="onRemove()"
+            matTooltip="Supprimer cette ligne">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>

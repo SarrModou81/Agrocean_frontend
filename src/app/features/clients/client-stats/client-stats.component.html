@@ -1,0 +1,21 @@
+<mat-card *ngIf="statistics">
+  <mat-card-header>
+    <mat-card-title>Statistiques du client</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-value">{{ statistics.total_commandes }}</div>
+        <div class="stat-label">Commandes</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">{{ formatCurrency(statistics.montant_total_achats) }}</div>
+        <div class="stat-label">Total achats</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">{{ formatCurrency(statistics.commande_moyenne) }}</div>
+        <div class="stat-label">Commande moyenne</div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
