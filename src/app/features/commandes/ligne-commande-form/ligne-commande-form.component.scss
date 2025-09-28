@@ -1,0 +1,231 @@
+// src/app/features/commandes/ligne-commande-form/ligne-commande-form.component.scss
+.ligne-commande-form {
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+  }
+  
+  .d-flex {
+    align-items: flex-end;
+    gap: 1rem;
+    
+    mat-form-field {
+      &.flex-grow-1 {
+        flex: 1;
+        min-width: 200px;
+      }
+      
+      .mat-mdc-form-field-outline {
+        border-radius: 6px;
+        transition: all 0.3s ease;
+      }
+      
+      &.mat-focused .mat-mdc-form-field-outline {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.2);
+      }
+      
+      mat-label {
+        color: var(--primary-color);
+        font-weight: 500;
+      }
+      
+      mat-select {
+        .mat-mdc-select-panel {
+          border-radius: 6px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        mat-option {
+          padding: 12px 16px;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            background-color: rgba(44, 90, 160, 0.1);
+          }
+          
+          .text-muted {
+            color: #6c757d;
+            margin-left: 0.5rem;
+          }
+        }
+      }
+      
+      input[matInput] {
+        &[type="number"] {
+          text-align: right;
+          font-weight: 500;
+        }
+      }
+    }
+    
+    .prix-info {
+      background: linear-gradient(135deg, #e8f5e8, #f0fff0);
+      border: 1px solid #d4edda;
+      border-radius: 6px;
+      padding: 0.5rem;
+      text-align: center;
+      min-height: 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: linear-gradient(135deg, #d4edda, #e8f5e8);
+        transform: scale(1.02);
+      }
+      
+      .text-muted {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-bottom: 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .fw-semibold {
+        font-weight: 600;
+        color: var(--success-color);
+        font-size: 1rem;
+        line-height: 1.2;
+      }
+    }
+    
+    button[mat-icon-button] {
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      background-color: rgba(220, 53, 69, 0.1);
+      color: var(--danger-color);
+      
+      &:hover {
+        transform: scale(1.1) rotate(90deg);
+        background-color: rgba(220, 53, 69, 0.2);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+      }
+      
+      mat-icon {
+        font-size: 1.25rem;
+      }
+    }
+  }
+}
+
+// Form validation styles
+mat-form-field {
+  &.mat-form-field-invalid {
+    .mat-mdc-form-field-outline {
+      border-color: var(--danger-color);
+    }
+  }
+  
+  mat-error {
+    color: var(--danger-color);
+    font-size: 0.875rem;
+  }
+}
+
+// Animation for adding/removing lines
+.ligne-commande-form {
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive design
+@media (max-width: 992px) {
+  .ligne-commande-form {
+    .d-flex {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      
+      .flex-grow-1 {
+        min-width: 180px;
+        flex: 1 1 auto;
+      }
+      
+      mat-form-field {
+        margin-bottom: 0.5rem;
+      }
+      
+      .prix-info {
+        width: 100%;
+        margin-top: 0.5rem;
+        order: 2;
+      }
+      
+      button[mat-icon-button] {
+        order: 3;
+        align-self: center;
+        margin-top: 0.5rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .ligne-commande-form {
+    padding: 1rem;
+    
+    .d-flex {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+      
+      .flex-grow-1,
+      .prix-info {
+        width: 100%;
+      }
+      
+      button[mat-icon-button] {
+        align-self: center;
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .ligne-commande-form {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    
+    .prix-info {
+      min-height: 48px;
+      padding: 0.75rem;
+      
+      .fw-semibold {
+        font-size: 0.875rem;
+      }
+    }
+  }
+}
+
+// Focus and hover states
+.ligne-commande-form {
+  &:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+  }
+}
+
+// Currency formatting helpers
+.currency {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.5px;
+}
