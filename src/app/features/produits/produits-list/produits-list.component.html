@@ -1,0 +1,143 @@
+<!-- src/app/features/produits/produits-list/produits-list.component.html -->
+<div class="produits-container">
+  <p-card>
+    <div class="header-section">
+      <h2>Gestion des Produits</h2>
+      <button 
+        pButton 
+        icon="pi pi-plus" 
+        label="Nouveau Produit" 
+        (click)="openNew()"
+        class="p-button-success"
+      ></button>
+    </div>
+
+    <div class="filters-section">
+      <div class="filter-group">
+        <label>Catégorie</label>
+        <p-dropdown 
+          [(ngModel)]="selectedCategorie"
+          [options]="categories"
+          optionLabel="nom"
+          optionValue="id"
+          placeholder="Toutes les catégories"
+          [showClear]="true"
+          (onChange)="applyFilters()"
+        ></p-dropdown>
+      </div>
+
+      <div class="filter-group">
+        <label>Recherche</label>
+        <input 
+          type="text" 
+          pInputText 
+          [(ngModel)]="searchTerm"
+          placeholder="Nom ou code produit..."
+          (keyup.enter)="applyFilters()"
+        >
+      </div>
+
+      <div class="filter-actions">
+        <button 
+          pButton 
+          icon="pi pi-search" 
+          label="Rechercher"
+          (click)="applyFilters()"
+        ></button>
+        <button 
+          pButton 
+          icon="pi pi-times" 
+          label="Effacer"
+          class="p-button-secondary"
+          (click)="clearFilters()"
+        ></button>
+      </div>
+    </div>
+
+    <p-table 
+      [value]="produits" 
+      [loading]="loading"
+      [paginator]="true"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords"
+      [lazy]="true"
+      (onLazyLoad)="onPageChange($event)"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} produits"
+      responsiveLayout="scroll"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Code</th>
+          <th>Nom</th>
+          <th>Catégorie</th>
+          <th>Prix Achat</th>
+          <th>Prix Vente</th>
+          <th>Marge</th>
+          <th>Stock</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-produit>
+        <tr>
+          <td><code>{{ produit.code }}</code></td>
+          <td><strong>{{ produit.nom }}</strong></td>
+          <td>{{ produit.categorie?.nom }}</td>
+          <td>{{ formatCurrency(produit.prix_achat) }}</td>
+          <td>{{ formatCurrency(produit.prix_vente) }}</td>
+          <td>
+            <span class="marge-badge">
+              {{ formatCurrency(produit.prix_vente - produit.prix_achat) }}
+            </span>
+          </td>
+          <td>
+            <p-badge 
+              [value]="produit.stock_total || 0" 
+              [severity]="produit.stock_total > produit.seuil_minimum ? 'success' : 'danger'"
+            ></p-badge>
+          </td>
+          <td>
+            <button 
+              pButton 
+              icon="pi pi-pencil" 
+              class="p-button-text p-button-primary"
+              (click)="editProduit(produit)"
+              pTooltip="Modifier"
+            ></button>
+            <button 
+              pButton 
+              icon="pi pi-trash" 
+              class="p-button-text p-button-danger"
+              (click)="deleteProduit(produit)"
+              pTooltip="Supprimer"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8" class="text-center">Aucun produit trouvé</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<p-dialog 
+  [(visible)]="displayDialog" 
+  [header]="isEditing ? 'Modifier Produit' : 'Nouveau Produit'"
+  [modal]="true" 
+  [style]="{width: '50vw'}"
+  (onHide)="onDialogHide()"
+>
+  <app-produit-form 
+    [produit]="selectedProduit"
+    [isEditing]="isEditing"
+    (formSubmitted)="displayDialog = false"
+  ></app-produit-form>
+</p-dialog>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

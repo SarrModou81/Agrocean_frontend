@@ -1,0 +1,208 @@
+<!-- src/app/features/ventes/vente-create/vente-create.component.html -->
+<div class="vente-create-container">
+  <p-card>
+    <div class="header-section">
+      <h2>Nouvelle Vente</h2>
+      <button 
+        pButton 
+        icon="pi pi-arrow-left" 
+        label="Retour"
+        class="p-button-secondary"
+        (click)="annuler()"
+      ></button>
+    </div>
+
+    <form [formGroup]="venteForm" (ngSubmit)="onSubmit()">
+      <!-- Informations générales -->
+      <div class="section">
+        <h3>Informations Générales</h3>
+        <div class="field-grid">
+          <div class="field">
+            <label for="client_id">Client *</label>
+            <p-dropdown 
+              id="client_id"
+              formControlName="client_id"
+              [options]="clients"
+              optionLabel="nom"
+              optionValue="id"
+              placeholder="Sélectionner un client"
+              [filter]="true"
+              filterBy="nom,telephone"
+              [class.ng-invalid]="venteForm.get('client_id')?.invalid && venteForm.get('client_id')?.touched"
+            >
+              <ng-template let-client pTemplate="item">
+                <div>
+                  <strong>{{ client.nom }}</strong>
+                  <br>
+                  <small>{{ client.telephone }}</small>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small class="p-error" *ngIf="venteForm.get('client_id')?.invalid && venteForm.get('client_id')?.touched">
+              Le client est requis
+            </small>
+          </div>
+
+          <div class="field">
+            <label for="date_vente">Date de Vente *</label>
+            <p-calendar 
+              id="date_vente"
+              formControlName="date_vente"
+              [showIcon]="true"
+              dateFormat="dd/mm/yy"
+              [class.ng-invalid]="venteForm.get('date_vente')?.invalid && venteForm.get('date_vente')?.touched"
+            ></p-calendar>
+          </div>
+
+          <div class="field">
+            <label for="remise">Remise (FCFA)</label>
+            <p-inputNumber 
+              id="remise"
+              formControlName="remise"
+              mode="decimal"
+              [minFractionDigits]="0"
+              [min]="0"
+            ></p-inputNumber>
+          </div>
+        </div>
+      </div>
+
+      <!-- Produits -->
+      <div class="section">
+        <div class="section-header">
+          <h3>Produits</h3>
+          <button 
+            pButton 
+            type="button"
+            icon="pi pi-plus" 
+            label="Ajouter une ligne"
+            class="p-button-sm"
+            (click)="ajouterLigne()"
+          ></button>
+        </div>
+
+        <div class="produits-table">
+          <div class="table-header">
+            <div class="col-produit">Produit</div>
+            <div class="col-quantite">Quantité</div>
+            <div class="col-prix">Prix Unitaire</div>
+            <div class="col-total">Sous-total</div>
+            <div class="col-action">Action</div>
+          </div>
+
+          <div class="table-body" formArrayName="produits">
+            <div 
+              class="table-row" 
+              *ngFor="let ligne of produitsArray.controls; let i = index"
+              [formGroupName]="i"
+            >
+              <div class="col-produit">
+                <p-dropdown 
+                  formControlName="produit_id"
+                  [options]="produits"
+                  optionLabel="nom"
+                  optionValue="id"
+                  placeholder="Sélectionner un produit"
+                  [filter]="true"
+                  filterBy="nom,code"
+                  [class.ng-invalid]="ligne.get('produit_id')?.invalid && ligne.get('produit_id')?.touched"
+                >
+                  <ng-template let-produit pTemplate="item">
+                    <div>
+                      <strong>{{ produit.nom }}</strong>
+                      <br>
+                      <small>{{ produit.code }} - {{ formatCurrency(produit.prix_vente) }}</small>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+              </div>
+
+              <div class="col-quantite">
+                <p-inputNumber 
+                  formControlName="quantite"
+                  [showButtons]="true"
+                  [min]="1"
+                  [class.ng-invalid]="ligne.get('quantite')?.invalid && ligne.get('quantite')?.touched"
+                ></p-inputNumber>
+              </div>
+
+              <div class="col-prix">
+                <p-inputNumber 
+                  formControlName="prix_unitaire"
+                  mode="decimal"
+                  [minFractionDigits]="0"
+                  [min]="0"
+                  [class.ng-invalid]="ligne.get('prix_unitaire')?.invalid && ligne.get('prix_unitaire')?.touched"
+                ></p-inputNumber>
+              </div>
+
+              <div class="col-total">
+                <strong>{{ formatCurrency(calculerSousTotal(i)) }}</strong>
+              </div>
+
+              <div class="col-action">
+                <button 
+                  pButton 
+                  type="button"
+                  icon="pi pi-trash" 
+                  class="p-button-danger p-button-text"
+                  (click)="supprimerLigne(i)"
+                  [disabled]="produitsArray.length === 1"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Totaux -->
+      <div class="totaux-section">
+        <div class="totaux-grid">
+          <div class="totaux-row">
+            <span class="label">Sous-total:</span>
+            <span class="value">{{ formatCurrency(sousTotal) }}</span>
+          </div>
+          <div class="totaux-row" *ngIf="remise > 0">
+            <span class="label">Remise:</span>
+            <span class="value negative">- {{ formatCurrency(remise) }}</span>
+          </div>
+          <div class="totaux-row">
+            <span class="label">Total HT:</span>
+            <span class="value">{{ formatCurrency(totalHT) }}</span>
+          </div>
+          <div class="totaux-row">
+            <span class="label">TVA (18%):</span>
+            <span class="value">{{ formatCurrency(tva) }}</span>
+          </div>
+          <div class="totaux-row total">
+            <span class="label">Total TTC:</span>
+            <span class="value">{{ formatCurrency(totalTTC) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button 
+          pButton 
+          type="button"
+          label="Annuler"
+          icon="pi pi-times"
+          class="p-button-secondary"
+          (click)="annuler()"
+        ></button>
+        <button 
+          pButton 
+          type="submit"
+          label="Créer la vente"
+          icon="pi pi-check"
+          [loading]="loading"
+          [disabled]="venteForm.invalid || loading"
+          class="p-button-success"
+        ></button>
+      </div>
+    </form>
+  </p-card>
+</div>
+
+<p-toast></p-toast>

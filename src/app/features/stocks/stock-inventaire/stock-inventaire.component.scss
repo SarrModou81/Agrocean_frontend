@@ -1,0 +1,61 @@
+// src/app/features/stocks/stock-inventaire/stock-inventaire.component.scss
+.inventaire-container {
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h2 {
+      margin: 0;
+      color: #495057;
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+  }
+
+  .loading-section {
+    margin: 2rem 0;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    .stat-card {
+      .stat-content {
+        text-align: center;
+
+        .stat-label {
+          color: #6c757d;
+          font-size: 0.875rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+          color: #495057;
+          font-size: 1.5rem;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+  .section {
+    margin-bottom: 2rem;
+
+    h3 {
+      color: #495057;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+  }
+}

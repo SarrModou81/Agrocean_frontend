@@ -1,0 +1,144 @@
+<!-- src/app/features/produits/produit-form/produit-form.component.html -->
+<form [formGroup]="produitForm" (ngSubmit)="onSubmit()">
+  <div class="p-fluid">
+    <div class="field-group">
+      <div class="field">
+        <label for="code">Code Produit *</label>
+        <input 
+          id="code" 
+          type="text" 
+          pInputText 
+          formControlName="code"
+          placeholder="Ex: PRD001"
+          [class.ng-invalid]="isFieldInvalid('code')"
+        >
+        <small class="p-error" *ngIf="isFieldInvalid('code')">
+          Le code est requis
+        </small>
+      </div>
+
+      <div class="field">
+        <label for="nom">Nom *</label>
+        <input 
+          id="nom" 
+          type="text" 
+          pInputText 
+          formControlName="nom"
+          placeholder="Nom du produit"
+          [class.ng-invalid]="isFieldInvalid('nom')"
+        >
+        <small class="p-error" *ngIf="isFieldInvalid('nom')">
+          Le nom est requis
+        </small>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea 
+        id="description" 
+        pInputTextarea 
+        formControlName="description"
+        rows="3"
+        placeholder="Description du produit"
+      ></textarea>
+    </div>
+
+    <div class="field">
+      <label for="categorie_id">Catégorie *</label>
+      <p-dropdown 
+        id="categorie_id"
+        formControlName="categorie_id"
+        [options]="categories"
+        optionLabel="nom"
+        optionValue="id"
+        placeholder="Sélectionner une catégorie"
+        [class.ng-invalid]="isFieldInvalid('categorie_id')"
+      ></p-dropdown>
+      <small class="p-error" *ngIf="isFieldInvalid('categorie_id')">
+        La catégorie est requise
+      </small>
+    </div>
+
+    <div class="field-group">
+      <div class="field">
+        <label for="prix_achat">Prix d'Achat (FCFA) *</label>
+        <p-inputNumber 
+          id="prix_achat"
+          formControlName="prix_achat"
+          mode="decimal"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="2"
+          [min]="0"
+          [class.ng-invalid]="isFieldInvalid('prix_achat')"
+        ></p-inputNumber>
+        <small class="p-error" *ngIf="isFieldInvalid('prix_achat')">
+          Le prix d'achat doit être >= 0
+        </small>
+      </div>
+
+      <div class="field">
+        <label for="prix_vente">Prix de Vente (FCFA) *</label>
+        <p-inputNumber 
+          id="prix_vente"
+          formControlName="prix_vente"
+          mode="decimal"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="2"
+          [min]="0"
+          [class.ng-invalid]="isFieldInvalid('prix_vente')"
+        ></p-inputNumber>
+        <small class="p-error" *ngIf="isFieldInvalid('prix_vente')">
+          Le prix de vente doit être >= 0
+        </small>
+      </div>
+    </div>
+
+    <div class="marge-info" *ngIf="marge !== 0">
+      <p-message 
+        severity="info" 
+        [text]="'Marge: ' + marge.toLocaleString('fr-FR') + ' FCFA (' + tauxMarge.toFixed(2) + '%)'"
+      ></p-message>
+    </div>
+
+    <div class="field-group">
+      <div class="field">
+        <label for="seuil_minimum">Seuil Minimum *</label>
+        <p-inputNumber 
+          id="seuil_minimum"
+          formControlName="seuil_minimum"
+          [showButtons]="true"
+          [min]="0"
+          [class.ng-invalid]="isFieldInvalid('seuil_minimum')"
+        ></p-inputNumber>
+        <small class="p-error" *ngIf="isFieldInvalid('seuil_minimum')">
+          Le seuil minimum doit être >= 0
+        </small>
+      </div>
+
+      <div class="field">
+        <label>Produit Périssable</label>
+        <div class="checkbox-wrapper">
+          <p-checkbox 
+            formControlName="peremption"
+            [binary]="true"
+            inputId="peremption"
+          ></p-checkbox>
+          <label for="peremption">Ce produit a une date de péremption</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button 
+        pButton 
+        type="submit" 
+        [label]="isEditing ? 'Modifier' : 'Créer'"
+        icon="pi pi-check"
+        [loading]="loading"
+        [disabled]="produitForm.invalid || loading"
+        class="p-button-primary"
+      ></button>
+    </div>
+  </div>
+</form>

@@ -20,6 +20,50 @@ const routes: Routes = [
         component: DashboardComponent
       },
       {
+        path: 'utilisateurs',
+        loadChildren: () => import('./features/utilisateurs/utilisateurs.module').then(m => m.UtilisateursModule),
+        data: { roles: ['Administrateur'] }
+      },
+      {
+        path: 'clients',
+        loadChildren: () => import('./features/clients/clients.module').then(m => m.ClientsModule),
+        data: { roles: ['Administrateur', 'Commercial'] }
+      },
+      {
+        path: 'produits',
+        loadChildren: () => import('./features/produits/produits.module').then(m => m.ProduitsModule)
+      },
+      {
+        path: 'stocks',
+        loadChildren: () => import('./features/stocks/stocks.module').then(m => m.StocksModule),
+        data: { roles: ['Administrateur', 'GestionnaireStock'] }
+      },
+      {
+        path: 'ventes',
+        loadChildren: () => import('./features/ventes/ventes.module').then(m => m.VentesModule),
+        data: { roles: ['Administrateur', 'Commercial'] }
+      },
+      {
+        path: 'commandes-achat',
+        loadChildren: () => import('./features/commandes-achat/commandes-achat.module').then(m => m.CommandesAchatModule),
+        data: { roles: ['Administrateur', 'AgentApprovisionnement'] }
+      },
+      {
+        path: 'fournisseurs',
+        loadChildren: () => import('./features/fournisseurs/fournisseurs.module').then(m => m.FournisseursModule),
+        data: { roles: ['Administrateur', 'AgentApprovisionnement'] }
+      },
+      {
+        path: 'finances',
+        loadChildren: () => import('./features/finances/finances.module').then(m => m.FinancesModule),
+        data: { roles: ['Administrateur', 'Comptable'] }
+      },
+      {
+        path: 'rapports',
+        loadChildren: () => import('./features/rapports/rapports.module').then(m => m.RapportsModule),
+        data: { roles: ['Administrateur'] }
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'
