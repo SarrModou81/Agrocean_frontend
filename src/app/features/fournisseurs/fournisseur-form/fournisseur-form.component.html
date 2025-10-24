@@ -1,1 +1,83 @@
-<p>fournisseur-form works!</p>
+<form [formGroup]="fournisseurForm" (ngSubmit)="onSubmit()">
+  <div class="p-fluid">
+    <div class="field">
+      <label for="nom">Nom *</label>
+      <input 
+        id="nom" 
+        type="text" 
+        pInputText 
+        formControlName="nom"
+        [class.ng-invalid]="isFieldInvalid('nom')"
+      >
+      <small class="p-error" *ngIf="isFieldInvalid('nom')">
+        Le nom est requis
+      </small>
+    </div>
+
+    <div class="field-group">
+      <div class="field">
+        <label for="contact">Contact *</label>
+        <input 
+          id="contact" 
+          type="text" 
+          pInputText 
+          formControlName="contact"
+          [class.ng-invalid]="isFieldInvalid('contact')"
+        >
+        <small class="p-error" *ngIf="isFieldInvalid('contact')">
+          Le contact est requis
+        </small>
+      </div>
+
+      <div class="field">
+        <label for="telephone">Téléphone *</label>
+        <input 
+          id="telephone" 
+          type="text" 
+          pInputText 
+          formControlName="telephone"
+          [class.ng-invalid]="isFieldInvalid('telephone')"
+        >
+        <small class="p-error" *ngIf="isFieldInvalid('telephone')">
+          Le téléphone est requis
+        </small>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="adresse">Adresse *</label>
+      <input 
+        id="adresse" 
+        type="text" 
+        pInputText 
+        formControlName="adresse"
+        [class.ng-invalid]="isFieldInvalid('adresse')"
+      >
+      <small class="p-error" *ngIf="isFieldInvalid('adresse')">
+        L'adresse est requise
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="conditions">Conditions de paiement</label>
+      <textarea 
+        id="conditions" 
+        pInputTextarea 
+        formControlName="conditions"
+        rows="3"
+      ></textarea>
+    </div>
+
+    <div class="form-actions">
+      <button 
+        pButton 
+        type="submit" 
+        [label]="isEditing ? 'Modifier' : 'Créer'"
+        icon="pi pi-check"
+        [loading]="loading"
+        [disabled]="fournisseurForm.invalid || loading"
+        class="p-button-primary"
+      ></button>
+    </div>
+  </div>
+</form>

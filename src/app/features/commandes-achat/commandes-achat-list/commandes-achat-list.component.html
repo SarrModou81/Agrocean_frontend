@@ -1,0 +1,120 @@
+<div class="commandes-container">
+  <p-card>
+    <div class="header-section">
+      <h2>Gestion des Commandes d'Achat</h2>
+      <button 
+        pButton 
+        icon="pi pi-plus" 
+        label="Nouvelle Commande" 
+        (click)="nouvelleCommande()"
+        class="p-button-success"
+      ></button>
+    </div>
+
+    <div class="filters-section">
+      <div class="filter-group">
+        <label>Fournisseur</label>
+        <p-dropdown 
+          [(ngModel)]="selectedFournisseur"
+          [options]="fournisseurs"
+          optionLabel="nom"
+          optionValue="id"
+          placeholder="Tous les fournisseurs"
+          [showClear]="true"
+          [filter]="true"
+          filterBy="nom"
+        ></p-dropdown>
+      </div>
+
+      <div class="filter-group">
+        <label>Statut</label>
+        <p-dropdown 
+          [(ngModel)]="selectedStatut"
+          [options]="statuts"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Tous les statuts"
+          [showClear]="true"
+        ></p-dropdown>
+      </div>
+
+      <div class="filter-actions">
+        <button 
+          pButton 
+          icon="pi pi-search" 
+          label="Rechercher"
+          (click)="applyFilters()"
+        ></button>
+        <button 
+          pButton 
+          icon="pi pi-times" 
+          label="Effacer"
+          class="p-button-secondary"
+          (click)="clearFilters()"
+        ></button>
+      </div>
+    </div>
+
+    <p-table 
+      [value]="commandes" 
+      [loading]="loading"
+      [paginator]="true"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords"
+      [lazy]="true"
+      (onLazyLoad)="onPageChange($event)"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} commandes"
+      responsiveLayout="scroll"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Numéro</th>
+          <th>Date</th>
+          <th>Fournisseur</th>
+          <th>Montant Total</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-commande>
+        <tr>
+          <td><code>{{ commande.numero }}</code></td>
+          <td>{{ commande.date_commande | date:'dd/MM/yyyy' }}</td>
+          <td><strong>{{ commande.fournisseur?.nom }}</strong></td>
+          <td><strong>{{ formatCurrency(commande.montant_total) }}</strong></td>
+          <td>
+            <p-tag [value]="commande.statut" [severity]="getStatutSeverity(commande.statut)"></p-tag>
+          </td>
+          <td>
+            <button 
+              pButton 
+              icon="pi pi-eye" 
+              class="p-button-text p-button-info"
+              (click)="voirDetails(commande)"
+              pTooltip="Voir détails"
+            ></button>
+            <button 
+              pButton 
+              icon="pi pi-check" 
+              class="p-button-text p-button-success"
+              (click)="validerCommande(commande)"
+              pTooltip="Valider"
+              *ngIf="commande.statut === 'Brouillon'"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center">Aucune commande trouvée</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

@@ -28,6 +28,9 @@ import { ChartModule } from 'primeng/chart';
 import { BadgeModule } from 'primeng/badge';
 import { TagModule } from 'primeng/tag';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { DividerModule } from 'primeng/divider';
+import { AvatarModule } from 'primeng/avatar';
+import { TooltipModule } from 'primeng/tooltip';
 
 // Components
 import { LoginComponent } from './features/auth/login/login.component';
@@ -65,7 +68,10 @@ import { LayoutComponent } from './shared/layout/layout.component';
     ChartModule,
     BadgeModule,
     TagModule,
-    ProgressBarModule
+    ProgressBarModule,
+    DividerModule,
+    AvatarModule,
+    TooltipModule
   ],
   providers: [
     MessageService,

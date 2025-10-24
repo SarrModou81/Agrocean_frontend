@@ -1,0 +1,72 @@
+.commandes-container {
+  padding: 0;
+
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h2 {
+      margin: 0;
+      color: #495057;
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+  }
+
+  .filters-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) auto;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+
+    .filter-group {
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #495057;
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+    }
+
+    .filter-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-self: flex-end;
+    }
+  }
+
+  ::ng-deep {
+    .p-datatable {
+      .p-datatable-tbody > tr > td {
+        padding: 1rem;
+
+        code {
+          background: #e9ecef;
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+          font-size: 0.875rem;
+        }
+      }
+
+      .p-button-text {
+        padding: 0.5rem;
+        margin: 0 0.25rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .commandes-container {
+    .filters-section {
+      grid-template-columns: 1fr;
+    }
+  }
+}

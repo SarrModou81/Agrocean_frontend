@@ -1,1 +1,93 @@
-<p>fournisseurs-list works!</p>
+<div class="fournisseurs-container">
+  <p-card>
+    <div class="header-section">
+      <h2>Gestion des Fournisseurs</h2>
+      <button 
+        pButton 
+        icon="pi pi-plus" 
+        label="Nouveau Fournisseur" 
+        (click)="openNew()"
+        class="p-button-success"
+      ></button>
+    </div>
+
+    <p-table 
+      [value]="fournisseurs" 
+      [loading]="loading"
+      [paginator]="true"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords"
+      [lazy]="true"
+      (onLazyLoad)="onPageChange($event)"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} fournisseurs"
+      responsiveLayout="scroll"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nom</th>
+          <th>Contact</th>
+          <th>Téléphone</th>
+          <th>Adresse</th>
+          <th>Évaluation</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-fournisseur>
+        <tr>
+          <td><strong>{{ fournisseur.nom }}</strong></td>
+          <td>{{ fournisseur.contact }}</td>
+          <td>{{ fournisseur.telephone }}</td>
+          <td>{{ fournisseur.adresse }}</td>
+          <td>
+            <div class="rating">
+              <i class="pi pi-star-fill" *ngFor="let star of [1,2,3,4,5]" 
+                 [class.active]="star <= fournisseur.evaluation"></i>
+              <span class="rating-value">{{ fournisseur.evaluation }}/5</span>
+            </div>
+          </td>
+          <td>
+            <button 
+              pButton 
+              icon="pi pi-pencil" 
+              class="p-button-text p-button-primary"
+              (click)="editFournisseur(fournisseur)"
+              pTooltip="Modifier"
+            ></button>
+            <button 
+              pButton 
+              icon="pi pi-trash" 
+              class="p-button-text p-button-danger"
+              (click)="deleteFournisseur(fournisseur)"
+              pTooltip="Supprimer"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center">Aucun fournisseur trouvé</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<p-dialog 
+  [(visible)]="displayDialog" 
+  [header]="isEditing ? 'Modifier Fournisseur' : 'Nouveau Fournisseur'"
+  [modal]="true" 
+  [style]="{width: '50vw'}"
+  (onHide)="onDialogHide()"
+>
+  <app-fournisseur-form 
+    [fournisseur]="selectedFournisseur"
+    [isEditing]="isEditing"
+    (formSubmitted)="displayDialog = false"
+  ></app-fournisseur-form>
+</p-dialog>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
