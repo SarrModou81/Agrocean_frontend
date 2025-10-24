@@ -1,0 +1,97 @@
+<div class="clients-container">
+  <p-card>
+    <div class="header-section">
+      <h2>Gestion des Clients</h2>
+      <button 
+        pButton 
+        icon="pi pi-plus" 
+        label="Nouveau Client" 
+        (click)="openNew()"
+        class="p-button-success"
+      ></button>
+    </div>
+
+    <p-table 
+      [value]="clients" 
+      [loading]="loading"
+      [paginator]="true"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords"
+      [lazy]="true"
+      (onLazyLoad)="onPageChange($event)"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} clients"
+      responsiveLayout="scroll"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nom</th>
+          <th>Type</th>
+          <th>Téléphone</th>
+          <th>Email</th>
+          <th>Crédit Max</th>
+          <th>Solde</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-client>
+        <tr>
+          <td>
+            <strong>{{ client.nom }}</strong>
+          </td>
+          <td>
+            <p-tag [value]="client.type" [severity]="getTypeSeverity(client.type)"></p-tag>
+          </td>
+          <td>{{ client.telephone }}</td>
+          <td>{{ client.email || 'N/A' }}</td>
+          <td>{{ formatCurrency(client.credit_max) }}</td>
+          <td>
+            <span [class.negative]="client.solde < 0">
+              {{ formatCurrency(client.solde) }}
+            </span>
+          </td>
+          <td>
+            <button 
+              pButton 
+              icon="pi pi-pencil" 
+              class="p-button-text p-button-primary"
+              (click)="editClient(client)"
+              pTooltip="Modifier"
+            ></button>
+            <button 
+              pButton 
+              icon="pi pi-trash" 
+              class="p-button-text p-button-danger"
+              (click)="deleteClient(client)"
+              pTooltip="Supprimer"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center">Aucun client trouvé</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<p-dialog 
+  [(visible)]="displayDialog" 
+  [header]="isEditing ? 'Modifier Client' : 'Nouveau Client'"
+  [modal]="true" 
+  [style]="{width: '50vw'}"
+  (onHide)="onDialogHide()"
+>
+  <app-client-form 
+    [client]="selectedClient"
+    [isEditing]="isEditing"
+    (formSubmitted)="displayDialog = false"
+  ></app-client-form>
+</p-dialog>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

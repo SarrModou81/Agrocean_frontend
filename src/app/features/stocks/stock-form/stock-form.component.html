@@ -1,0 +1,112 @@
+<form [formGroup]="stockForm" (ngSubmit)="onSubmit()">
+  <div class="p-fluid">
+    <div class="field">
+      <label for="produit_id">Produit *</label>
+      <p-dropdown 
+        id="produit_id"
+        formControlName="produit_id"
+        [options]="produits"
+        optionLabel="nom"
+        optionValue="id"
+        placeholder="Sélectionner un produit"
+        [filter]="true"
+        filterBy="nom,code"
+        [class.ng-invalid]="isFieldInvalid('produit_id')"
+      >
+        <ng-template let-produit pTemplate="item">
+          <div>
+            <strong>{{ produit.nom }}</strong>
+            <br>
+            <small>{{ produit.code }}</small>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      <small class="p-error" *ngIf="isFieldInvalid('produit_id')">
+        Le produit est requis
+      </small>
+    </div>
+
+    <div class="field-group">
+      <div class="field">
+        <label for="entrepot_id">Entrepôt *</label>
+        <p-dropdown 
+          id="entrepot_id"
+          formControlName="entrepot_id"
+          [options]="entrepots"
+          optionLabel="nom"
+          optionValue="id"
+          placeholder="Sélectionner un entrepôt"
+          [class.ng-invalid]="isFieldInvalid('entrepot_id')"
+        ></p-dropdown>
+        <small class="p-error" *ngIf="isFieldInvalid('entrepot_id')">
+          L'entrepôt est requis
+        </small>
+      </div>
+
+      <div class="field">
+        <label for="quantite">Quantité *</label>
+        <p-inputNumber 
+          id="quantite"
+          formControlName="quantite"
+          [min]="1"
+          [showButtons]="true"
+          [class.ng-invalid]="isFieldInvalid('quantite')"
+        ></p-inputNumber>
+        <small class="p-error" *ngIf="isFieldInvalid('quantite')">
+          La quantité doit être >= 1
+        </small>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="emplacement">Emplacement *</label>
+      <input 
+        id="emplacement" 
+        type="text" 
+        pInputText 
+        formControlName="emplacement"
+        placeholder="Ex: Zone-A, Rayon-B1"
+        [class.ng-invalid]="isFieldInvalid('emplacement')"
+      >
+      <small class="p-error" *ngIf="isFieldInvalid('emplacement')">
+        L'emplacement est requis
+      </small>
+    </div>
+
+    <div class="field-group">
+      <div class="field">
+        <label for="numero_lot">Numéro de Lot</label>
+        <input 
+          id="numero_lot" 
+          type="text" 
+          pInputText 
+          formControlName="numero_lot"
+          placeholder="Généré automatiquement si vide"
+        >
+      </div>
+
+      <div class="field">
+        <label for="date_peremption">Date de Péremption</label>
+        <p-calendar 
+          id="date_peremption"
+          formControlName="date_peremption"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          placeholder="jj/mm/aaaa"
+        ></p-calendar>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button 
+        pButton 
+        type="submit" 
+        label="Enregistrer"
+        icon="pi pi-check"
+        [loading]="loading"
+        [disabled]="stockForm.invalid || loading"
+        class="p-button-primary"
+      ></button>
+    </div>
+  </div>
+</form>

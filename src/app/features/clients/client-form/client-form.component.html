@@ -1,0 +1,115 @@
+<form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
+  <div class="p-fluid">
+    <div class="field">
+      <label for="nom">Nom *</label>
+      <input 
+        id="nom" 
+        type="text" 
+        pInputText 
+        formControlName="nom"
+        [class.ng-invalid]="isFieldInvalid('nom')"
+      >
+      <small class="p-error" *ngIf="isFieldInvalid('nom')">
+        Le nom est requis
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="type">Type *</label>
+      <p-dropdown 
+        id="type"
+        formControlName="type"
+        [options]="types"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Sélectionner un type"
+        [class.ng-invalid]="isFieldInvalid('type')"
+      ></p-dropdown>
+      <small class="p-error" *ngIf="isFieldInvalid('type')">
+        Le type est requis
+      </small>
+    </div>
+
+    <div class="field-group">
+      <div class="field">
+        <label for="telephone">Téléphone *</label>
+        <input 
+          id="telephone" 
+          type="text" 
+          pInputText 
+          formControlName="telephone"
+          [class.ng-invalid]="isFieldInvalid('telephone')"
+        >
+        <small class="p-error" *ngIf="isFieldInvalid('telephone')">
+          Le téléphone est requis
+        </small>
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input 
+          id="email" 
+          type="email" 
+          pInputText 
+          formControlName="email"
+          [class.ng-invalid]="isFieldInvalid('email')"
+        >
+        <small class="p-error" *ngIf="isFieldInvalid('email')">
+          Email invalide
+        </small>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="adresse">Adresse *</label>
+      <input 
+        id="adresse" 
+        type="text" 
+        pInputText 
+        formControlName="adresse"
+        [class.ng-invalid]="isFieldInvalid('adresse')"
+      >
+      <small class="p-error" *ngIf="isFieldInvalid('adresse')">
+        L'adresse est requise
+      </small>
+    </div>
+
+    <div class="field-group">
+      <div class="field">
+        <label for="credit_max">Crédit Maximum *</label>
+        <input 
+          id="credit_max" 
+          type="number" 
+          pInputText 
+          formControlName="credit_max"
+          [class.ng-invalid]="isFieldInvalid('credit_max')"
+        >
+        <small class="p-error" *ngIf="isFieldInvalid('credit_max')">
+          Le crédit maximum doit être >= 0
+        </small>
+      </div>
+
+      <div class="field" *ngIf="isEditing">
+        <label for="solde">Solde Actuel</label>
+        <input 
+          id="solde" 
+          type="number" 
+          pInputText 
+          formControlName="solde"
+        >
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button 
+        pButton 
+        type="submit" 
+        [label]="isEditing ? 'Modifier' : 'Créer'"
+        icon="pi pi-check"
+        [loading]="loading"
+        [disabled]="clientForm.invalid || loading"
+        class="p-button-primary"
+      ></button>
+    </div>
+  </div>
+</form>

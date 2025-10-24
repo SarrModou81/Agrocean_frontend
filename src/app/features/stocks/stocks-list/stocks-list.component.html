@@ -1,0 +1,188 @@
+<div class="stocks-container">
+  <p-card>
+    <div class="header-section">
+      <h2>Gestion des Stocks</h2>
+      <div class="actions">
+        <button 
+          pButton 
+          icon="pi pi-chart-bar" 
+          label="Inventaire" 
+          routerLink="/stocks/inventaire"
+          class="p-button-secondary"
+        ></button>
+        <button 
+          pButton 
+          icon="pi pi-plus" 
+          label="Entrée de Stock" 
+          (click)="openNew()"
+          class="p-button-success"
+        ></button>
+      </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="filters-section">
+      <div class="filter-group">
+        <label>Entrepôt</label>
+        <p-dropdown 
+          [(ngModel)]="selectedEntrepot"
+          [options]="entrepots"
+          optionLabel="nom"
+          optionValue="id"
+          placeholder="Tous les entrepôts"
+          [showClear]="true"
+          (onChange)="applyFilters()"
+        ></p-dropdown>
+      </div>
+
+      <div class="filter-group">
+        <label>Statut</label>
+        <p-dropdown 
+          [(ngModel)]="selectedStatut"
+          [options]="statuts"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Tous les statuts"
+          (onChange)="applyFilters()"
+        ></p-dropdown>
+      </div>
+
+      <div class="filter-group">
+        <label>Recherche</label>
+        <input 
+          type="text" 
+          pInputText 
+          [(ngModel)]="searchTerm"
+          placeholder="Rechercher un produit..."
+          (keyup.enter)="applyFilters()"
+        >
+      </div>
+
+      <div class="filter-actions">
+        <button 
+          pButton 
+          icon="pi pi-search" 
+          label="Rechercher"
+          (click)="applyFilters()"
+        ></button>
+        <button 
+          pButton 
+          icon="pi pi-times" 
+          label="Effacer"
+          class="p-button-secondary"
+          (click)="clearFilters()"
+        ></button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <p-table 
+      [value]="stocks" 
+      [loading]="loading"
+      [paginator]="true"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords"
+      [lazy]="true"
+      (onLazyLoad)="onPageChange($event)"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} stocks"
+      responsiveLayout="scroll"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Produit</th>
+          <th>Entrepôt</th>
+          <th>Lot</th>
+          <th>Quantité</th>
+          <th>Emplacement</th>
+          <th>Valeur</th>
+          <th>Péremption</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-stock>
+        <tr>
+          <td>
+            <strong>{{ stock.produit?.nom }}</strong>
+            <br>
+            <small>{{ stock.produit?.code }}</small>
+          </td>
+          <td>{{ stock.entrepot?.nom }}</td>
+          <td>
+            <code>{{ stock.numero_lot }}</code>
+          </td>
+          <td>
+            <p-badge [value]="stock.quantite" severity="info"></p-badge>
+          </td>
+          <td>{{ stock.emplacement }}</td>
+          <td>{{ formatCurrency(stock.valeur || 0) }}</td>
+          <td>
+            <p-tag 
+              *ngIf="stock.date_peremption"
+              [value]="getPeremptionLabel(stock)" 
+              [severity]="getPeremptionSeverity(stock.etat_peremption)"
+            ></p-tag>
+            <span *ngIf="!stock.date_peremption">N/A</span>
+          </td>
+          <td>
+            <p-tag [value]="stock.statut" [severity]="getStatutSeverity(stock.statut)"></p-tag>
+          </td>
+          <td>
+            <button 
+              pButton 
+              icon="pi pi-arrow-up-down" 
+              class="p-button-text p-button-info"
+              (click)="ajusterStock(stock)"
+              pTooltip="Ajuster"
+            ></button>
+            <button 
+              pButton 
+              icon="pi pi-trash" 
+              class="p-button-text p-button-danger"
+              (click)="deleteStock(stock)"
+              pTooltip="Supprimer"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="9" class="text-center">Aucun stock trouvé</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<!-- Dialog Nouvelle Entrée -->
+<p-dialog 
+  [(visible)]="displayDialog" 
+  header="Nouvelle Entrée de Stock"
+  [modal]="true" 
+  [style]="{width: '50vw'}"
+  (onHide)="onDialogHide()"
+>
+  <app-stock-form 
+    (formSubmitted)="displayDialog = false"
+  ></app-stock-form>
+</p-dialog>
+
+<!-- Dialog Ajustement -->
+<p-dialog 
+  [(visible)]="displayAjustement" 
+  header="Ajuster le Stock"
+  [modal]="true" 
+  [style]="{width: '40vw'}"
+  (onHide)="onDialogHide()"
+>
+  <app-stock-ajustement 
+    [stock]="selectedStock"
+    (formSubmitted)="displayAjustement = false"
+  ></app-stock-ajustement>
+</p-dialog>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

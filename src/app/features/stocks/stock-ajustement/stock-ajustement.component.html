@@ -1,0 +1,65 @@
+<div *ngIf="stock" class="ajustement-container">
+  <div class="stock-info">
+    <p><strong>Produit:</strong> {{ stock.produit?.nom }}</p>
+    <p><strong>Lot:</strong> {{ stock.numero_lot }}</p>
+    <p><strong>Quantité actuelle:</strong> <span class="badge">{{ stock.quantite }}</span></p>
+  </div>
+
+  <form [formGroup]="ajustementForm" (ngSubmit)="onSubmit()">
+    <div class="p-fluid">
+      <div class="field">
+        <label for="ajustement">Ajustement *</label>
+        <p-inputNumber 
+          id="ajustement"
+          formControlName="ajustement"
+          [showButtons]="true"
+          buttonLayout="horizontal"
+          spinnerMode="horizontal"
+          decrementButtonClass="p-button-danger"
+          incrementButtonClass="p-button-success"
+          [class.ng-invalid]="isFieldInvalid('ajustement')"
+        ></p-inputNumber>
+        <small class="help-text">
+          Entrez un nombre positif pour augmenter ou négatif pour diminuer
+        </small>
+        <small class="p-error" *ngIf="isFieldInvalid('ajustement')">
+          L'ajustement est requis
+        </small>
+      </div>
+
+      <div class="field">
+        <label for="motif">Motif *</label>
+        <textarea 
+          id="motif" 
+          pInputTextarea 
+          formControlName="motif"
+          rows="3"
+          placeholder="Ex: Inventaire, Casse, Correction d'erreur..."
+          [class.ng-invalid]="isFieldInvalid('motif')"
+        ></textarea>
+        <small class="p-error" *ngIf="isFieldInvalid('motif')">
+          Le motif est requis
+        </small>
+      </div>
+
+      <div class="result-section" *ngIf="ajustementForm.get('ajustement')?.value !== 0">
+        <p-message 
+          severity="info" 
+          text="Nouvelle quantité: {{ nouvelleQuantite }}"
+        ></p-message>
+      </div>
+
+      <div class="form-actions">
+        <button 
+          pButton 
+          type="submit" 
+          label="Ajuster"
+          icon="pi pi-check"
+          [loading]="loading"
+          [disabled]="ajustementForm.invalid || loading"
+          class="p-button-primary"
+        ></button>
+      </div>
+    </div>
+  </form>
+</div>
