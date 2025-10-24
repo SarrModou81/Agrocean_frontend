@@ -1,0 +1,221 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div>
+      <h1>Tableau de Bord</h1>
+      <p class="welcome-text" *ngIf="currentUser">
+        Bienvenue, <strong>{{ currentUser.prenom }} {{ currentUser.nom }}</strong> - 
+        <span class="role-badge">{{ getRoleDisplay() }}</span>
+      </p>
+    </div>
+    <button 
+      pButton 
+      icon="pi pi-refresh" 
+      label="Actualiser" 
+      class="p-button-outlined"
+      (click)="loadDashboard()"
+      [loading]="loading"
+    ></button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="loading">
+    <p-progressBar mode="indeterminate"></p-progressBar>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid" *ngIf="!loading && stats">
+    <p-card class="stat-card stat-card-primary">
+      <div class="stat-content">
+        <div class="stat-icon">
+          <i class="pi pi-shopping-cart"></i>
+        </div>
+        <div class="stat-details">
+          <div class="stat-value">{{ formatCurrency(stats.ventes_jour) }}</div>
+          <div class="stat-label">Ventes du jour</div>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="stat-card stat-card-success">
+      <div class="stat-content">
+        <div class="stat-icon">
+          <i class="pi pi-chart-line"></i>
+        </div>
+        <div class="stat-details">
+          <div class="stat-value">{{ formatCurrency(stats.ventes_mois) }}</div>
+          <div class="stat-label">Ventes du mois</div>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="stat-card stat-card-warning">
+      <div class="stat-content">
+        <div class="stat-icon">
+          <i class="pi pi-clock"></i>
+        </div>
+        <div class="stat-details">
+          <div class="stat-value">{{ stats.commandes_attente }}</div>
+          <div class="stat-label">Commandes en attente</div>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="stat-card stat-card-danger">
+      <div class="stat-content">
+        <div class="stat-icon">
+          <i class="pi pi-bell"></i>
+        </div>
+        <div class="stat-details">
+          <div class="stat-value">{{ stats.alertes_actives }}</div>
+          <div class="stat-label">Alertes actives</div>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="stat-card stat-card-info">
+      <div class="stat-content">
+        <div class="stat-icon">
+          <i class="pi pi-exclamation-triangle"></i>
+        </div>
+        <div class="stat-details">
+          <div class="stat-value">{{ stats.produits_rupture }}</div>
+          <div class="stat-label">Produits en rupture</div>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="stat-card stat-card-secondary">
+      <div class="stat-content">
+        <div class="stat-icon">
+          <i class="pi pi-box"></i>
+        </div>
+        <div class="stat-details">
+          <div class="stat-value">{{ formatCurrency(stats.valeur_stock) }}</div>
+          <div class="stat-label">Valeur du stock</div>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-grid" *ngIf="!loading && stats">
+    <!-- Évolution des ventes -->
+    <p-card header="Évolution des Ventes (7 derniers jours)" class="chart-card">
+      <div class="chart-container">
+        <p-chart 
+          type="line" 
+          [data]="ventesChartData" 
+          [options]="ventesChartOptions"
+          height="300px"
+        ></p-chart>
+      </div>
+    </p-card>
+
+    <!-- Top produits -->
+    <p-card header="Top 5 Produits Vendus" class="chart-card">
+      <div class="chart-container">
+        <p-chart 
+          type="bar" 
+          [data]="topProduitsChartData" 
+          [options]="topProduitsChartOptions"
+          height="300px"
+        ></p-chart>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Top Products Table -->
+  <div class="table-section" *ngIf="!loading && stats && stats.top_produits.length > 0">
+    <p-card header="Produits les Plus Vendus">
+      <p-table [value]="stats.top_produits" [paginator]="false">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Produit</th>
+            <th>Quantité Vendue</th>
+            <th>Montant Total</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-produit>
+          <tr>
+            <td>
+              <span class="product-name">{{ produit.produit?.nom || 'N/A' }}</span>
+            </td>
+            <td>
+              <p-tag [value]="produit.total_quantite" severity="info"></p-tag>
+            </td>
+            <td>
+              <strong>{{ formatCurrency(produit.total_montant) }}</strong>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="3" class="text-center">Aucun produit vendu</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions" *ngIf="!loading">
+    <p-card header="Actions Rapides">
+      <div class="actions-grid">
+        <button 
+          pButton 
+          icon="pi pi-plus" 
+          label="Nouvelle Vente" 
+          class="p-button-success"
+          routerLink="/ventes/create"
+          *ngIf="authService.hasRole(['Commercial', 'Administrateur'])"
+        ></button>
+
+        <button 
+          pButton 
+          icon="pi pi-box" 
+          label="Gérer Stocks" 
+          class="p-button-primary"
+          routerLink="/stocks"
+          *ngIf="authService.hasRole(['GestionnaireStock', 'Administrateur'])"
+        ></button>
+
+        <button 
+          pButton 
+          icon="pi pi-shopping-bag" 
+          label="Nouvelle Commande" 
+          class="p-button-info"
+          routerLink="/commandes-achat/create"
+          *ngIf="authService.hasRole(['AgentApprovisionnement', 'Administrateur'])"
+        ></button>
+
+        <button 
+          pButton 
+          icon="pi pi-dollar" 
+          label="Enregistrer Paiement" 
+          class="p-button-warning"
+          routerLink="/finances/paiements"
+          *ngIf="authService.hasRole(['Comptable', 'Administrateur'])"
+        ></button>
+
+        <button 
+          pButton 
+          icon="pi pi-users" 
+          label="Gérer Clients" 
+          class="p-button-secondary"
+          routerLink="/clients"
+          *ngIf="authService.hasRole(['Commercial', 'Administrateur'])"
+        ></button>
+
+        <button 
+          pButton 
+          icon="pi pi-chart-bar" 
+          label="Voir Rapports" 
+          class="p-button-help"
+          routerLink="/rapports"
+          *ngIf="authService.hasRole(['Administrateur'])"
+        ></button>
+      </div>
+    </p-card>
+  </div>
+</div>

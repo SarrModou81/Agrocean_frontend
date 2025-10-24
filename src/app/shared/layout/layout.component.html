@@ -1,0 +1,58 @@
+<div class="layout-wrapper" [class.sidebar-collapsed]="!sidebarVisible">
+  <!-- Header -->
+  <header class="layout-header">
+    <div class="header-left">
+      <button 
+        pButton 
+        icon="pi pi-bars" 
+        class="p-button-text p-button-plain"
+        (click)="toggleSidebar()"
+      ></button>
+      <h2 class="app-title">AGROCEAN</h2>
+    </div>
+
+    <div class="header-right">
+      <button 
+        pButton 
+        icon="pi pi-bell" 
+        class="p-button-text p-button-plain"
+        pBadge
+        value="3"
+        severity="danger"
+      ></button>
+
+      <div class="user-menu" *ngIf="currentUser">
+        <p-avatar 
+          [label]="currentUser.prenom.charAt(0) + currentUser.nom.charAt(0)" 
+          styleClass="p-mr-2"
+          size="large"
+        ></p-avatar>
+        <div class="user-info">
+          <span class="user-name">{{ currentUser.prenom }} {{ currentUser.nom }}</span>
+          <span class="user-role">{{ currentUser.role }}</span>
+        </div>
+        <button 
+          pButton 
+          icon="pi pi-sign-out" 
+          class="p-button-text p-button-plain p-button-danger"
+          (click)="logout()"
+          pTooltip="Déconnexion"
+          tooltipPosition="bottom"
+        ></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="layout-sidebar" *ngIf="sidebarVisible">
+    <p-panelMenu [model]="menuItems" [multiple]="false"></p-panelMenu>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="layout-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

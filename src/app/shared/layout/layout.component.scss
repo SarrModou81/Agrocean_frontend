@@ -1,0 +1,174 @@
+.layout-wrapper {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "sidebar main";
+  grid-template-columns: 280px 1fr;
+  grid-template-rows: 60px 1fr;
+  min-height: 100vh;
+  transition: grid-template-columns 0.3s ease;
+
+  &.sidebar-collapsed {
+    grid-template-columns: 0 1fr;
+    
+    .layout-sidebar {
+      transform: translateX(-100%);
+    }
+  }
+}
+
+.layout-header {
+  grid-area: header;
+  background: #ffffff;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .app-title {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #495057;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      .user-name {
+        font-weight: 600;
+        color: #495057;
+      }
+
+      .user-role {
+        font-size: 0.875rem;
+        color: #6c757d;
+      }
+    }
+  }
+}
+
+.layout-sidebar {
+  grid-area: sidebar;
+  background: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+
+  ::ng-deep {
+    .p-panelmenu {
+      border: none;
+
+      .p-panelmenu-header {
+        background: transparent;
+        border: none;
+
+        > a {
+          padding: 1rem 1.25rem;
+          border: none;
+          background: transparent;
+          color: #495057;
+          transition: all 0.2s;
+
+          &:hover {
+            background: #e9ecef;
+          }
+
+          &.router-link-active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+          }
+        }
+      }
+
+      .p-panelmenu-content {
+        border: none;
+        background: transparent;
+
+        .p-menuitem-link {
+          padding: 0.75rem 1.25rem 0.75rem 2.5rem;
+          color: #6c757d;
+          transition: all 0.2s;
+
+          &:hover {
+            background: #e9ecef;
+            color: #495057;
+          }
+
+          &.router-link-active {
+            background: #e7e9fc;
+            color: #667eea;
+            border-left: 3px solid #667eea;
+          }
+        }
+      }
+    }
+  }
+}
+
+.layout-main {
+  grid-area: main;
+  background: #f8f9fa;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .layout-wrapper {
+    grid-template-columns: 0 1fr;
+
+    .layout-sidebar {
+      position: fixed;
+      left: 0;
+      top: 60px;
+      bottom: 0;
+      width: 280px;
+      z-index: 999;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+      transform: translateX(-100%);
+
+      &.visible {
+        transform: translateX(0);
+      }
+    }
+  }
+
+  .header-right {
+    .user-info {
+      display: none;
+    }
+  }
+}
+
+::ng-deep {
+  .p-avatar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff;
+  }
+}

@@ -1,0 +1,91 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 450px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  .logo {
+    max-width: 120px;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  p {
+    color: #6c757d;
+    margin: 0;
+  }
+}
+
+.field {
+  margin-bottom: 1.5rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #495057;
+    font-weight: 600;
+  }
+
+  input {
+    width: 100%;
+  }
+}
+
+button[type="submit"] {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.test-accounts {
+  margin-top: 2rem;
+
+  .text-center {
+    text-align: center;
+    color: #6c757d;
+  }
+
+  .accounts-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin: 1rem 0;
+  }
+
+  .account-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    background: #e9ecef;
+    border-radius: 4px;
+    color: #495057;
+  }
+}
+
+::ng-deep {
+  .p-card {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+
+    .p-card-body {
+      padding: 2rem;
+    }
+  }
+}
