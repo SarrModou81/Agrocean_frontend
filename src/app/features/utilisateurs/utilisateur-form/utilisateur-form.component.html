@@ -1,0 +1,112 @@
+<!-- src/app/features/utilisateurs/utilisateur-form/utilisateur-form.component.html -->
+<form [formGroup]="utilisateurForm" (ngSubmit)="onSubmit()">
+  <div class="p-fluid">
+    <div class="field-group">
+      <div class="field">
+        <label for="prenom">Prénom *</label>
+        <input 
+          id="prenom" 
+          type="text" 
+          pInputText 
+          formControlName="prenom"
+          [class.ng-invalid]="isFieldInvalid('prenom')"
+        >
+        <small class="p-error" *ngIf="isFieldInvalid('prenom')">
+          Le prénom est requis
+        </small>
+      </div>
+
+      <div class="field">
+        <label for="nom">Nom *</label>
+        <input 
+          id="nom" 
+          type="text" 
+          pInputText 
+          formControlName="nom"
+          [class.ng-invalid]="isFieldInvalid('nom')"
+        >
+        <small class="p-error" *ngIf="isFieldInvalid('nom')">
+          Le nom est requis
+        </small>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="email">Email *</label>
+      <input 
+        id="email" 
+        type="email" 
+        pInputText 
+        formControlName="email"
+        [class.ng-invalid]="isFieldInvalid('email')"
+      >
+      <small class="p-error" *ngIf="isFieldInvalid('email')">
+        Email requis et valide
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="telephone">Téléphone</label>
+      <input 
+        id="telephone" 
+        type="text" 
+        pInputText 
+        formControlName="telephone"
+      >
+    </div>
+
+    <div class="field">
+      <label for="role">Rôle *</label>
+      <p-dropdown 
+        id="role"
+        formControlName="role"
+        [options]="roles"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Sélectionner un rôle"
+        [class.ng-invalid]="isFieldInvalid('role')"
+      ></p-dropdown>
+      <small class="p-error" *ngIf="isFieldInvalid('role')">
+        Le rôle est requis
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="password">Mot de passe {{ isEditing ? '' : '*' }}</label>
+      <p-password 
+        id="password"
+        formControlName="password"
+        [toggleMask]="true"
+        [feedback]="!isEditing"
+        [class.ng-invalid]="isFieldInvalid('password')"
+        [placeholder]="isEditing ? 'Laisser vide pour ne pas changer' : 'Minimum 6 caractères'"
+      ></p-password>
+      <small class="p-error" *ngIf="isFieldInvalid('password')">
+        Mot de passe requis (min. 6 caractères)
+      </small>
+    </div>
+
+    <div class="field" *ngIf="isEditing">
+      <div class="checkbox-wrapper">
+        <p-checkbox 
+          formControlName="is_active"
+          [binary]="true"
+          inputId="is_active"
+        ></p-checkbox>
+        <label for="is_active">Compte actif</label>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button 
+        pButton 
+        type="submit" 
+        [label]="isEditing ? 'Modifier' : 'Créer'"
+        icon="pi pi-check"
+        [loading]="loading"
+        [disabled]="utilisateurForm.invalid || loading"
+        class="p-button-primary"
+      ></button>
+    </div>
+  </div>
+</form>
