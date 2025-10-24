@@ -1,0 +1,147 @@
+.commande-details-container {
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #dee2e6;
+
+    h2 {
+      margin: 0 0 0.5rem 0;
+      color: #495057;
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .section {
+    margin-bottom: 2rem;
+
+    h3 {
+      color: #495057;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #dee2e6;
+    }
+  }
+
+  .info-grid {
+    display: grid;
+    gap: 1rem;
+
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem;
+      background: #f8f9fa;
+      border-radius: 4px;
+
+      .label {
+        color: #6c757d;
+        font-weight: 600;
+      }
+
+      .value {
+        color: #495057;
+      }
+    }
+  }
+
+  .totaux-section {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+
+    .totaux-grid {
+      background: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 8px;
+      min-width: 400px;
+
+      .totaux-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+
+        &.total {
+          margin-top: 0.5rem;
+          padding-top: 1rem;
+          border-top: 2px solid #495057;
+          font-size: 1.25rem;
+          font-weight: 700;
+
+          .label,
+          .value {
+            color: #495057;
+          }
+        }
+
+        .label {
+          color: #6c757d;
+          font-weight: 600;
+        }
+
+        .value {
+          color: #495057;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+.loading-container {
+  padding: 2rem;
+}
+
+.field {
+  margin-bottom: 1rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #495057;
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 768px) {
+  .commande-details-container {
+    .header-section {
+      flex-direction: column;
+      gap: 1rem;
+
+      .actions {
+        width: 100%;
+        flex-direction: column;
+
+        button {
+          width: 100%;
+        }
+      }
+    }
+
+    .details-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .totaux-section .totaux-grid {
+      min-width: 100%;
+    }
+  }
+}

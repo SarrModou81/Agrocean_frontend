@@ -1,0 +1,162 @@
+<div class="commande-details-container" *ngIf="commande">
+  <p-card>
+    <div class="header-section">
+      <div>
+        <h2>Commande {{ commande.numero }}</h2>
+        <p-tag [value]="commande.statut" [severity]="getStatutSeverity(commande.statut)"></p-tag>
+      </div>
+      <div class="actions">
+        <button 
+          pButton 
+          icon="pi pi-arrow-left" 
+          label="Retour"
+          class="p-button-secondary"
+          (click)="retour()"
+        ></button>
+        <button 
+          pButton 
+          icon="pi pi-check" 
+          label="Valider"
+          class="p-button-success"
+          (click)="valider()"
+          *ngIf="commande.statut === 'Brouillon'"
+        ></button>
+        <button 
+          pButton 
+          icon="pi pi-inbox" 
+          label="Réceptionner"
+          class="p-button-info"
+          (click)="showReceptionDialog = true"
+          *ngIf="commande.statut === 'Validée' || commande.statut === 'EnCours'"
+        ></button>
+      </div>
+    </div>
+
+    <div class="details-grid">
+      <!-- Informations Fournisseur -->
+      <div class="section">
+        <h3>Informations Fournisseur</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">Nom:</span>
+            <span class="value">{{ commande.fournisseur?.nom }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Contact:</span>
+            <span class="value">{{ commande.fournisseur?.contact }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Téléphone:</span>
+            <span class="value">{{ commande.fournisseur?.telephone }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Adresse:</span>
+            <span class="value">{{ commande.fournisseur?.adresse }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informations Commande -->
+      <div class="section">
+        <h3>Informations Commande</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">Date de commande:</span>
+            <span class="value">{{ commande.date_commande | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="info-item" *ngIf="commande.date_livraison_prevue">
+            <span class="label">Livraison prévue:</span>
+            <span class="value">{{ commande.date_livraison_prevue | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Créée par:</span>
+            <span class="value">{{ commande.user?.prenom }} {{ commande.user?.nom }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Produits -->
+    <div class="section">
+      <h3>Produits</h3>
+      <p-table [value]="commande.detail_commande_achats || []">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Produit</th>
+            <th>Quantité</th>
+            <th>Prix Unitaire</th>
+            <th>Sous-total</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-detail>
+          <tr>
+            <td>
+              <strong>{{ detail.produit?.nom }}</strong>
+              <br>
+              <small>{{ detail.produit?.code }}</small>
+            </td>
+            <td>{{ detail.quantite }}</td>
+            <td>{{ formatCurrency(detail.prix_unitaire) }}</td>
+            <td><strong>{{ formatCurrency(detail.sous_total) }}</strong></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <!-- Total -->
+    <div class="totaux-section">
+      <div class="totaux-grid">
+        <div class="totaux-row total">
+          <span class="label">Montant Total:</span>
+          <span class="value">{{ formatCurrency(commande.montant_total) }}</span>
+        </div>
+      </div>
+    </div>
+  </p-card>
+</div>
+
+<!-- Dialog Réception -->
+<p-dialog 
+  [(visible)]="showReceptionDialog" 
+  header="Réceptionner la Commande"
+  [modal]="true" 
+  [style]="{width: '400px'}"
+>
+  <div class="p-fluid">
+    <div class="field">
+      <label for="entrepot_id">Entrepôt *</label>
+      <p-dropdown 
+        id="entrepot_id"
+        [(ngModel)]="selectedEntrepot"
+        [options]="entrepots"
+        optionLabel="nom"
+        optionValue="id"
+        placeholder="Sélectionner un entrepôt"
+      ></p-dropdown>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button 
+      pButton 
+      label="Annuler" 
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="showReceptionDialog = false"
+    ></button>
+    <button 
+      pButton 
+      label="Confirmer" 
+      icon="pi pi-check"
+      (click)="receptionner()"
+      [disabled]="!selectedEntrepot"
+    ></button>
+  </ng-template>
+</p-dialog>
+
+<div class="loading-container" *ngIf="loading">
+  <p-progressBar mode="indeterminate"></p-progressBar>
+</div>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
