@@ -1,0 +1,212 @@
+<div class="finances-dashboard-container">
+  <p-card>
+    <div class="header-section">
+      <h2>Tableau de Bord Financier</h2>
+      <div class="actions">
+        <p-dropdown 
+          [(ngModel)]="selectedPeriode"
+          [options]="periodes"
+          optionLabel="label"
+          optionValue="value"
+          (onChange)="loadDashboard()"
+        ></p-dropdown>
+        <button 
+          pButton 
+          icon="pi pi-refresh" 
+          label="Actualiser"
+          (click)="loadDashboard()"
+          [loading]="loading"
+        ></button>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="loading-section">
+      <p-progressBar mode="indeterminate"></p-progressBar>
+    </div>
+
+    <div *ngIf="!loading && dashboard" class="dashboard-content">
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <p-card class="stat-card stat-card-success">
+          <div class="stat-content">
+            <div class="stat-icon">
+              <i class="pi pi-dollar"></i>
+            </div>
+            <div class="stat-details">
+              <div class="stat-value">{{ formatCurrency(dashboard.chiffre_affaires) }}</div>
+              <div class="stat-label">Chiffre d'Affaires</div>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="stat-card stat-card-danger">
+          <div class="stat-content">
+            <div class="stat-icon">
+              <i class="pi pi-minus-circle"></i>
+            </div>
+            <div class="stat-details">
+              <div class="stat-value">{{ formatCurrency(dashboard.charges) }}</div>
+              <div class="stat-label">Charges</div>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="stat-card stat-card-primary">
+          <div class="stat-content">
+            <div class="stat-icon">
+              <i class="pi pi-chart-line"></i>
+            </div>
+            <div class="stat-details">
+              <div class="stat-value">{{ formatCurrency(dashboard.benefice_net) }}</div>
+              <div class="stat-label">Bénéfice Net</div>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="stat-card stat-card-warning">
+          <div class="stat-content">
+            <div class="stat-icon">
+              <i class="pi pi-percentage"></i>
+            </div>
+            <div class="stat-details">
+              <div class="stat-value">{{ dashboard.marge_globale.toFixed(2) }}%</div>
+              <div class="stat-label">Marge Globale</div>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="stat-card stat-card-info">
+          <div class="stat-content">
+            <div class="stat-icon">
+              <i class="pi pi-wallet"></i>
+            </div>
+            <div class="stat-details">
+              <div class="stat-value">{{ formatCurrency(dashboard.tresorerie) }}</div>
+              <div class="stat-label">Trésorerie</div>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="stat-card stat-card-secondary">
+          <div class="stat-content">
+            <div class="stat-icon">
+              <i class="pi pi-clock"></i>
+            </div>
+            <div class="stat-details">
+              <div class="stat-value">{{ formatCurrency(dashboard.creances) }}</div>
+              <div class="stat-label">Créances</div>
+            </div>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Charts -->
+      <div class="charts-grid">
+        <p-card header="Évolution du Chiffre d'Affaires">
+          <p-chart type="line" [data]="caChartData" [options]="chartOptions" height="300px"></p-chart>
+        </p-card>
+
+        <p-card header="Répartition des Charges">
+          <p-chart type="pie" [data]="chargesChartData" [options]="pieOptions" height="300px"></p-chart>
+        </p-card>
+      </div>
+
+      <!-- Factures impayées -->
+      <div class="section">
+        <p-card header="Factures Impayées">
+          <p-table [value]="dashboard.factures_impayees" [paginator]="true" [rows]="5">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Numéro</th>
+                <th>Client</th>
+                <th>Montant</th>
+                <th>Date Échéance</th>
+                <th>Retard</th>
+                <th>Actions</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-facture>
+              <tr>
+                <td><code>{{ facture.numero }}</code></td>
+                <td>{{ facture.vente?.client?.nom }}</td>
+                <td>{{ formatCurrency(facture.montant_ttc) }}</td>
+                <td>{{ facture.date_echeance | date:'dd/MM/yyyy' }}</td>
+                <td>
+                  <p-tag 
+                    [value]="facture.jours_retard + ' jours'" 
+                    [severity]="facture.jours_retard > 30 ? 'danger' : 'warning'"
+                  ></p-tag>
+                </td>
+                <td>
+                  <button 
+                    pButton 
+                    icon="pi pi-dollar" 
+                    class="p-button-text p-button-success"
+                    pTooltip="Enregistrer paiement"
+                    (click)="enregistrerPaiement(facture)"
+                  ></button>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="6" class="text-center">Aucune facture impayée</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-card>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <p-card header="Actions Rapides">
+          <div class="actions-grid">
+            <button 
+              pButton 
+              icon="pi pi-dollar" 
+              label="Nouveau Paiement" 
+              class="p-button-success"
+              routerLink="/finances/paiements"
+            ></button>
+            <button 
+              pButton 
+              icon="pi pi-file" 
+              label="Voir Factures" 
+              class="p-button-primary"
+              routerLink="/finances/factures"
+            ></button>
+            <button 
+              pButton 
+              icon="pi pi-clock" 
+              label="Gérer Créances" 
+              class="p-button-warning"
+              routerLink="/finances/creances"
+            ></button>
+            <button 
+              pButton 
+              icon="pi pi-chart-bar" 
+              label="Voir Bilans" 
+              class="p-button-info"
+              routerLink="/finances/bilans"
+            ></button>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </p-card>
+</div>
+
+<!-- Dialog Paiement -->
+<p-dialog 
+  [(visible)]="showPaiementDialog" 
+  header="Enregistrer un Paiement"
+  [modal]="true" 
+  [style]="{width: '500px'}"
+>
+  <app-paiement-form 
+    [facture]="selectedFacture"
+    (formSubmitted)="onPaiementSubmitted()"
+  ></app-paiement-form>
+</p-dialog>
+
+<p-toast></p-toast>

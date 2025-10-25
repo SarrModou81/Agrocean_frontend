@@ -1,0 +1,105 @@
+<form [formGroup]="paiementForm" (ngSubmit)="onSubmit()">
+  <div class="p-fluid">
+    <div class="field" *ngIf="!facture">
+      <label for="facture_id">Facture *</label>
+      <p-dropdown 
+        id="facture_id"
+        formControlName="facture_id"
+        [options]="factures"
+        optionLabel="numero"
+        optionValue="id"
+        placeholder="Sélectionner une facture"
+        [filter]="true"
+        filterBy="numero"
+        [class.ng-invalid]="isFieldInvalid('facture_id')"
+      >
+        <ng-template let-facture pTemplate="item">
+          <div>
+            <strong>{{ facture.numero }}</strong>
+            <br>
+            <small>{{ facture.vente?.client?.nom }} - {{ formatCurrency(facture.montant_ttc) }}</small>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      <small class="p-error" *ngIf="isFieldInvalid('facture_id')">
+        La facture est requise
+      </small>
+    </div>
+
+    <div class="facture-info" *ngIf="facture">
+      <h4>Facture {{ facture.numero }}</h4>
+      <p><strong>Client:</strong> {{ facture.vente?.client?.nom }}</p>
+      <p><strong>Montant total:</strong> {{ formatCurrency(facture.montant_ttc) }}</p>
+      <p><strong>Montant restant:</strong> {{ formatCurrency(facture.montant_restant || facture.montant_ttc) }}</p>
+    </div>
+
+    <div class="field">
+      <label for="montant">Montant *</label>
+      <p-inputNumber 
+        id="montant"
+        formControlName="montant"
+        mode="decimal"
+        [minFractionDigits]="0"
+        [min]="0"
+        [max]="facture?.montant_restant || 999999999"
+        [class.ng-invalid]="isFieldInvalid('montant')"
+      ></p-inputNumber>
+      <small class="p-error" *ngIf="isFieldInvalid('montant')">
+        Le montant est requis et doit être > 0
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="date_paiement">Date de Paiement *</label>
+      <p-calendar 
+        id="date_paiement"
+        formControlName="date_paiement"
+        [showIcon]="true"
+        dateFormat="dd/mm/yy"
+        [class.ng-invalid]="isFieldInvalid('date_paiement')"
+      ></p-calendar>
+      <small class="p-error" *ngIf="isFieldInvalid('date_paiement')">
+        La date est requise
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="mode_paiement">Mode de Paiement *</label>
+      <p-dropdown 
+        id="mode_paiement"
+        formControlName="mode_paiement"
+        [options]="modes"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Sélectionner un mode"
+        [class.ng-invalid]="isFieldInvalid('mode_paiement')"
+      ></p-dropdown>
+      <small class="p-error" *ngIf="isFieldInvalid('mode_paiement')">
+        Le mode de paiement est requis
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="reference">Référence</label>
+      <input 
+        id="reference" 
+        type="text" 
+        pInputText 
+        formControlName="reference"
+        placeholder="Numéro de chèque, transaction..."
+      >
+    </div>
+
+    <div class="form-actions">
+      <button 
+        pButton 
+        type="submit" 
+        label="Enregistrer"
+        icon="pi pi-check"
+        [loading]="loading"
+        [disabled]="paiementForm.invalid || loading"
+        class="p-button-success"
+      ></button>
+    </div>
+  </div>
+</form>

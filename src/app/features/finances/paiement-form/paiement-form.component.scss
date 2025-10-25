@@ -1,0 +1,43 @@
+.field {
+  margin-bottom: 1.5rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #495057;
+    font-weight: 600;
+  }
+}
+
+.facture-info {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+
+  h4 {
+    margin: 0 0 0.5rem 0;
+    color: #495057;
+  }
+
+  p {
+    margin: 0.5rem 0;
+    color: #6c757d;
+
+    strong {
+      color: #495057;
+    }
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+
+  button {
+    min-width: 150px;
+  }
+}
