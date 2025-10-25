@@ -138,14 +138,14 @@ export class CommandesAchatListComponent implements OnInit {
     return value.toLocaleString('fr-FR') + ' FCFA';
   }
 
-  getStatutSeverity(statut: string): string {
-    const map: any = {
-      'Brouillon': 'info',
-      'Validée': 'warning',
-      'EnCours': 'primary',
-      'Reçue': 'success',
-      'Annulée': 'danger'
-    };
-    return map[statut] || 'info';
-  }
+  getStatutSeverity(statut: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined {
+  const severityMap: Record<string, 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast'> = {
+    'Brouillon': 'info',
+    'Validée': 'warning',
+    'EnCours': 'contrast',
+    'Reçue': 'success',
+    'Annulée': 'danger'
+  };
+  return severityMap[statut] || 'info';
+}
 }

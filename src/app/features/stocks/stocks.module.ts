@@ -1,4 +1,3 @@
-// src/app/features/stocks/stocks.module.ts
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
@@ -20,6 +19,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { CalendarModule } from 'primeng/calendar';
 import { MessageModule } from 'primeng/message';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 // Components
 import { StocksListComponent } from './stocks-list/stocks-list.component';
@@ -58,7 +58,8 @@ const routes: Routes = [
     InputNumberModule,
     CalendarModule,
     MessageModule,
-    InputTextareaModule
+    InputTextareaModule,
+    ProgressBarModule
   ]
 })
 export class StocksModule { }

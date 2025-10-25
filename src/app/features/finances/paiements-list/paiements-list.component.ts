@@ -108,14 +108,14 @@ export class PaiementsListComponent implements OnInit {
     return date.toISOString().split('T')[0];
   }
 
-  getModeSeverity(mode: string): string {
-    const map: any = {
-      'Espèces': 'success',
-      'Chèque': 'warning',
-      'Virement': 'info',
-      'MobileMoney': 'help',
-      'Carte': 'primary'
-    };
-    return map[mode] || 'info';
-  }
+  getModeSeverity(mode: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined {
+  const severityMap: Record<string, 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast'> = {
+    'Espèces': 'success',
+    'Chèque': 'warning',
+    'Virement': 'info',
+    'MobileMoney': 'contrast',
+    'Carte': 'secondary'
+  };
+  return severityMap[mode] || 'info';
+}
 }

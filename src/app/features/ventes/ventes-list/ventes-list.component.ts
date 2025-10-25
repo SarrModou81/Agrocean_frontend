@@ -181,13 +181,13 @@ export class VentesListComponent implements OnInit {
     return date.toISOString().split('T')[0];
   }
 
-  getStatutSeverity(statut: string): string {
-    const map: any = {
-      'Brouillon': 'info',
-      'Validée': 'warning',
-      'Livrée': 'success',
-      'Annulée': 'danger'
-    };
-    return map[statut] || 'info';
-  }
+getStatutSeverity(statut: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined {
+  const severityMap: Record<string, 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast'> = {
+    'Brouillon': 'info',
+    'Validée': 'warning',
+    'Livrée': 'success',
+    'Annulée': 'danger'
+  };
+  return severityMap[statut] || 'info';
+}
 }

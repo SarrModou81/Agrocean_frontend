@@ -151,24 +151,24 @@ export class StocksListComponent implements OnInit {
     return value.toLocaleString('fr-FR') + ' FCFA';
   }
 
-  getStatutSeverity(statut: string): string {
-    const map: any = {
-      'Disponible': 'success',
-      'Réservé': 'warning',
-      'Périmé': 'danger',
-      'Endommagé': 'danger'
-    };
-    return map[statut] || 'info';
-  }
+  getStatutSeverity(statut: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined {
+  const severityMap: Record<string, 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast'> = {
+    'Disponible': 'success',
+    'Réservé': 'warning',
+    'Périmé': 'danger',
+    'Endommagé': 'danger'
+  };
+  return severityMap[statut] || 'info';
+}
 
-  getPeremptionSeverity(etat: string): string {
-    const map: any = {
-      'ok': 'success',
-      'warning': 'warning',
-      'expired': 'danger'
-    };
-    return map[etat] || 'info';
-  }
+  getPeremptionSeverity(etat: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined {
+  const severityMap: Record<string, 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast'> = {
+    'ok': 'success',
+    'warning': 'warning',
+    'expired': 'danger'
+  };
+  return severityMap[etat] || 'info';
+}
 
   getPeremptionLabel(stock: Stock): string {
     if (!stock.date_peremption) return 'N/A';

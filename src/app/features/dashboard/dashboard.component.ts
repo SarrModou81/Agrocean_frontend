@@ -20,8 +20,9 @@ export class DashboardComponent implements OnInit {
   topProduitsChartData: any;
   topProduitsChartOptions: any;
 
+  // Rendre authService public pour l'utiliser dans le template
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private rapportService: RapportService
   ) {}
 
@@ -49,11 +50,11 @@ export class DashboardComponent implements OnInit {
     if (!this.stats) return;
 
     // Graphique d'évolution des ventes
-    const labels = this.stats.evolution_ventes.map((v: any) => {
+    const labels = this.stats.evolution_ventes?.map((v: any) => {
       const date = new Date(v.date);
       return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
-    });
-    const data = this.stats.evolution_ventes.map((v: any) => v.montant);
+    }) || [];
+    const data = this.stats.evolution_ventes?.map((v: any) => v.montant) || [];
 
     this.ventesChartData = {
       labels: labels,
@@ -99,8 +100,8 @@ export class DashboardComponent implements OnInit {
     };
 
     // Graphique des top produits
-    const produitsLabels = this.stats.top_produits.map((p: any) => p.produit?.nom || 'Produit');
-    const produitsQuantites = this.stats.top_produits.map((p: any) => p.total_quantite);
+    const produitsLabels = this.stats.top_produits?.map((p: any) => p.produit?.nom || 'Produit') || [];
+    const produitsQuantites = this.stats.top_produits?.map((p: any) => p.total_quantite) || [];
 
     this.topProduitsChartData = {
       labels: produitsLabels,

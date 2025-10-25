@@ -171,14 +171,14 @@ export class UtilisateursListComponent implements OnInit {
     return roleMap[role] || role;
   }
 
-  getRoleSeverity(role: string): string {
-    const map: any = {
-      'Administrateur': 'danger',
-      'Commercial': 'success',
-      'GestionnaireStock': 'info',
-      'Comptable': 'warning',
-      'AgentApprovisionnement': 'help'
-    };
-    return map[role] || 'info';
-  }
+getRoleSeverity(role: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined {
+  const severityMap: Record<string, 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast'> = {
+    'Administrateur': 'danger',
+    'Commercial': 'success',
+    'GestionnaireStock': 'info',
+    'Comptable': 'warning',
+    'AgentApprovisionnement': 'contrast'
+  };
+  return severityMap[role] || 'info';
+}
 }

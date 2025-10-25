@@ -92,16 +92,16 @@ export class ClientsListComponent implements OnInit {
     this.displayDialog = false;
   }
 
-  getTypeSeverity(type: string): string {
-    const severityMap: any = {
-      'Menage': 'info',
-      'Boutique': 'success',
-      'GrandeSurface': 'warning',
-      'Restaurant': 'danger',
-      'Institution': 'help'
-    };
-    return severityMap[type] || 'info';
-  }
+getTypeSeverity(type: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined {
+  const severityMap: Record<string, 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast'> = {
+    'Menage': 'info',
+    'Boutique': 'success',
+    'GrandeSurface': 'warning',
+    'Restaurant': 'danger',
+    'Institution': 'contrast'
+  };
+  return severityMap[type] || 'info';
+}
 
   formatCurrency(value: number): string {
     return value.toLocaleString('fr-FR') + ' FCFA';

@@ -31,6 +31,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { DividerModule } from 'primeng/divider';
 import { AvatarModule } from 'primeng/avatar';
 import { TooltipModule } from 'primeng/tooltip';
+import { PasswordModule } from 'primeng/password';
 
 // Components
 import { LoginComponent } from './features/auth/login/login.component';
@@ -71,7 +72,8 @@ import { LayoutComponent } from './shared/layout/layout.component';
     ProgressBarModule,
     DividerModule,
     AvatarModule,
-    TooltipModule
+    TooltipModule,
+    PasswordModule
   ],
   providers: [
     MessageService,

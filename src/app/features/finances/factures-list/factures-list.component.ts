@@ -105,13 +105,13 @@ export class FacturesListComponent implements OnInit {
     return value.toLocaleString('fr-FR') + ' FCFA';
   }
 
-  getStatutSeverity(statut: string): string {
-    const map: any = {
-      'Impayée': 'danger',
-      'Partiellement Payée': 'warning',
-      'Payée': 'success',
-      'Annulée': 'secondary'
-    };
-    return map[statut] || 'info';
-  }
+ getStatutSeverity(statut: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined {
+  const severityMap: Record<string, 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast'> = {
+    'Impayée': 'danger',
+    'Partiellement Payée': 'warning',
+    'Payée': 'success',
+    'Annulée': 'secondary'
+  };
+  return severityMap[statut] || 'info';
+}
 }
