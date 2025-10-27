@@ -26,6 +26,7 @@ import { MessageService } from 'primeng/api';
         <p-progressBar *ngIf="loading" mode="indeterminate"></p-progressBar>
       </p-card>
     </div>
+    <p-toast></p-toast>
   `,
   styles: [`
     .tresorerie-container {
@@ -66,68 +67,6 @@ export class TresorerieComponent implements OnInit {
     this.financeService.etatTresorerie().subscribe({
       next: (data) => {
         this.tresorerie = data;
-        this.loading = false;
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erreur',
-          detail: 'Erreur lors du chargement'
-        });
-        this.loading = false;
-      }
-    });
-  }
-
-  formatCurrency(value: number): string {
-    return value.toLocaleString('fr-FR') + ' FCFA';
-  }
-}
-
-@Component({
-  selector: 'app-bilans-list',
-  template: `
-    <div class="bilans-container">
-      <p-card header="Bilans Financiers">
-        <p-table [value]="bilans" [loading]="loading">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Période</th>
-              <th>CA</th>
-              <th>Charges</th>
-              <th>Bénéfice</th>
-              <th>Marge %</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-bilan>
-            <tr>
-              <td>{{ bilan.periode }}</td>
-              <td>{{ formatCurrency(bilan.chiffre_affaires) }}</td>
-              <td>{{ formatCurrency(bilan.charges_exploitation) }}</td>
-              <td>{{ formatCurrency(bilan.benefice_net) }}</td>
-              <td>{{ bilan.marge_globale.toFixed(2) }}%</td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-card>
-    </div>
-  `,
-  styles: [`.bilans-container { padding: 0; }`]
-})
-export class BilansListComponent implements OnInit {
-  bilans: any[] = [];
-  loading = false;
-
-  constructor(
-    private financeService: FinanceService,
-    private messageService: MessageService
-  ) {}
-
-  ngOnInit(): void {
-    this.loading = true;
-    this.financeService.getAll().subscribe({
-      next: (response) => {
-        this.bilans = response.data;
         this.loading = false;
       },
       error: () => {

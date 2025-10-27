@@ -7,7 +7,7 @@ import { MessageService } from 'primeng/api';
   template: `
     <div class="rapport-container">
       <p-card header="Rapport des Stocks">
-        <button pButton label="Générer" (click)="generer()" [loading]="loading" class="p-button-primary"></button>
+        <button pButton label="Générer" (click)="generer()" [disabled]="loading" class="p-button-primary"></button>
         <div *ngIf="rapport" class="content">
           <p-table [value]="rapport.produits" [paginator]="true" [rows]="10">
             <ng-template pTemplate="header">

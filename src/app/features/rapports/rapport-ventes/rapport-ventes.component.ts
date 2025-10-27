@@ -7,7 +7,7 @@ import { MessageService } from 'primeng/api';
   template: `
     <div class="rapport-container">
       <p-card header="Rapport des Ventes">
-        <button pButton label="Générer" (click)="generer()" [loading]="loading" class="p-button-primary"></button>
+        <button pButton label="Générer" (click)="generer()" [disabled]="loading" class="p-button-primary"></button>
         <div *ngIf="rapport" class="content">
           <h3>Total des ventes: {{ formatCurrency(rapport.total) }}</h3>
           <p-chart type="line" [data]="chartData" height="300px"></p-chart>
