@@ -51,14 +51,18 @@ export class PaiementFormComponent implements OnInit {
     });
   }
 
-  loadFacturesImpayees(): void {
-    this.factureService.impayees().subscribe({
-      next: (data) => {
-        this.factures = data;
-      }
-    });
-  }
-
+loadFacturesImpayees(): void {
+  this.factureService.impayees().subscribe({
+    next: (data: any) => {
+      // Gérer les deux formats possibles de réponse
+      this.factures = Array.isArray(data) ? data : (data.factures || data.data || []);
+      console.log('Factures chargées:', this.factures);
+    },
+    error: (error) => {
+      console.error('Erreur:', error);
+    }
+  });
+}
   onSubmit(): void {
     if (this.paiementForm.invalid) {
       Object.keys(this.paiementForm.controls).forEach(key => {
