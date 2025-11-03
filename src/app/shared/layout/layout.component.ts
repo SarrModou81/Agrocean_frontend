@@ -233,4 +233,19 @@ export class LayoutComponent implements OnInit {
   toggleSidebar(): void {
     this.sidebarVisible = !this.sidebarVisible;
   }
+
+  // MÉTHODE AJOUTÉE - Affiche le rôle de manière lisible
+  getRoleDisplay(): string {
+    if (!this.currentUser) return '';
+    
+    const roleMap: { [key: string]: string } = {
+      'Administrateur': 'Administrateur',
+      'Commercial': 'Commercial',
+      'GestionnaireStock': 'Gestionnaire de Stock',
+      'Comptable': 'Comptable',
+      'AgentApprovisionnement': 'Agent d\'Approvisionnement'
+    };
+
+    return roleMap[this.currentUser.role] || this.currentUser.role;
+  }
 }

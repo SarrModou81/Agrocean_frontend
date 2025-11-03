@@ -1,5 +1,5 @@
 <div class="layout-wrapper" [class.sidebar-collapsed]="!sidebarVisible">
-  <!-- Header -->
+  <!-- Header avec Logo -->
   <header class="layout-header">
     <div class="header-left">
       <button 
@@ -7,8 +7,17 @@
         icon="pi pi-bars" 
         class="p-button-text p-button-plain"
         (click)="toggleSidebar()"
+        pTooltip="Menu"
+        tooltipPosition="right"
       ></button>
-      <h2 class="app-title">AGROCEAN</h2>
+      
+      <div class="logo-container">
+        <img src="assets/logo.png" alt="AGROCEAN" class="app-logo">
+        <h2 class="app-title">
+          AGROCEAN
+          <span class="subtitle">Terre & Mer Durables</span>
+        </h2>
+      </div>
     </div>
 
     <div class="header-right">
@@ -19,6 +28,8 @@
         pBadge
         value="3"
         severity="danger"
+        pTooltip="Notifications"
+        tooltipPosition="left"
       ></button>
 
       <div class="user-menu" *ngIf="currentUser">
@@ -29,7 +40,7 @@
         ></p-avatar>
         <div class="user-info">
           <span class="user-name">{{ currentUser.prenom }} {{ currentUser.nom }}</span>
-          <span class="user-role">{{ currentUser.role }}</span>
+          <span class="user-role">{{ getRoleDisplay() }}</span>
         </div>
         <button 
           pButton 

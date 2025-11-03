@@ -1,75 +1,125 @@
 <div class="login-container">
+  <!-- Animated Background Elements -->
+  <div class="background-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="shape shape-4"></div>
+  </div>
+
+  <!-- Floating Elements -->
+  <div class="floating-elements">
+    <i class="pi pi-cloud float-1"></i>
+    <i class="pi pi-sun float-2"></i>
+    <i class="pi pi-globe float-3"></i>
+  </div>
+
   <div class="login-card">
-    <p-card>
-      <div class="login-header">
-        <img src="assets/logo.png" alt="AGROCEAN" class="logo" *ngIf="false">
-        <h1>AGROCEAN</h1>
-        <p>Système de Gestion Agroalimentaire</p>
+    <div class="card-content">
+      <!-- Logo Section -->
+      <div class="logo-section">
+        <div class="logo-container">
+          <div class="logo-circle">
+            <img src="assets/logo.png" alt="AGROCEAN Logo" class="logo">
+          </div>
+          <div class="logo-glow"></div>
+        </div>
+        <h1 class="brand-name">
+          <span class="agro">AGRO</span><span class="cean">CEAN</span>
+        </h1>
+        <p class="tagline">Terre & Mer Durables</p>
+        <div class="separator">
+          <span class="separator-line"></span>
+          <i class="pi pi-circle-fill separator-icon"></i>
+          <span class="separator-line"></span>
+        </div>
       </div>
 
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Welcome Section -->
+      <div class="welcome-section">
+        <h2>Bienvenue !</h2>
+        <p>Connectez-vous pour accéder à votre espace de gestion</p>
+      </div>
+
+      <!-- Form Section -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
         <div class="p-fluid">
-          <div class="field">
-            <label for="email">Email</label>
-            <input 
-              id="email" 
-              type="email" 
-              pInputText 
-              formControlName="email"
-              placeholder="Votre email"
-              [class.ng-invalid]="f['email'].invalid && f['email'].touched"
-            >
+          <div class="form-group">
+            <label for="email">
+              <i class="pi pi-envelope"></i>
+              <span>Adresse Email</span>
+            </label>
+            <div class="input-wrapper">
+              <input 
+                id="email" 
+                type="email" 
+                pInputText 
+                formControlName="email"
+                placeholder="exemple@agrocean.sn"
+                [class.ng-invalid]="f['email'].invalid && f['email'].touched"
+              >
+              <i class="pi pi-check input-icon" *ngIf="f['email'].valid && f['email'].touched"></i>
+            </div>
             <small 
-              class="p-error" 
+              class="p-error fade-in" 
               *ngIf="f['email'].invalid && f['email'].touched"
             >
-              Email requis et valide
+              <i class="pi pi-exclamation-circle"></i>
+              Veuillez entrer une adresse email valide
             </small>
           </div>
 
-          <div class="field">
-            <label for="password">Mot de passe</label>
-            <input 
-              id="password" 
-              type="password" 
-              pInputText 
-              formControlName="password"
-              placeholder="Votre mot de passe"
-              [class.ng-invalid]="f['password'].invalid && f['password'].touched"
-            >
+          <div class="form-group">
+            <label for="password">
+              <i class="pi pi-lock"></i>
+              <span>Mot de passe</span>
+            </label>
+            <div class="input-wrapper">
+              <input 
+                id="password" 
+                type="password" 
+                pInputText 
+                formControlName="password"
+                placeholder="••••••••"
+                [class.ng-invalid]="f['password'].invalid && f['password'].touched"
+              >
+              <i class="pi pi-check input-icon" *ngIf="f['password'].valid && f['password'].touched"></i>
+            </div>
             <small 
-              class="p-error" 
+              class="p-error fade-in" 
               *ngIf="f['password'].invalid && f['password'].touched"
             >
-              Mot de passe requis
+              <i class="pi pi-exclamation-circle"></i>
+              Le mot de passe est requis
             </small>
           </div>
 
           <button 
             pButton 
             type="submit" 
-            label="Se connecter" 
-            icon="pi pi-sign-in"
+            class="login-button"
             [loading]="loading"
             [disabled]="loginForm.invalid || loading"
-            class="p-button-primary"
-          ></button>
+          >
+            <span class="button-content">
+              <i class="pi pi-sign-in"></i>
+              <span>Se connecter</span>
+              <i class="pi pi-arrow-right"></i>
+            </span>
+          </button>
         </div>
       </form>
 
-      <div class="test-accounts">
-        <p-divider></p-divider>
-        <p class="text-center"><small>Comptes de test</small></p>
-        <div class="accounts-grid">
-          <span class="account-badge">admin&#64;agrocean.sn</span>
-          <span class="account-badge">commercial&#64;agrocean.sn</span>
-          <span class="account-badge">gestionnaire&#64;agrocean.sn</span>
-          <span class="account-badge">comptable&#64;agrocean.sn</span>
-          <span class="account-badge">appro&#64;agrocean.sn</span>
-        </div>
-        <p class="text-center"><small>Mot de passe: password</small></p>
+      
+
+      <!-- Footer -->
+      <div class="login-footer">
+        <p>
+          <i class="pi pi-shield"></i>
+          Connexion sécurisée SSL
+        </p>
       </div>
-    </p-card>
+    </div>
   </div>
 </div>
 

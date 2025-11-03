@@ -4,6 +4,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { MessageService } from 'primeng/api';
 
+interface TestAccount {
+  role: string;
+  email: string;
+  icon: string;
+}
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -13,6 +19,35 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   loading = false;
   returnUrl: string = '/dashboard';
+
+  // Comptes de test avec icônes
+  testAccounts: TestAccount[] = [
+    {
+      role: 'Administrateur',
+      email: 'admin@agrocean.sn',
+      icon: 'pi pi-shield'
+    },
+    {
+      role: 'Commercial',
+      email: 'commercial@agrocean.sn',
+      icon: 'pi pi-users'
+    },
+    {
+      role: 'Gestionnaire',
+      email: 'gestionnaire@agrocean.sn',
+      icon: 'pi pi-box'
+    },
+    {
+      role: 'Comptable',
+      email: 'comptable@agrocean.sn',
+      icon: 'pi pi-dollar'
+    },
+    {
+      role: 'Approvisionnement',
+      email: 'appro@agrocean.sn',
+      icon: 'pi pi-shopping-cart'
+    }
+  ];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -44,6 +79,10 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
+      // Marquer tous les champs comme touchés pour afficher les erreurs
+      Object.keys(this.loginForm.controls).forEach(key => {
+        this.loginForm.get(key)?.markAsTouched();
+      });
       return;
     }
 
@@ -55,16 +94,22 @@ export class LoginComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: 'Connexion réussie',
-          detail: `Bienvenue ${response.user.prenom} ${response.user.nom}`
+          detail: `Bienvenue ${response.user.prenom} ${response.user.nom}`,
+          life: 3000
         });
-        this.router.navigate([this.returnUrl]);
+        
+        // Petit délai pour l'effet visuel
+        setTimeout(() => {
+          this.router.navigate([this.returnUrl]);
+        }, 500);
       },
       error: (error) => {
         this.loading = false;
         this.messageService.add({
           severity: 'error',
           summary: 'Erreur de connexion',
-          detail: error.error?.error || 'Identifiants invalides'
+          detail: error.error?.error || 'Identifiants invalides',
+          life: 4000
         });
       }
     });
