@@ -30,12 +30,12 @@
         [class.ng-invalid]="isFieldInvalid('facture_id')"
       >
         <ng-template let-facture pTemplate="item">
-          <div>
+          <div class="facture-dropdown-item">
             <strong>{{ facture.numero }}</strong>
             <br>
             <small>{{ facture.vente?.client?.nom }} - {{ formatCurrency(facture.montant_ttc) }}</small>
             <br>
-            <small class="text-danger">Restant: {{ formatCurrency(facture.montant_restant) }}</small>
+            <small class="text-danger"><strong>Restant: {{ formatCurrency(facture.montant_restant) }}</strong></small>
           </div>
         </ng-template>
       </p-dropdown>
@@ -59,12 +59,12 @@
         [class.ng-invalid]="isFieldInvalid('facture_fournisseur_id')"
       >
         <ng-template let-facture pTemplate="item">
-          <div>
+          <div class="facture-dropdown-item">
             <strong>{{ facture.numero }}</strong>
             <br>
             <small>{{ facture.fournisseur?.nom }} - {{ formatCurrency(facture.montant_total) }}</small>
             <br>
-            <small class="text-danger">Restant: {{ formatCurrency(facture.montant_restant) }}</small>
+            <small class="text-danger"><strong>Restant: {{ formatCurrency(facture.montant_restant) }}</strong></small>
           </div>
         </ng-template>
       </p-dropdown>
@@ -76,31 +76,78 @@
     <!-- Info Facture Client -->
     <div class="facture-info" *ngIf="typePaiement === 'client' && facture">
       <h4>Facture Client {{ facture.numero }}</h4>
-      <p><strong>Client:</strong> {{ facture.vente?.client?.nom }}</p>
-      <p><strong>Montant total:</strong> {{ formatCurrency(facture.montant_ttc) }}</p>
-      <p><strong>Montant restant:</strong> {{ formatCurrency(facture.montant_restant || facture.montant_ttc) }}</p>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">Client:</span>
+          <span class="value">{{ facture.vente?.client?.nom }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Montant total:</span>
+          <span class="value">{{ formatCurrency(montantTotal) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Déjà payé:</span>
+          <span class="value success">{{ formatCurrency(montantPaye) }}</span>
+        </div>
+        <div class="info-item highlight">
+          <span class="label">Montant restant:</span>
+          <span class="value danger"><strong>{{ formatCurrency(montantRestant) }}</strong></span>
+        </div>
+      </div>
     </div>
 
     <!-- Info Facture Fournisseur -->
     <div class="facture-info" *ngIf="typePaiement === 'fournisseur' && factureFournisseur">
       <h4>Facture Fournisseur {{ factureFournisseur.numero }}</h4>
-      <p><strong>Fournisseur:</strong> {{ factureFournisseur.fournisseur?.nom }}</p>
-      <p><strong>Montant total:</strong> {{ formatCurrency(factureFournisseur.montant_total) }}</p>
-      <p><strong>Montant restant:</strong> {{ formatCurrency(factureFournisseur.montant_restant || factureFournisseur.montant_total) }}</p>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">Fournisseur:</span>
+          <span class="value">{{ factureFournisseur.fournisseur?.nom }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Montant total:</span>
+          <span class="value">{{ formatCurrency(montantTotal) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Déjà payé:</span>
+          <span class="value success">{{ formatCurrency(montantPaye) }}</span>
+        </div>
+        <div class="info-item highlight">
+          <span class="label">Montant restant:</span>
+          <span class="value danger"><strong>{{ formatCurrency(montantRestant) }}</strong></span>
+        </div>
+      </div>
     </div>
 
+    <!-- Montant à payer -->
     <div class="field">
-      <label for="montant">Montant *</label>
-      <p-inputNumber 
-        id="montant"
-        formControlName="montant"
-        mode="decimal"
-        [minFractionDigits]="0"
-        [min]="0"
-        [class.ng-invalid]="isFieldInvalid('montant')"
-      ></p-inputNumber>
-      <small class="p-error" *ngIf="isFieldInvalid('montant')">
-        Le montant est requis et doit être > 0
+      <label for="montant">Montant à payer *</label>
+      <div class="montant-input-container">
+        <p-inputNumber 
+          id="montant"
+          formControlName="montant"
+          mode="decimal"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="2"
+          [min]="0.01"
+          [max]="montantRestant"
+          [class.ng-invalid]="isFieldInvalid('montant')"
+          suffix=" FCFA"
+        ></p-inputNumber>
+        <button 
+          type="button"
+          pButton 
+          label="Tout payer"
+          class="p-button-sm p-button-text"
+          (click)="paiementForm.patchValue({ montant: montantRestant })"
+          *ngIf="montantRestant > 0"
+        ></button>
+      </div>
+      <small class="p-error" *ngIf="getMontantError()">
+        {{ getMontantError() }}
+      </small>
+      <small class="p-info" *ngIf="!getMontantError() && montantRestant > 0">
+        Maximum : {{ formatCurrency(montantRestant) }}
       </small>
     </div>
 
@@ -145,16 +192,40 @@
       >
     </div>
 
+    <!-- Résumé du paiement -->
+    <div class="paiement-summary" *ngIf="paiementForm.get('montant')?.value && paiementForm.get('montant')?.value > 0">
+      <div class="summary-item">
+        <span>Montant à payer:</span>
+        <strong>{{ formatCurrency(paiementForm.get('montant')?.value) }}</strong>
+      </div>
+      <div class="summary-item" *ngIf="montantRestant > 0">
+        <span>Nouveau montant restant:</span>
+        <strong [class.text-success]="(montantRestant - paiementForm.get('montant')?.value) === 0">
+          {{ formatCurrency(Math.max(0, montantRestant - paiementForm.get('montant')?.value)) }}
+        </strong>
+      </div>
+      <div class="summary-item success-bg" *ngIf="montantRestant > 0 && (montantRestant - paiementForm.get('montant')?.value) === 0">
+        <i class="pi pi-check-circle"></i>
+        <span>La facture sera entièrement payée</span>
+      </div>
+    </div>
+
     <div class="form-actions">
       <button 
         pButton 
         type="submit" 
-        label="Enregistrer"
+        label="Enregistrer le paiement"
         icon="pi pi-check"
         [loading]="loading"
-        [disabled]="paiementForm.invalid || loading"
+        [disabled]="paiementForm.invalid || loading || montantRestant === 0"
         class="p-button-success"
       ></button>
+    </div>
+
+    <!-- Message si déjà payé -->
+    <div class="alert-info" *ngIf="montantRestant === 0">
+      <i class="pi pi-info-circle"></i>
+      <span>Cette facture est déjà entièrement payée</span>
     </div>
   </div>
 </form>

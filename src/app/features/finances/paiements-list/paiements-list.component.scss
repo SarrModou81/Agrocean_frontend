@@ -1,3 +1,4 @@
+// src/app/features/finances/paiements-list/paiements-list.component.scss
 .paiements-container {
   .header-section {
     display: flex;
@@ -15,7 +16,7 @@
 
   .filters-section {
     display: grid;
-    grid-template-columns: repeat(3, 1fr) auto;
+    grid-template-columns: repeat(4, 1fr) auto;
     gap: 1rem;
     margin-bottom: 2rem;
     padding: 1rem;
@@ -40,17 +41,70 @@
     }
   }
 
+  .text-muted {
+    color: #6c757d;
+    font-style: italic;
+  }
+
   ::ng-deep {
     .p-datatable {
-      .p-datatable-tbody > tr > td {
+      .p-datatable-thead > tr > th {
+        background: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
         padding: 1rem;
+        border-bottom: 2px solid #dee2e6;
+      }
 
-        code {
-          background: #e9ecef;
-          padding: 0.25rem 0.5rem;
-          border-radius: 4px;
-          font-size: 0.875rem;
+      .p-datatable-tbody > tr {
+        transition: background-color 0.2s;
+
+        &:hover {
+          background: #f8f9fa;
         }
+
+        > td {
+          padding: 1rem;
+          vertical-align: middle;
+
+          code {
+            background: #e9ecef;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-family: 'Courier New', monospace;
+            color: #495057;
+          }
+
+          strong {
+            color: #212529;
+          }
+        }
+      }
+    }
+
+    .p-tag {
+      font-weight: 600;
+      padding: 0.375rem 0.75rem;
+    }
+  }
+
+  .text-center {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+  }
+}
+
+@media (max-width: 1200px) {
+  .paiements-container {
+    .filters-section {
+      grid-template-columns: repeat(2, 1fr);
+      
+      .filter-actions {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        align-self: flex-start;
       }
     }
   }
@@ -58,8 +112,37 @@
 
 @media (max-width: 768px) {
   .paiements-container {
+    .header-section {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
     .filters-section {
       grid-template-columns: 1fr;
+      
+      .filter-actions {
+        width: 100%;
+        button {
+          width: 100%;
+        }
+      }
     }
   }
+}
+
+// Animation pour les nouvelles lignes
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+::ng-deep .p-datatable-tbody > tr {
+  animation: fadeInRow 0.3s ease;
 }

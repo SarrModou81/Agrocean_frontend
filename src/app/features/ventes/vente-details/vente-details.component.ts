@@ -34,11 +34,11 @@ export class VenteDetailsComponent implements OnInit {
         this.vente = data;
         this.loading = false;
       },
-      error: () => {
+      error: (error) => {
         this.messageService.add({
           severity: 'error',
           summary: 'Erreur',
-          detail: 'Erreur lors du chargement de la vente'
+          detail: error.error?.message || 'Erreur lors du chargement de la vente'
         });
         this.loading = false;
         this.router.navigate(['/ventes']);
@@ -49,11 +49,17 @@ export class VenteDetailsComponent implements OnInit {
   valider(): void {
     if (!this.vente) return;
 
+    // Vérifier que la confirmation n'est pas déjà ouverte
     this.confirmationService.confirm({
-      message: `Valider la vente ${this.vente.numero} ?`,
-      header: 'Confirmation',
-      icon: 'pi pi-check',
+      message: `Êtes-vous sûr de vouloir valider la vente ${this.vente.numero} ?`,
+      header: 'Confirmation de validation',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Oui, valider',
+      rejectLabel: 'Annuler',
+      acceptButtonStyleClass: 'p-button-success',
+      rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
+        this.loading = true;
         this.venteService.valider(this.vente!.id!).subscribe({
           next: () => {
             this.messageService.add({
@@ -61,16 +67,21 @@ export class VenteDetailsComponent implements OnInit {
               summary: 'Succès',
               detail: 'Vente validée avec succès'
             });
+            this.loading = false;
             this.loadVente(this.vente!.id!);
           },
-          error: () => {
+          error: (error) => {
             this.messageService.add({
               severity: 'error',
               summary: 'Erreur',
-              detail: 'Erreur lors de la validation'
+              detail: error.error?.message || 'Erreur lors de la validation'
             });
+            this.loading = false;
           }
         });
+      },
+      reject: () => {
+        // L'utilisateur a annulé
       }
     });
   }
@@ -79,10 +90,15 @@ export class VenteDetailsComponent implements OnInit {
     if (!this.vente) return;
 
     this.confirmationService.confirm({
-      message: `Annuler la vente ${this.vente.numero} ?`,
-      header: 'Confirmation',
+      message: `Êtes-vous sûr de vouloir annuler la vente ${this.vente.numero} ?`,
+      header: 'Confirmation d\'annulation',
       icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Oui, annuler',
+      rejectLabel: 'Non',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
+        this.loading = true;
         this.venteService.annuler(this.vente!.id!).subscribe({
           next: () => {
             this.messageService.add({
@@ -90,16 +106,21 @@ export class VenteDetailsComponent implements OnInit {
               summary: 'Succès',
               detail: 'Vente annulée avec succès'
             });
+            this.loading = false;
             this.loadVente(this.vente!.id!);
           },
-          error: () => {
+          error: (error) => {
             this.messageService.add({
               severity: 'error',
               summary: 'Erreur',
-              detail: 'Erreur lors de l\'annulation'
+              detail: error.error?.message || 'Erreur lors de l\'annulation'
             });
+            this.loading = false;
           }
         });
+      },
+      reject: () => {
+        // L'utilisateur a refusé l'annulation
       }
     });
   }
@@ -113,12 +134,12 @@ export class VenteDetailsComponent implements OnInit {
   }
 
   getStatutSeverity(statut: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' {
-  const severityMap: Record<string, 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast'> = {
-    'Brouillon': 'info',
-    'Validée': 'warning',
-    'Livrée': 'success',
-    'Annulée': 'danger'
-  };
-  return severityMap[statut] || 'info';
-}
+    const severityMap: Record<string, 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast'> = {
+      'Brouillon': 'info',
+      'Validée': 'warning',
+      'Livrée': 'success',
+      'Annulée': 'danger'
+    };
+    return severityMap[statut] || 'info';
+  }
 }

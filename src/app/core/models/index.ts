@@ -168,6 +168,7 @@ export interface Facture {
 }
 
 export interface Paiement {
+  facture_fournisseur_id: Fournisseur | undefined;
   id?: number;
   facture_id?: number;
   facture?: Facture;

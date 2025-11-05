@@ -40,8 +40,7 @@ import { MessageService } from 'primeng/api';
               <td>{{ facture.date_echeance | date:'dd/MM/yyyy' }}</td>
               <td>{{ formatCurrency(facture.montant_ttc) }}</td>
               <td>{{ formatCurrency(facture.montant_paye || 0) }}</td>
-              <td>{{ formatCurrency(facture.montant_restant || facture.montant_ttc) }}</td>
-              <td>
+              <td>{{ facture.montant_restant || (facture.montant_ttc - facture.montant_paye) }}</td>              <td>
                 <p-tag [value]="facture.statut" [severity]="getStatutSeverity(facture.statut)"></p-tag>
               </td>
             </tr>

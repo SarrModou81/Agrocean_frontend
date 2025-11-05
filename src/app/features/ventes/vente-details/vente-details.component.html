@@ -13,6 +13,7 @@
           label="Retour"
           class="p-button-secondary"
           (click)="retour()"
+          [disabled]="loading"
         ></button>
         <button 
           pButton 
@@ -20,14 +21,18 @@
           label="Valider"
           class="p-button-success"
           (click)="valider()"
+          [disabled]="loading"
+          [loading]="loading"
           *ngIf="vente.statut === 'Brouillon'"
         ></button>
         <button 
           pButton 
           icon="pi pi-times" 
-          label="Annuler"
+          label="Annuler la vente"
           class="p-button-danger"
           (click)="annuler()"
+          [disabled]="loading"
+          [loading]="loading"
           *ngIf="vente.statut !== 'Annulée' && vente.statut !== 'Livrée'"
         ></button>
       </div>
