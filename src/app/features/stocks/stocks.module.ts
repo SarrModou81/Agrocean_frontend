@@ -20,16 +20,21 @@ import { CalendarModule } from 'primeng/calendar';
 import { MessageModule } from 'primeng/message';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { CheckboxModule } from 'primeng/checkbox';
 
 // Components
 import { StocksListComponent } from './stocks-list/stocks-list.component';
 import { StockFormComponent } from './stock-form/stock-form.component';
 import { StockAjustementComponent } from './stock-ajustement/stock-ajustement.component';
 import { StockInventaireComponent } from './stock-inventaire/stock-inventaire.component';
+import { StockMouvementsComponent } from './stock-mouvements/stock-mouvements.component';
+import { StockAlertesComponent } from './stock-alertes/stock-alertes.component';
 
 const routes: Routes = [
   { path: '', component: StocksListComponent },
-  { path: 'inventaire', component: StockInventaireComponent }
+  { path: 'inventaire', component: StockInventaireComponent },
+  { path: 'mouvements', component: StockMouvementsComponent },
+  { path: 'alertes', component: StockAlertesComponent }
 ];
 
 @NgModule({
@@ -37,7 +42,9 @@ const routes: Routes = [
     StocksListComponent,
     StockFormComponent,
     StockAjustementComponent,
-    StockInventaireComponent
+    StockInventaireComponent,
+    StockMouvementsComponent,
+    StockAlertesComponent
   ],
   imports: [
     CommonModule,
@@ -59,7 +66,8 @@ const routes: Routes = [
     CalendarModule,
     MessageModule,
     InputTextareaModule,
-    ProgressBarModule
+    ProgressBarModule,
+    CheckboxModule
   ]
 })
 export class StocksModule { }

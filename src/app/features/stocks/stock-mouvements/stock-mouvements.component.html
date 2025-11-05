@@ -1,0 +1,121 @@
+<div class="mouvements-container">
+  <p-card>
+    <div class="header-section">
+      <h2>Mouvements de Stock</h2>
+      <div class="actions">
+        <button 
+          pButton 
+          icon="pi pi-refresh" 
+          label="Actualiser"
+          (click)="loadMouvements()"
+          [loading]="loading"
+        ></button>
+        <button 
+          pButton 
+          icon="pi pi-file-excel" 
+          label="Exporter Excel"
+          class="p-button-success"
+          (click)="exportExcel()"
+        ></button>
+      </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="filters-section">
+      <div class="filter-group">
+        <label>Date Début</label>
+        <p-calendar 
+          [(ngModel)]="dateDebut"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          placeholder="jj/mm/aaaa"
+        ></p-calendar>
+      </div>
+
+      <div class="filter-group">
+        <label>Date Fin</label>
+        <p-calendar 
+          [(ngModel)]="dateFin"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          placeholder="jj/mm/aaaa"
+        ></p-calendar>
+      </div>
+
+      <div class="filter-actions">
+        <button 
+          pButton 
+          icon="pi pi-search" 
+          label="Filtrer"
+          (click)="applyFilters()"
+        ></button>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="loading-section">
+      <p-progressBar mode="indeterminate"></p-progressBar>
+    </div>
+
+    <!-- Table des mouvements -->
+    <div *ngIf="!loading && mouvements.length > 0">
+      <p-table 
+        [value]="mouvements" 
+        [paginator]="true"
+        [rows]="20"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} mouvements"
+        responsiveLayout="scroll"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Produit</th>
+            <th>Entrepôt</th>
+            <th>Lot</th>
+            <th>Quantité</th>
+            <th>Motif</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-mouvement>
+          <tr>
+            <td>{{ mouvement.date | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              <p-tag 
+                [value]="mouvement.type" 
+                [severity]="getTypeMouvementSeverity(mouvement.type)"
+              ></p-tag>
+            </td>
+            <td>
+              <strong>{{ mouvement.produit?.nom }}</strong>
+              <br>
+              <small>{{ mouvement.produit?.code }}</small>
+            </td>
+            <td>{{ mouvement.entrepot?.nom }}</td>
+            <td><code>{{ mouvement.numero_lot }}</code></td>
+            <td>
+              <span [class.positive]="mouvement.quantite > 0" [class.negative]="mouvement.quantite < 0">
+                {{ mouvement.quantite > 0 ? '+' : '' }}{{ mouvement.quantite }}
+              </span>
+            </td>
+            <td>{{ mouvement.motif || '-' }}</td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" class="text-center">Aucun mouvement trouvé</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <div *ngIf="!loading && mouvements.length === 0" class="empty-state">
+      <p><i class="pi pi-inbox" style="font-size: 3rem; color: #ccc;"></i></p>
+      <p>Aucun mouvement de stock trouvé pour cette période</p>
+    </div>
+  </p-card>
+</div>
+
+<p-toast></p-toast>

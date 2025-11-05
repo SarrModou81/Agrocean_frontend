@@ -1,107 +1,176 @@
 <div class="dashboard-container">
-  <!-- Header -->
-  <div class="dashboard-header">
-    <div>
-      <h1>Tableau de Bord</h1>
-      <p class="welcome-text" *ngIf="currentUser">
-        Bienvenue, <strong>{{ currentUser.prenom }} {{ currentUser.nom }}</strong> - 
-        <span class="role-badge">{{ getRoleDisplay() }}</span>
-      </p>
+  <!-- Animated Background Elements -->
+  <div class="background-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <!-- Header avec animation -->
+  <div class="dashboard-header fade-in">
+    <div class="header-content">
+      <div class="welcome-block">
+        <h1>
+          <i class="pi pi-chart-line header-icon"></i>
+          Tableau de Bord
+        </h1>
+        <p class="welcome-text" *ngIf="currentUser">
+          <span class="greeting">Bienvenue,</span>
+          <strong class="user-name">{{ currentUser.prenom }} {{ currentUser.nom }}</strong>
+          <span class="role-badge">
+            <i class="pi pi-shield"></i>
+            {{ getRoleDisplay() }}
+          </span>
+        </p>
+      </div>
+      <button 
+        pButton 
+        icon="pi pi-refresh" 
+        label="Actualiser" 
+        class="refresh-button"
+        (click)="loadDashboard()"
+        [loading]="loading"
+      ></button>
     </div>
-    <button 
-      pButton 
-      icon="pi pi-refresh" 
-      label="Actualiser" 
-      class="p-button-outlined"
-      (click)="loadDashboard()"
-      [loading]="loading"
-    ></button>
+    <div class="header-separator">
+      <span class="separator-line"></span>
+      <i class="pi pi-circle-fill separator-icon"></i>
+      <span class="separator-line"></span>
+    </div>
   </div>
 
   <!-- Loading -->
   <div class="loading-container" *ngIf="loading">
-    <p-progressBar mode="indeterminate"></p-progressBar>
+    <div class="loading-card">
+      <i class="pi pi-spin pi-spinner loading-icon"></i>
+      <p>Chargement des données...</p>
+    </div>
   </div>
 
-  <!-- Stats Cards -->
+  <!-- Stats Cards avec animations -->
   <div class="stats-grid" *ngIf="!loading && stats">
-    <p-card class="stat-card stat-card-primary">
+    <div class="stat-card stat-card-primary slide-in" style="--delay: 0.1s">
+      <div class="stat-glow"></div>
       <div class="stat-content">
-        <div class="stat-icon">
-          <i class="pi pi-shopping-cart"></i>
+        <div class="stat-icon-wrapper">
+          <div class="stat-icon">
+            <i class="pi pi-shopping-cart"></i>
+          </div>
         </div>
         <div class="stat-details">
-          <div class="stat-value">{{ formatCurrency(stats.ventes_jour) }}</div>
           <div class="stat-label">Ventes du jour</div>
+          <div class="stat-value">{{ formatCurrency(stats.ventes_jour) }}</div>
+          <div class="stat-trend positive">
+            <i class="pi pi-arrow-up"></i>
+            <span>+12%</span>
+          </div>
         </div>
       </div>
-    </p-card>
+    </div>
 
-    <p-card class="stat-card stat-card-success">
+    <div class="stat-card stat-card-success slide-in" style="--delay: 0.2s">
+      <div class="stat-glow"></div>
       <div class="stat-content">
-        <div class="stat-icon">
-          <i class="pi pi-chart-line"></i>
+        <div class="stat-icon-wrapper">
+          <div class="stat-icon">
+            <i class="pi pi-chart-line"></i>
+          </div>
         </div>
         <div class="stat-details">
-          <div class="stat-value">{{ formatCurrency(stats.ventes_mois) }}</div>
           <div class="stat-label">Ventes du mois</div>
+          <div class="stat-value">{{ formatCurrency(stats.ventes_mois) }}</div>
+          <div class="stat-trend positive">
+            <i class="pi pi-arrow-up"></i>
+            <span>+8%</span>
+          </div>
         </div>
       </div>
-    </p-card>
+    </div>
 
-    <p-card class="stat-card stat-card-warning">
+    <div class="stat-card stat-card-warning slide-in" style="--delay: 0.3s">
+      <div class="stat-glow"></div>
       <div class="stat-content">
-        <div class="stat-icon">
-          <i class="pi pi-clock"></i>
+        <div class="stat-icon-wrapper">
+          <div class="stat-icon">
+            <i class="pi pi-clock"></i>
+          </div>
         </div>
         <div class="stat-details">
-          <div class="stat-value">{{ stats.commandes_attente }}</div>
           <div class="stat-label">Commandes en attente</div>
+          <div class="stat-value">{{ stats.commandes_attente }}</div>
+          <div class="stat-badge">
+            <span>À traiter</span>
+          </div>
         </div>
       </div>
-    </p-card>
+    </div>
 
-    <p-card class="stat-card stat-card-danger">
+    <div class="stat-card stat-card-danger slide-in" style="--delay: 0.4s">
+      <div class="stat-glow"></div>
       <div class="stat-content">
-        <div class="stat-icon">
-          <i class="pi pi-bell"></i>
+        <div class="stat-icon-wrapper">
+          <div class="stat-icon">
+            <i class="pi pi-bell"></i>
+          </div>
         </div>
         <div class="stat-details">
-          <div class="stat-value">{{ stats.alertes_actives }}</div>
           <div class="stat-label">Alertes actives</div>
+          <div class="stat-value">{{ stats.alertes_actives }}</div>
+          <div class="stat-badge danger">
+            <span>Urgent</span>
+          </div>
         </div>
       </div>
-    </p-card>
+    </div>
 
-    <p-card class="stat-card stat-card-info">
+    <div class="stat-card stat-card-info slide-in" style="--delay: 0.5s">
+      <div class="stat-glow"></div>
       <div class="stat-content">
-        <div class="stat-icon">
-          <i class="pi pi-exclamation-triangle"></i>
+        <div class="stat-icon-wrapper">
+          <div class="stat-icon">
+            <i class="pi pi-exclamation-triangle"></i>
+          </div>
         </div>
         <div class="stat-details">
-          <div class="stat-value">{{ stats.produits_rupture }}</div>
           <div class="stat-label">Produits en rupture</div>
+          <div class="stat-value">{{ stats.produits_rupture }}</div>
+          <div class="stat-badge warning">
+            <span>Stock bas</span>
+          </div>
         </div>
       </div>
-    </p-card>
+    </div>
 
-    <p-card class="stat-card stat-card-secondary">
+    <div class="stat-card stat-card-secondary slide-in" style="--delay: 0.6s">
+      <div class="stat-glow"></div>
       <div class="stat-content">
-        <div class="stat-icon">
-          <i class="pi pi-box"></i>
+        <div class="stat-icon-wrapper">
+          <div class="stat-icon">
+            <i class="pi pi-box"></i>
+          </div>
         </div>
         <div class="stat-details">
-          <div class="stat-value">{{ formatCurrency(stats.valeur_stock) }}</div>
           <div class="stat-label">Valeur du stock</div>
+          <div class="stat-value">{{ formatCurrency(stats.valeur_stock) }}</div>
+          <div class="stat-trend neutral">
+            <i class="pi pi-minus"></i>
+            <span>Stable</span>
+          </div>
         </div>
       </div>
-    </p-card>
+    </div>
   </div>
 
   <!-- Charts Section -->
-  <div class="charts-grid" *ngIf="!loading && stats">
-    <!-- Évolution des ventes -->
-    <p-card header="Évolution des Ventes (7 derniers jours)" class="chart-card">
+  <div class="charts-section" *ngIf="!loading && stats">
+    <div class="chart-card slide-in" style="--delay: 0.7s">
+      <div class="card-header">
+        <div class="header-left">
+          <i class="pi pi-chart-bar header-icon"></i>
+          <h3>Évolution des Ventes</h3>
+        </div>
+        <span class="header-subtitle">7 derniers jours</span>
+      </div>
       <div class="chart-container">
         <p-chart 
           type="line" 
@@ -110,10 +179,16 @@
           height="300px"
         ></p-chart>
       </div>
-    </p-card>
+    </div>
 
-    <!-- Top produits -->
-    <p-card header="Top 5 Produits Vendus" class="chart-card">
+    <div class="chart-card slide-in" style="--delay: 0.8s">
+      <div class="card-header">
+        <div class="header-left">
+          <i class="pi pi-trophy header-icon"></i>
+          <h3>Top 5 Produits</h3>
+        </div>
+        <span class="header-subtitle">Les plus vendus</span>
+      </div>
       <div class="chart-container">
         <p-chart 
           type="bar" 
@@ -122,100 +197,174 @@
           height="300px"
         ></p-chart>
       </div>
-    </p-card>
+    </div>
   </div>
 
   <!-- Top Products Table -->
-  <div class="table-section" *ngIf="!loading && stats && stats.top_produits.length > 0">
-    <p-card header="Produits les Plus Vendus">
-      <p-table [value]="stats.top_produits" [paginator]="false">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Produit</th>
-            <th>Quantité Vendue</th>
-            <th>Montant Total</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-produit>
-          <tr>
-            <td>
-              <span class="product-name">{{ produit.produit?.nom || 'N/A' }}</span>
-            </td>
-            <td>
-              <p-tag [value]="produit.total_quantite" severity="info"></p-tag>
-            </td>
-            <td>
-              <strong>{{ formatCurrency(produit.total_montant) }}</strong>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td colspan="3" class="text-center">Aucun produit vendu</td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-card>
+  <div class="table-section slide-in" style="--delay: 0.9s" *ngIf="!loading && stats && stats.top_produits.length > 0">
+    <div class="section-card">
+      <div class="section-header">
+        <div class="header-left">
+          <i class="pi pi-star header-icon"></i>
+          <h3>Produits les Plus Vendus</h3>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <p-table [value]="stats.top_produits" [paginator]="false">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>
+                <i class="pi pi-box"></i>
+                Produit
+              </th>
+              <th>
+                <i class="pi pi-hashtag"></i>
+                Quantité
+              </th>
+              <th>
+                <i class="pi pi-dollar"></i>
+                Montant Total
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-produit let-rowIndex="rowIndex">
+            <tr class="table-row-animated" [style.--row-index]="rowIndex">
+              <td>
+                <div class="product-cell">
+                  <span class="rank-badge">{{ rowIndex + 1 }}</span>
+                  <span class="product-name">{{ produit.produit?.nom || 'N/A' }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="quantity-badge">
+                  <i class="pi pi-shopping-cart"></i>
+                  <span>{{ produit.total_quantite }}</span>
+                </div>
+              </td>
+              <td>
+                <strong class="amount">{{ formatCurrency(produit.total_montant) }}</strong>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="3" class="text-center empty-message">
+                <i class="pi pi-inbox"></i>
+                <p>Aucun produit vendu</p>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
   </div>
 
   <!-- Quick Actions -->
-  <div class="quick-actions" *ngIf="!loading">
-    <p-card header="Actions Rapides">
+  <div class="quick-actions-section slide-in" style="--delay: 1s" *ngIf="!loading">
+    <div class="section-card">
+      <div class="section-header">
+        <div class="header-left">
+          <i class="pi pi-bolt header-icon"></i>
+          <h3>Actions Rapides</h3>
+        </div>
+      </div>
       <div class="actions-grid">
         <button 
           pButton 
-          icon="pi pi-plus" 
-          label="Nouvelle Vente" 
-          class="p-button-success"
+          class="action-button action-success"
           routerLink="/ventes/create"
           *ngIf="authService.hasRole(['Commercial', 'Administrateur'])"
-        ></button>
+        >
+          <div class="action-icon">
+            <i class="pi pi-plus"></i>
+          </div>
+          <div class="action-content">
+            <span class="action-label">Nouvelle Vente</span>
+            <span class="action-subtitle">Créer une vente</span>
+          </div>
+          <i class="pi pi-arrow-right action-arrow"></i>
+        </button>
 
         <button 
           pButton 
-          icon="pi pi-box" 
-          label="Gérer Stocks" 
-          class="p-button-primary"
+          class="action-button action-primary"
           routerLink="/stocks"
           *ngIf="authService.hasRole(['GestionnaireStock', 'Administrateur'])"
-        ></button>
+        >
+          <div class="action-icon">
+            <i class="pi pi-box"></i>
+          </div>
+          <div class="action-content">
+            <span class="action-label">Gérer Stocks</span>
+            <span class="action-subtitle">Inventaire & ajustements</span>
+          </div>
+          <i class="pi pi-arrow-right action-arrow"></i>
+        </button>
 
         <button 
           pButton 
-          icon="pi pi-shopping-bag" 
-          label="Nouvelle Commande" 
-          class="p-button-info"
+          class="action-button action-info"
           routerLink="/commandes-achat/create"
           *ngIf="authService.hasRole(['AgentApprovisionnement', 'Administrateur'])"
-        ></button>
+        >
+          <div class="action-icon">
+            <i class="pi pi-shopping-bag"></i>
+          </div>
+          <div class="action-content">
+            <span class="action-label">Nouvelle Commande</span>
+            <span class="action-subtitle">Commander des produits</span>
+          </div>
+          <i class="pi pi-arrow-right action-arrow"></i>
+        </button>
 
         <button 
           pButton 
-          icon="pi pi-dollar" 
-          label="Enregistrer Paiement" 
-          class="p-button-warning"
+          class="action-button action-warning"
           routerLink="/finances/paiements"
           *ngIf="authService.hasRole(['Comptable', 'Administrateur'])"
-        ></button>
+        >
+          <div class="action-icon">
+            <i class="pi pi-dollar"></i>
+          </div>
+          <div class="action-content">
+            <span class="action-label">Enregistrer Paiement</span>
+            <span class="action-subtitle">Gérer les paiements</span>
+          </div>
+          <i class="pi pi-arrow-right action-arrow"></i>
+        </button>
 
         <button 
           pButton 
-          icon="pi pi-users" 
-          label="Gérer Clients" 
-          class="p-button-secondary"
+          class="action-button action-secondary"
           routerLink="/clients"
           *ngIf="authService.hasRole(['Commercial', 'Administrateur'])"
-        ></button>
+        >
+          <div class="action-icon">
+            <i class="pi pi-users"></i>
+          </div>
+          <div class="action-content">
+            <span class="action-label">Gérer Clients</span>
+            <span class="action-subtitle">Liste des clients</span>
+          </div>
+          <i class="pi pi-arrow-right action-arrow"></i>
+        </button>
 
         <button 
           pButton 
-          icon="pi pi-chart-bar" 
-          label="Voir Rapports" 
-          class="p-button-help"
+          class="action-button action-danger"
           routerLink="/rapports"
           *ngIf="authService.hasRole(['Administrateur'])"
-        ></button>
+        >
+          <div class="action-icon">
+            <i class="pi pi-chart-bar"></i>
+          </div>
+          <div class="action-content">
+            <span class="action-label">Voir Rapports</span>
+            <span class="action-subtitle">Analyses détaillées</span>
+          </div>
+          <i class="pi pi-arrow-right action-arrow"></i>
+        </button>
       </div>
-    </p-card>
+    </div>
   </div>
 </div>

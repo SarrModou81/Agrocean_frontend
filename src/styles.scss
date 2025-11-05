@@ -1,544 +1,112 @@
-/* src/styles.scss - Styles Globaux AGROCEAN */
+// ==========================================
+// AGROCEAN - Variables Globales
+// Système de Design basé sur le Logo
+// ==========================================
 
-// ========== VARIABLES DE COULEURS ==========
-$primary-green: #2d6a4f;
-$secondary-green: #40916c;
-$light-green: #52b788;
-$very-light-green: #b7e4c7;
-$accent-green: #1b4332;
+// === COULEURS PRINCIPALES (Logo) ===
+$primary-green: #52b788;
+$dark-green: #2d6a4f;
+$light-green: #b7e4c7;
+$very-light-green: #d8f3dc;
+$accent-green: #40916c;
+
+$primary-blue: #4895d1;
+$dark-blue: #2b6a9d;
+$light-blue: #7ab8e8;
+$ocean-blue: #1e5a8e;
+
+// === COULEURS NEUTRES ===
 $white: #ffffff;
-$off-white: #f8f9fa;
-$text-dark: #1b4332;
-$text-gray: #52796f;
-$border-color: #d8f3dc;
-$success: #2d6a4f;
-$warning: #f77f00;
-$danger: #d62828;
-$info: #52b788;
+$off-white: #f8fafb;
+$gray-light: #e9ecef;
+$gray-medium: #6c757d;
+$gray-dark: #495057;
 
-// ========== IMPORTS PRIMENG ==========
-@import "primeng/resources/themes/lara-light-green/theme.css";
-@import "primeng/resources/primeng.css";
-@import "primeicons/primeicons.css";
+// === COULEURS D'ÉTAT ===
+$success-green: #27ae60;
+$error-red: #e74c3c;
+$warning-orange: #f39c12;
+$info-blue: #3498db;
 
-// ========== RESET & BASE ==========
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+// === ESPACEMENTS ===
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-xxl: 3rem;
+
+// === BORDER RADIUS ===
+$radius-sm: 8px;
+$radius-md: 16px;
+$radius-lg: 24px;
+$radius-xl: 32px;
+$radius-round: 50%;
+
+// === OMBRES ===
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+$shadow-md: 0 10px 30px rgba(0, 0, 0, 0.08);
+$shadow-lg: 0 25px 60px rgba(0, 0, 0, 0.15);
+$shadow-green: 0 10px 30px rgba(82, 183, 136, 0.3);
+$shadow-blue: 0 10px 30px rgba(72, 149, 209, 0.3);
+
+// === TRANSITIONS ===
+$transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+// === BREAKPOINTS ===
+$mobile: 480px;
+$tablet: 768px;
+$desktop: 1024px;
+$wide: 1440px;
+
+// === MIXINS ===
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-body {
-  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: $off-white;
-  color: $text-dark;
-  line-height: 1.6;
+@mixin glassmorphism {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-// ========== CARDS ==========
-::ng-deep {
-  .p-card {
-    background: $white;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(45, 106, 79, 0.08);
-    border: 1px solid $border-color;
-    transition: all 0.3s ease;
-    overflow: hidden;
-
-    &:hover {
-      box-shadow: 0 8px 24px rgba(45, 106, 79, 0.12);
-      transform: translateY(-2px);
-    }
-
-    .p-card-header {
-      background: linear-gradient(135deg, $primary-green 0%, $secondary-green 100%);
-      color: $white;
-      padding: 1.5rem;
-      border-bottom: 3px solid $accent-green;
-    }
-
-    .p-card-title {
-      color: $primary-green;
-      font-weight: 700;
-      font-size: 1.25rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .p-card-body {
-      padding: 1.5rem;
-    }
-
-    .p-card-content {
-      padding: 0;
-    }
-
-    .p-card-footer {
-      padding: 1rem 1.5rem;
-      background: $off-white;
-      border-top: 1px solid $border-color;
-    }
-  }
-
-  // Stats Cards
-  .stat-card {
-    border: none;
-    border-left: 4px solid $primary-green;
-    
-    &.stat-card-primary {
-      background: linear-gradient(135deg, $primary-green 0%, $secondary-green 100%);
-      border-left-color: $accent-green;
-      
-      .stat-icon {
-        background: rgba(255, 255, 255, 0.2);
-      }
-    }
-
-    &.stat-card-success {
-      background: linear-gradient(135deg, $light-green 0%, $very-light-green 100%);
-      border-left-color: $secondary-green;
-    }
-
-    &.stat-card-warning {
-      background: linear-gradient(135deg, #f77f00 0%, #fcbf49 100%);
-      border-left-color: #d62828;
-    }
-
-    &.stat-card-danger {
-      background: linear-gradient(135deg, #d62828 0%, #f77f00 100%);
-      border-left-color: #9d0208;
-    }
-
-    &.stat-card-info {
-      background: linear-gradient(135deg, $light-green 0%, $very-light-green 100%);
-      border-left-color: $primary-green;
-    }
-
-    &.stat-card-secondary {
-      background: linear-gradient(135deg, $very-light-green 0%, $white 100%);
-      border-left-color: $light-green;
-      color: $text-dark;
-    }
-  }
+@mixin gradient-primary {
+  background: linear-gradient(135deg, $primary-green 0%, $primary-blue 100%);
 }
 
-// ========== TABLES ==========
-::ng-deep {
-  .p-datatable {
-    background: $white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 16px rgba(45, 106, 79, 0.08);
-
-    .p-datatable-header {
-      background: linear-gradient(135deg, $very-light-green 0%, $white 100%);
-      border-bottom: 2px solid $primary-green;
-      padding: 1rem 1.5rem;
-      color: $text-dark;
-      font-weight: 600;
-    }
-
-    .p-datatable-thead > tr > th {
-      background: linear-gradient(135deg, $primary-green 0%, $secondary-green 100%);
-      color: $white;
-      font-weight: 700;
-      padding: 1rem 1.5rem;
-      border: none;
-      text-transform: uppercase;
-      font-size: 0.85rem;
-      letter-spacing: 0.5px;
-    }
-
-    .p-datatable-tbody > tr {
-      transition: all 0.3s ease;
-
-      &:nth-child(even) {
-        background: $off-white;
-      }
-
-      &:hover {
-        background: $very-light-green !important;
-        transform: scale(1.01);
-        box-shadow: 0 4px 12px rgba(45, 106, 79, 0.1);
-      }
-
-      > td {
-        padding: 1rem 1.5rem;
-        border-bottom: 1px solid $border-color;
-        color: $text-dark;
-
-        code {
-          background: linear-gradient(135deg, $very-light-green 0%, $light-green 100%);
-          color: $white;
-          padding: 0.35rem 0.75rem;
-          border-radius: 6px;
-          font-size: 0.85rem;
-          font-weight: 600;
-        }
-
-        strong {
-          color: $primary-green;
-        }
-      }
-    }
-
-    .p-paginator {
-      background: $off-white;
-      border-top: 2px solid $border-color;
-      padding: 1rem;
-
-      .p-paginator-pages .p-paginator-page {
-        color: $primary-green;
-        border-radius: 6px;
-
-        &.p-highlight {
-          background: linear-gradient(135deg, $primary-green 0%, $secondary-green 100%);
-          color: $white;
-        }
-
-        &:hover {
-          background: $very-light-green;
-        }
-      }
-    }
-  }
+@mixin gradient-text {
+  background: linear-gradient(135deg, $accent-green 0%, $primary-blue 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-// ========== BUTTONS ==========
-::ng-deep {
-  .p-button {
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: none;
-    box-shadow: 0 2px 8px rgba(45, 106, 79, 0.15);
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(45, 106, 79, 0.25);
-    }
-
-    &.p-button-primary {
-      background: linear-gradient(135deg, $primary-green 0%, $secondary-green 100%);
-      
-      &:hover {
-        background: linear-gradient(135deg, $secondary-green 0%, $light-green 100%);
-      }
-    }
-
-    &.p-button-success {
-      background: linear-gradient(135deg, $light-green 0%, $very-light-green 100%);
-      
-      &:hover {
-        background: linear-gradient(135deg, $secondary-green 0%, $light-green 100%);
-      }
-    }
-
-    &.p-button-secondary {
-      background: linear-gradient(135deg, $text-gray 0%, $text-dark 100%);
-    }
-
-    &.p-button-warning {
-      background: linear-gradient(135deg, #f77f00 0%, #fcbf49 100%);
-    }
-
-    &.p-button-danger {
-      background: linear-gradient(135deg, #d62828 0%, #f77f00 100%);
-    }
-
-    &.p-button-info {
-      background: linear-gradient(135deg, $light-green 0%, $very-light-green 100%);
-    }
-
-    &.p-button-outlined {
-      background: transparent;
-      border: 2px solid $primary-green;
-      color: $primary-green;
-
-      &:hover {
-        background: $very-light-green;
-      }
-    }
-
-    &.p-button-text {
-      background: transparent;
-      color: $primary-green;
-      box-shadow: none;
-
-      &:hover {
-        background: $very-light-green;
-      }
-    }
-  }
+@mixin smooth-transition($property: all) {
+  transition: $property $transition-normal;
 }
 
-// ========== FORMS ==========
-::ng-deep {
-  .p-inputtext,
-  .p-dropdown,
-  .p-calendar,
-  .p-inputnumber-input,
-  .p-inputtextarea {
-    border: 2px solid $border-color;
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    transition: all 0.3s ease;
-    background: $white;
+@mixin card-modern {
+  @include glassmorphism;
+  border-radius: $radius-xl;
+  padding: $spacing-xxl;
+  box-shadow: $shadow-lg, $shadow-green, inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  position: relative;
+  overflow: hidden;
 
-    &:focus {
-      border-color: $primary-green;
-      box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
-    }
-
-    &:hover {
-      border-color: $light-green;
-    }
-
-    &.ng-invalid.ng-touched {
-      border-color: $danger;
-    }
-  }
-
-  .p-dropdown-panel,
-  .p-calendar-panel {
-    border: 2px solid $border-color;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(45, 106, 79, 0.15);
-
-    .p-dropdown-item,
-    .p-datepicker-day {
-      &:hover,
-      &.p-highlight {
-        background: $very-light-green;
-        color: $primary-green;
-      }
-    }
-  }
-
-  .field {
-    label {
-      color: $primary-green;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-  }
-}
-
-// ========== TAGS & BADGES ==========
-::ng-deep {
-  .p-tag {
-    border-radius: 6px;
-    padding: 0.35rem 0.75rem;
-    font-weight: 600;
-    font-size: 0.85rem;
-
-    &.p-tag-success {
-      background: linear-gradient(135deg, $light-green 0%, $very-light-green 100%);
-      color: $white;
-    }
-
-    &.p-tag-info {
-      background: linear-gradient(135deg, $primary-green 0%, $secondary-green 100%);
-      color: $white;
-    }
-
-    &.p-tag-warning {
-      background: linear-gradient(135deg, #f77f00 0%, #fcbf49 100%);
-      color: $white;
-    }
-
-    &.p-tag-danger {
-      background: linear-gradient(135deg, #d62828 0%, #f77f00 100%);
-      color: $white;
-    }
-  }
-
-  .p-badge {
-    border-radius: 12px;
-    padding: 0.35rem 0.75rem;
-    font-weight: 700;
-
-    &.p-badge-success {
-      background: $light-green;
-    }
-
-    &.p-badge-info {
-      background: $primary-green;
-    }
-
-    &.p-badge-warning {
-      background: #f77f00;
-    }
-
-    &.p-badge-danger {
-      background: #d62828;
-    }
-  }
-}
-
-// ========== DIALOGS ==========
-::ng-deep {
-  .p-dialog {
-    border-radius: 16px;
-    box-shadow: 0 12px 48px rgba(45, 106, 79, 0.2);
-    border: 2px solid $border-color;
-
-    .p-dialog-header {
-      background: linear-gradient(135deg, $primary-green 0%, $secondary-green 100%);
-      color: $white;
-      border-radius: 14px 14px 0 0;
-      padding: 1.5rem;
-      border-bottom: 3px solid $accent-green;
-
-      .p-dialog-title {
-        font-weight: 700;
-        font-size: 1.25rem;
-      }
-
-      .p-dialog-header-icons button {
-        color: $white;
-
-        &:hover {
-          background: rgba(255, 255, 255, 0.2);
-        }
-      }
-    }
-
-    .p-dialog-content {
-      padding: 2rem;
-      background: $white;
-    }
-
-    .p-dialog-footer {
-      padding: 1rem 2rem;
-      background: $off-white;
-      border-top: 1px solid $border-color;
-    }
-  }
-}
-
-// ========== MESSAGES & TOASTS ==========
-::ng-deep {
-  .p-toast {
-    .p-toast-message {
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(45, 106, 79, 0.15);
-
-      &.p-toast-message-success {
-        background: linear-gradient(135deg, $light-green 0%, $very-light-green 100%);
-        border-left: 6px solid $primary-green;
-      }
-
-      &.p-toast-message-info {
-        background: linear-gradient(135deg, $primary-green 0%, $secondary-green 100%);
-        border-left: 6px solid $accent-green;
-      }
-
-      &.p-toast-message-warn {
-        background: linear-gradient(135deg, #f77f00 0%, #fcbf49 100%);
-        border-left: 6px solid #d62828;
-      }
-
-      &.p-toast-message-error {
-        background: linear-gradient(135deg, #d62828 0%, #f77f00 100%);
-        border-left: 6px solid #9d0208;
-      }
-    }
-  }
-
-  .p-message {
-    border-radius: 8px;
-    border-width: 0 0 0 4px;
-
-    &.p-message-success {
-      background: $very-light-green;
-      border-color: $primary-green;
-      color: $text-dark;
-    }
-
-    &.p-message-info {
-      background: $very-light-green;
-      border-color: $secondary-green;
-      color: $text-dark;
-    }
-  }
-}
-
-// ========== PROGRESS BARS ==========
-::ng-deep {
-  .p-progressbar {
-    border-radius: 8px;
-    background: $border-color;
-
-    .p-progressbar-value {
-      background: linear-gradient(90deg, $primary-green 0%, $light-green 100%);
-    }
-  }
-}
-
-// ========== UTILITY CLASSES ==========
-.text-center {
-  text-align: center;
-}
-
-.text-green {
-  color: $primary-green;
-}
-
-.bg-green {
-  background: $primary-green;
-}
-
-.border-green {
-  border-color: $primary-green;
-}
-
-// ========== ANIMATIONS ==========
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.animate-fade {
-  animation: fadeInUp 0.6s ease;
-}
-
-.animate-slide {
-  animation: slideInRight 0.6s ease;
-}
-
-// ========== SCROLLBAR ==========
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: $off-white;
-}
-
-::-webkit-scrollbar-thumb {
-  background: $light-green;
-  border-radius: 5px;
-
-  &:hover {
-    background: $primary-green;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    @include gradient-primary;
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
   }
 }

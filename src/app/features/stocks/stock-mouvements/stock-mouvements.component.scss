@@ -1,0 +1,88 @@
+.mouvements-container {
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h2 {
+      margin: 0;
+      color: #495057;
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+  }
+
+  .filters-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) auto;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+
+    .filter-group {
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #495057;
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: flex-end;
+    }
+  }
+
+  .loading-section {
+    margin: 2rem 0;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+
+    p:first-child {
+      margin-bottom: 1rem;
+    }
+  }
+
+  ::ng-deep {
+    .p-datatable {
+      .positive {
+        color: #28a745;
+        font-weight: 600;
+      }
+
+      .negative {
+        color: #dc3545;
+        font-weight: 600;
+      }
+
+      code {
+        background: #e9ecef;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .mouvements-container {
+    .filters-section {
+      grid-template-columns: 1fr;
+    }
+  }
+}

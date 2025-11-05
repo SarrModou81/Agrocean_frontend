@@ -1,0 +1,144 @@
+<div class="alertes-container">
+  <p-card>
+    <div class="header-section">
+      <h2>Alertes de Stock</h2>
+      <div class="actions">
+        <button 
+          pButton 
+          icon="pi pi-refresh" 
+          label="Actualiser"
+          (click)="loadAlertes()"
+          [loading]="loading"
+        ></button>
+      </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="filters-section">
+      <div class="filter-group">
+        <label>Type d'alerte</label>
+        <p-dropdown 
+          [(ngModel)]="selectedType"
+          [options]="types"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Tous les types"
+          [showClear]="true"
+        ></p-dropdown>
+      </div>
+
+      <div class="filter-group">
+        <label>Statut</label>
+        <p-checkbox 
+          [(ngModel)]="showOnlyUnread"
+          [binary]="true"
+          label="Afficher uniquement les non lues"
+        ></p-checkbox>
+      </div>
+
+      <div class="filter-actions">
+        <button 
+          pButton 
+          icon="pi pi-search" 
+          label="Filtrer"
+          (click)="applyFilters()"
+        ></button>
+        <button 
+          pButton 
+          icon="pi pi-times" 
+          label="Effacer"
+          class="p-button-secondary"
+          (click)="clearFilters()"
+        ></button>
+      </div>
+    </div>
+
+    <!-- Table des alertes -->
+    <p-table 
+      [value]="alertes" 
+      [loading]="loading"
+      [paginator]="true"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords"
+      [lazy]="true"
+      (onLazyLoad)="onPageChange($event)"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} alertes"
+      responsiveLayout="scroll"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 50px;"></th>
+          <th>Type</th>
+          <th>Produit</th>
+          <th>Message</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-alerte>
+        <tr [class.unread]="!alerte.lue">
+          <td>
+            <i 
+              class="pi" 
+              [ngClass]="alerte.lue ? 'pi-envelope' : 'pi-envelope-open'"
+              [style.color]="alerte.lue ? '#6c757d' : '#667eea'"
+              style="font-size: 1.5rem;"
+            ></i>
+          </td>
+          <td>
+            <p-tag 
+              [value]="alerte.type" 
+              [severity]="getAlerteSeverity(alerte.type)"
+            ></p-tag>
+          </td>
+          <td>
+            <strong *ngIf="alerte.produit">{{ alerte.produit?.nom }}</strong>
+            <br *ngIf="alerte.produit">
+            <small *ngIf="alerte.produit">{{ alerte.produit?.code }}</small>
+            <span *ngIf="!alerte.produit">-</span>
+          </td>
+          <td>
+            <div class="message-cell">
+              <i class="pi pi-exclamation-triangle" style="color: #f59e0b; margin-right: 0.5rem;"></i>
+              {{ alerte.message }}
+            </div>
+          </td>
+          <td>{{ alerte.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <button 
+              pButton 
+              icon="pi pi-check" 
+              class="p-button-text p-button-success"
+              (click)="marquerLue(alerte)"
+              pTooltip="Marquer comme lue"
+              *ngIf="!alerte.lue"
+            ></button>
+            <button 
+              pButton 
+              icon="pi pi-trash" 
+              class="p-button-text p-button-danger"
+              (click)="supprimerAlerte(alerte)"
+              pTooltip="Supprimer"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center">
+            <div class="empty-state">
+              <i class="pi pi-check-circle" style="font-size: 3rem; color: #28a745;"></i>
+              <p>Aucune alerte active</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
