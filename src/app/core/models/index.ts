@@ -225,3 +225,23 @@ export interface PaginatedResponse<T> {
   per_page: number;
   total: number;
 }
+
+// src/app/core/models/index.ts - Ajouter
+export interface FactureFournisseur {
+  id?: number;
+  numero: string;
+  commande_achat_id: number;
+  commandeAchat?: CommandeAchat;
+  fournisseur_id: number;
+  fournisseur?: Fournisseur;
+  date_emission: string;
+  date_echeance: string;
+  montant_total: number;
+  statut: 'Impayée' | 'Partiellement Payée' | 'Payée' | 'Annulée';
+  created_at?: string;
+  updated_at?: string;
+  paiements?: Paiement[];
+  montant_paye?: number;
+  montant_restant?: number;
+  jours_retard?: number;
+}

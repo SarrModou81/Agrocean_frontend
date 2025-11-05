@@ -188,40 +188,48 @@
       </div>
 
       <!-- Quick Actions -->
-      <div class="quick-actions">
-        <p-card header="Actions Rapides">
-          <div class="actions-grid">
-            <button 
-              pButton 
-              icon="pi pi-dollar" 
-              label="Nouveau Paiement" 
-              class="p-button-success"
-              routerLink="/finances/paiements"
-            ></button>
-            <button 
-              pButton 
-              icon="pi pi-file" 
-              label="Voir Factures" 
-              class="p-button-primary"
-              routerLink="/finances/factures"
-            ></button>
-            <button 
-              pButton 
-              icon="pi pi-clock" 
-              label="Gérer Créances" 
-              class="p-button-warning"
-              routerLink="/finances/creances"
-            ></button>
-            <button 
-              pButton 
-              icon="pi pi-chart-bar" 
-              label="Voir Bilans" 
-              class="p-button-info"
-              routerLink="/finances/bilans"
-            ></button>
-          </div>
-        </p-card>
-      </div>
+      <!-- Dans finances-dashboard.component.html, dans la section quick-actions -->
+<div class="quick-actions">
+  <p-card header="Actions Rapides">
+    <div class="actions-grid">
+      <button 
+        pButton 
+        icon="pi pi-dollar" 
+        label="Nouveau Paiement" 
+        class="p-button-success"
+        routerLink="/finances/paiements"
+      ></button>
+      <button 
+        pButton 
+        icon="pi pi-file" 
+        label="Factures Clients" 
+        class="p-button-primary"
+        routerLink="/finances/factures"
+      ></button>
+      <button 
+        pButton 
+        icon="pi pi-file-export" 
+        label="Factures Fournisseurs" 
+        class="p-button-warning"
+        routerLink="/finances/factures-fournisseurs"
+      ></button>
+      <button 
+        pButton 
+        icon="pi pi-clock" 
+        label="Gérer Créances" 
+        class="p-button-info"
+        routerLink="/finances/creances"
+      ></button>
+      <button 
+        pButton 
+        icon="pi pi-chart-bar" 
+        label="Voir Bilans" 
+        class="p-button-secondary"
+        routerLink="/finances/bilans"
+      ></button>
+    </div>
+  </p-card>
+</div>
     </div>
 
     <!-- Message si pas de données -->

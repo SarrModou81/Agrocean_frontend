@@ -1,0 +1,56 @@
+// src/app/features/finances/factures-fournisseurs-list/factures-fournisseurs-list.component.scss
+.factures-fournisseurs-container {
+  .header-section {
+    margin-bottom: 2rem;
+    h2 {
+      margin: 0;
+      color: #495057;
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+  }
+
+  .filters-section {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+
+    .filter-group {
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #495057;
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-self: flex-end;
+    }
+  }
+
+  code {
+    background: #e9ecef;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .text-danger {
+    color: #dc3545;
+  }
+}
+
+@media (max-width: 768px) {
+  .factures-fournisseurs-container {
+    .filters-section {
+      grid-template-columns: 1fr;
+    }
+  }
+}

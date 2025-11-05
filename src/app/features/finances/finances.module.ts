@@ -1,3 +1,4 @@
+// src/app/features/finances/finances.module.ts
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
@@ -20,6 +21,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { ChartModule } from 'primeng/chart';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { AvatarModule } from 'primeng/avatar';
+import { SelectButtonModule } from 'primeng/selectbutton';  // AJOUTÉ
 
 // Services
 import { MessageService, ConfirmationService } from 'primeng/api';
@@ -29,6 +31,7 @@ import { FinancesDashboardComponent } from './finances-dashboard/finances-dashbo
 import { PaiementsListComponent } from './paiements-list/paiements-list.component';
 import { PaiementFormComponent } from './paiement-form/paiement-form.component';
 import { FacturesListComponent } from './factures-list/factures-list.component';
+import { FacturesFournisseursListComponent } from './factures-fournisseurs-list/factures-fournisseurs-list.component'; // AJOUTÉ
 import { CreancesListComponent } from './creances-list/creances-list.component';
 import { TresorerieComponent } from './tresorerie/tresorerie.component';
 import { BilansListComponent } from './bilans-list/bilans-list.component';
@@ -37,6 +40,7 @@ const routes: Routes = [
   { path: '', component: FinancesDashboardComponent },
   { path: 'paiements', component: PaiementsListComponent },
   { path: 'factures', component: FacturesListComponent },
+  { path: 'factures-fournisseurs', component: FacturesFournisseursListComponent }, // AJOUTÉ
   { path: 'creances', component: CreancesListComponent },
   { path: 'tresorerie', component: TresorerieComponent },
   { path: 'bilans', component: BilansListComponent }
@@ -48,6 +52,7 @@ const routes: Routes = [
     PaiementsListComponent,
     PaiementFormComponent,
     FacturesListComponent,
+    FacturesFournisseursListComponent, // AJOUTÉ
     CreancesListComponent,
     TresorerieComponent,
     BilansListComponent
@@ -72,7 +77,8 @@ const routes: Routes = [
     CalendarModule,
     ChartModule,
     ProgressBarModule,
-    AvatarModule
+    AvatarModule,
+    SelectButtonModule  // AJOUTÉ
   ],
   providers: [
     MessageService,

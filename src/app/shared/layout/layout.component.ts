@@ -202,6 +202,11 @@ export class LayoutComponent implements OnInit {
               routerLink: ['/finances/creances']
             },
             {
+              label: 'Factures fournisseurs',
+              icon: 'pi pi-file',
+              routerLink: ['/finances/factures-fournisseurs']
+            },
+            {
               label: 'Trésorerie',
               icon: 'pi pi-wallet',
               routerLink: ['/finances/tresorerie']

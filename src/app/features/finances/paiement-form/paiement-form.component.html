@@ -1,7 +1,23 @@
+<!-- src/app/features/finances/paiement-form/paiement-form.component.html -->
 <form [formGroup]="paiementForm" (ngSubmit)="onSubmit()">
   <div class="p-fluid">
-    <div class="field" *ngIf="!facture">
-      <label for="facture_id">Facture *</label>
+    <!-- Sélection Type de Paiement -->
+    <div class="field" *ngIf="!facture && !factureFournisseur">
+      <label>Type de Paiement *</label>
+      <p-selectButton 
+        [options]="[
+          { label: 'Client', value: 'client' },
+          { label: 'Fournisseur', value: 'fournisseur' }
+        ]"
+        [(ngModel)]="typePaiement"
+        [ngModelOptions]="{standalone: true}"
+        (onChange)="loadFactures(); initForm();"
+      ></p-selectButton>
+    </div>
+
+    <!-- Facture Client -->
+    <div class="field" *ngIf="typePaiement === 'client' && !facture">
+      <label for="facture_id">Facture Client *</label>
       <p-dropdown 
         id="facture_id"
         formControlName="facture_id"
@@ -18,6 +34,8 @@
             <strong>{{ facture.numero }}</strong>
             <br>
             <small>{{ facture.vente?.client?.nom }} - {{ formatCurrency(facture.montant_ttc) }}</small>
+            <br>
+            <small class="text-danger">Restant: {{ formatCurrency(facture.montant_restant) }}</small>
           </div>
         </ng-template>
       </p-dropdown>
@@ -26,11 +44,49 @@
       </small>
     </div>
 
-    <div class="facture-info" *ngIf="facture">
-      <h4>Facture {{ facture.numero }}</h4>
+    <!-- Facture Fournisseur -->
+    <div class="field" *ngIf="typePaiement === 'fournisseur' && !factureFournisseur">
+      <label for="facture_fournisseur_id">Facture Fournisseur *</label>
+      <p-dropdown 
+        id="facture_fournisseur_id"
+        formControlName="facture_fournisseur_id"
+        [options]="facturesFournisseurs"
+        optionLabel="numero"
+        optionValue="id"
+        placeholder="Sélectionner une facture fournisseur"
+        [filter]="true"
+        filterBy="numero"
+        [class.ng-invalid]="isFieldInvalid('facture_fournisseur_id')"
+      >
+        <ng-template let-facture pTemplate="item">
+          <div>
+            <strong>{{ facture.numero }}</strong>
+            <br>
+            <small>{{ facture.fournisseur?.nom }} - {{ formatCurrency(facture.montant_total) }}</small>
+            <br>
+            <small class="text-danger">Restant: {{ formatCurrency(facture.montant_restant) }}</small>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      <small class="p-error" *ngIf="isFieldInvalid('facture_fournisseur_id')">
+        La facture fournisseur est requise
+      </small>
+    </div>
+
+    <!-- Info Facture Client -->
+    <div class="facture-info" *ngIf="typePaiement === 'client' && facture">
+      <h4>Facture Client {{ facture.numero }}</h4>
       <p><strong>Client:</strong> {{ facture.vente?.client?.nom }}</p>
       <p><strong>Montant total:</strong> {{ formatCurrency(facture.montant_ttc) }}</p>
       <p><strong>Montant restant:</strong> {{ formatCurrency(facture.montant_restant || facture.montant_ttc) }}</p>
+    </div>
+
+    <!-- Info Facture Fournisseur -->
+    <div class="facture-info" *ngIf="typePaiement === 'fournisseur' && factureFournisseur">
+      <h4>Facture Fournisseur {{ factureFournisseur.numero }}</h4>
+      <p><strong>Fournisseur:</strong> {{ factureFournisseur.fournisseur?.nom }}</p>
+      <p><strong>Montant total:</strong> {{ formatCurrency(factureFournisseur.montant_total) }}</p>
+      <p><strong>Montant restant:</strong> {{ formatCurrency(factureFournisseur.montant_restant || factureFournisseur.montant_total) }}</p>
     </div>
 
     <div class="field">
@@ -41,7 +97,6 @@
         mode="decimal"
         [minFractionDigits]="0"
         [min]="0"
-        [max]="facture?.montant_restant || 999999999"
         [class.ng-invalid]="isFieldInvalid('montant')"
       ></p-inputNumber>
       <small class="p-error" *ngIf="isFieldInvalid('montant')">
