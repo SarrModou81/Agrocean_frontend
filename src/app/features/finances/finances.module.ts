@@ -19,6 +19,10 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { CalendarModule } from 'primeng/calendar';
 import { ChartModule } from 'primeng/chart';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { AvatarModule } from 'primeng/avatar';
+
+// Services
+import { MessageService, ConfirmationService } from 'primeng/api';
 
 // Components
 import { FinancesDashboardComponent } from './finances-dashboard/finances-dashboard.component';
@@ -67,7 +71,12 @@ const routes: Routes = [
     InputNumberModule,
     CalendarModule,
     ChartModule,
-    ProgressBarModule
+    ProgressBarModule,
+    AvatarModule
+  ],
+  providers: [
+    MessageService,
+    ConfirmationService
   ]
 })
 export class FinancesModule { }

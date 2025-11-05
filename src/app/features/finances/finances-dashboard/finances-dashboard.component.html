@@ -69,7 +69,7 @@
               <i class="pi pi-percentage"></i>
             </div>
             <div class="stat-details">
-              <div class="stat-value">{{ dashboard.marge_globale.toFixed(2) }}%</div>
+              <div class="stat-value">{{ formatNumber(dashboard.marge_globale) }}%</div>
               <div class="stat-label">Marge Globale</div>
             </div>
           </div>
@@ -103,18 +103,43 @@
       <!-- Charts -->
       <div class="charts-grid">
         <p-card header="Évolution du Chiffre d'Affaires">
-          <p-chart type="line" [data]="caChartData" [options]="chartOptions" height="300px"></p-chart>
+          <p-chart 
+            *ngIf="caChartData" 
+            type="line" 
+            [data]="caChartData" 
+            [options]="chartOptions" 
+            height="300px"
+          ></p-chart>
+          <div *ngIf="!caChartData" class="no-data">
+            <i class="pi pi-chart-line"></i>
+            <p>Aucune donnée disponible</p>
+          </div>
         </p-card>
 
         <p-card header="Répartition des Charges">
-          <p-chart type="pie" [data]="chargesChartData" [options]="pieOptions" height="300px"></p-chart>
+          <p-chart 
+            *ngIf="chargesChartData" 
+            type="pie" 
+            [data]="chargesChartData" 
+            [options]="pieOptions" 
+            height="300px"
+          ></p-chart>
+          <div *ngIf="!chargesChartData" class="no-data">
+            <i class="pi pi-chart-pie"></i>
+            <p>Aucune donnée disponible</p>
+          </div>
         </p-card>
       </div>
 
       <!-- Factures impayées -->
       <div class="section">
         <p-card header="Factures Impayées">
-          <p-table [value]="dashboard.factures_impayees" [paginator]="true" [rows]="5">
+          <p-table 
+            [value]="getFacturesImpayees()" 
+            [paginator]="true" 
+            [rows]="5"
+            responsiveLayout="scroll"
+          >
             <ng-template pTemplate="header">
               <tr>
                 <th>Numéro</th>
@@ -128,13 +153,13 @@
             <ng-template pTemplate="body" let-facture>
               <tr>
                 <td><code>{{ facture.numero }}</code></td>
-                <td>{{ facture.vente?.client?.nom }}</td>
+                <td>{{ facture.vente?.client?.nom || 'N/A' }}</td>
                 <td>{{ formatCurrency(facture.montant_ttc) }}</td>
                 <td>{{ facture.date_echeance | date:'dd/MM/yyyy' }}</td>
                 <td>
                   <p-tag 
-                    [value]="facture.jours_retard + ' jours'" 
-                    [severity]="facture.jours_retard > 30 ? 'danger' : 'warning'"
+                    [value]="getJoursRetard(facture)" 
+                    [severity]="getRetardSeverity(facture)"
                   ></p-tag>
                 </td>
                 <td>
@@ -150,7 +175,12 @@
             </ng-template>
             <ng-template pTemplate="emptymessage">
               <tr>
-                <td colspan="6" class="text-center">Aucune facture impayée</td>
+                <td colspan="6" class="text-center">
+                  <div class="empty-state">
+                    <i class="pi pi-check-circle"></i>
+                    <p>Aucune facture impayée</p>
+                  </div>
+                </td>
               </tr>
             </ng-template>
           </p-table>
@@ -193,6 +223,19 @@
         </p-card>
       </div>
     </div>
+
+    <!-- Message si pas de données -->
+    <div *ngIf="!loading && !dashboard" class="no-dashboard">
+      <i class="pi pi-inbox"></i>
+      <h3>Aucune donnée disponible</h3>
+      <p>Cliquez sur "Actualiser" pour charger les données</p>
+      <button 
+        pButton 
+        icon="pi pi-refresh" 
+        label="Actualiser"
+        (click)="loadDashboard()"
+      ></button>
+    </div>
   </p-card>
 </div>
 
@@ -202,6 +245,8 @@
   header="Enregistrer un Paiement"
   [modal]="true" 
   [style]="{width: '500px'}"
+  [draggable]="false"
+  [resizable]="false"
 >
   <app-paiement-form 
     [facture]="selectedFacture"
