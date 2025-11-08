@@ -24,10 +24,11 @@
       <button
         *ngIf="canViewAlertes()"
         pButton
+        pBadge
+        [value]="alertesNonLues > 0 ? alertesNonLues.toString() : ''"
+        severity="danger"
         icon="pi pi-bell"
         class="p-button-text p-button-plain"
-        [badge]="alertesNonLues > 0 ? alertesNonLues.toString() : null"
-        [badgeClass]="alertesNonLues > 0 ? 'p-badge-danger' : ''"
         pTooltip="Notifications"
         tooltipPosition="left"
         (click)="navigateToAlertes()"
