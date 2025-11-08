@@ -174,6 +174,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
           ]
         },
         {
+          label: 'Catégories',
+          icon: 'pi pi-th-large',
+          routerLink: ['/categories']
+        },
+        {
           label: 'Entrepôts',
           icon: 'pi pi-building',
           routerLink: ['/entrepots']
