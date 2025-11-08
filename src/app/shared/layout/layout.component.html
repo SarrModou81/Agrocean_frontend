@@ -21,15 +21,16 @@
     </div>
 
     <div class="header-right">
-      <button 
-        pButton 
-        icon="pi pi-bell" 
+      <button
+        pButton
+        icon="pi pi-bell"
         class="p-button-text p-button-plain"
         pBadge
         value="3"
         severity="danger"
         pTooltip="Notifications"
         tooltipPosition="left"
+        (click)="navigateToAlertes()"
       ></button>
 
       <div class="user-menu" *ngIf="currentUser">

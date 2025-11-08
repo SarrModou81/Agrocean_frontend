@@ -239,10 +239,14 @@ export class LayoutComponent implements OnInit {
     this.sidebarVisible = !this.sidebarVisible;
   }
 
+  navigateToAlertes(): void {
+    this.router.navigate(['/stocks/alertes']);
+  }
+
   // MÉTHODE AJOUTÉE - Affiche le rôle de manière lisible
   getRoleDisplay(): string {
     if (!this.currentUser) return '';
-    
+
     const roleMap: { [key: string]: string } = {
       'Administrateur': 'Administrateur',
       'Commercial': 'Commercial',
