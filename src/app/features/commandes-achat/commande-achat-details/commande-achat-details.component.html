@@ -116,23 +116,34 @@
 </div>
 
 <!-- Dialog Réception -->
-<p-dialog 
-  [(visible)]="showReceptionDialog" 
+<p-dialog
+  [(visible)]="showReceptionDialog"
   header="Réceptionner la Commande"
-  [modal]="true" 
-  [style]="{width: '400px'}"
+  [modal]="true"
+  [style]="{width: '600px'}"
 >
   <div class="p-fluid">
     <div class="field">
-      <label for="entrepot_id">Entrepôt *</label>
-      <p-dropdown 
+      <label for="entrepot_id">Entrepôt de Réception *</label>
+      <p-dropdown
         id="entrepot_id"
         [(ngModel)]="selectedEntrepot"
         [options]="entrepots"
         optionLabel="nom"
         optionValue="id"
         placeholder="Sélectionner un entrepôt"
-      ></p-dropdown>
+        [filter]="true"
+        filterPlaceholder="Rechercher un entrepôt"
+        [showClear]="true"
+        appendTo="body"
+      >
+        <ng-template let-entrepot pTemplate="item">
+          <div class="entrepot-option">
+            <strong>{{ entrepot.nom }}</strong>
+            <small>{{ entrepot.adresse }}</small>
+          </div>
+        </ng-template>
+      </p-dropdown>
     </div>
   </div>
 
@@ -158,5 +169,3 @@
   <p-progressBar mode="indeterminate"></p-progressBar>
 </div>
 
-<p-toast></p-toast>
-<p-confirmDialog></p-confirmDialog>

@@ -34,7 +34,6 @@ import { MessageService } from 'primeng/api';
         </p-table>
       </p-card>
     </div>
-    <p-toast></p-toast>
   `,
   styles: [`
     .creances-container { padding: 0; }

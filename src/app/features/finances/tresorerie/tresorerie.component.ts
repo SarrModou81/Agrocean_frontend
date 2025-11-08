@@ -156,7 +156,6 @@ import { MessageService } from 'primeng/api';
         </div>
       </p-card>
     </div>
-    <p-toast></p-toast>
   `,
   styles: [`
     .tresorerie-container {

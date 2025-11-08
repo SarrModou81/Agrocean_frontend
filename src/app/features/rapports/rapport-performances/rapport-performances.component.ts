@@ -29,7 +29,6 @@ import { MessageService } from 'primeng/api';
         <p-progressBar *ngIf="loading" mode="indeterminate"></p-progressBar>
       </p-card>
     </div>
-    <p-toast></p-toast>
   `,
   styles: [`
     .rapport-container {

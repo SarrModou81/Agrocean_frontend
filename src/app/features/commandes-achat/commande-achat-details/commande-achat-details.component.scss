@@ -120,6 +120,22 @@
   }
 }
 
+.entrepot-option {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  strong {
+    color: #495057;
+    font-size: 1rem;
+  }
+
+  small {
+    color: #6c757d;
+    font-size: 0.875rem;
+  }
+}
+
 @media (max-width: 768px) {
   .commande-details-container {
     .header-section {
