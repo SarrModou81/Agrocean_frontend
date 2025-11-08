@@ -66,7 +66,27 @@ export class VenteCreateComponent implements OnInit {
   loadProduits(): void {
     this.produitService.getAll().subscribe({
       next: (response) => {
-        this.produits = response.data;
+        // ✅ MODIFICATION: Filtrer uniquement les produits avec stock > 0
+        this.produits = response.data.filter(produit => {
+          const stockTotal = produit.stock_total || 0;
+          return stockTotal > 0;
+        });
+
+        // Afficher un message si aucun produit disponible
+        if (this.produits.length === 0) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Attention',
+            detail: 'Aucun produit avec stock disponible'
+          });
+        }
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: 'Erreur lors du chargement des produits'
+        });
       }
     });
   }

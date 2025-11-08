@@ -94,6 +94,49 @@
     }
   }
 
+  // ✅ NOUVEAU: Styles pour l'affichage du stock dans le dropdown
+  ::ng-deep {
+    .produit-dropdown-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 0.5rem;
+
+      .produit-info {
+        flex: 1;
+
+        strong {
+          font-size: 0.95rem;
+          color: #495057;
+        }
+
+        small {
+          color: #6c757d;
+          font-size: 0.85rem;
+        }
+      }
+
+      .stock-badge {
+        margin-left: 1rem;
+
+        .p-tag {
+          font-size: 0.75rem;
+          padding: 0.25rem 0.5rem;
+        }
+      }
+    }
+
+    // Ajuster le dropdown pour s'assurer qu'il affiche bien le badge
+    .p-dropdown-panel {
+      .p-dropdown-items {
+        .p-dropdown-item {
+          padding: 0;
+        }
+      }
+    }
+  }
+
   .totaux-section {
     display: flex;
     justify-content: flex-end;
@@ -186,6 +229,19 @@
 
     .totaux-section .totaux-grid {
       min-width: 100%;
+    }
+
+    // Adapter l'affichage du stock sur mobile
+    ::ng-deep {
+      .produit-dropdown-item {
+        flex-direction: column;
+        align-items: flex-start;
+
+        .stock-badge {
+          margin-left: 0;
+          margin-top: 0.5rem;
+        }
+      }
     }
   }
 }

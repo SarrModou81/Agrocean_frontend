@@ -1,4 +1,4 @@
-<!-- src/app/features/ventes/vente-create/vente-create.component.html -->
+<!-- ALTERNATIVE SANS p-message : Utiliser un simple div avec style -->
 <div class="vente-create-container">
   <p-card>
     <div class="header-section">
@@ -78,10 +78,17 @@
             label="Ajouter une ligne"
             class="p-button-sm"
             (click)="ajouterLigne()"
+            [disabled]="produits.length === 0"
           ></button>
         </div>
 
-        <div class="produits-table">
+        <!-- ✅ ALTERNATIVE : Utiliser un simple div stylé -->
+        <div *ngIf="produits.length === 0" class="warning-message">
+          <i class="pi pi-exclamation-triangle"></i>
+          <span>Aucun produit avec stock disponible. Veuillez ajouter du stock avant de créer une vente.</span>
+        </div>
+
+        <div class="produits-table" *ngIf="produits.length > 0">
           <div class="table-header">
             <div class="col-produit">Produit</div>
             <div class="col-quantite">Quantité</div>
@@ -106,12 +113,22 @@
                   [filter]="true"
                   filterBy="nom,code"
                   [class.ng-invalid]="ligne.get('produit_id')?.invalid && ligne.get('produit_id')?.touched"
+                  [style]="{'width': '100%'}"
                 >
                   <ng-template let-produit pTemplate="item">
-                    <div>
-                      <strong>{{ produit.nom }}</strong>
-                      <br>
-                      <small>{{ produit.code }} - {{ formatCurrency(produit.prix_vente) }}</small>
+                    <div class="produit-dropdown-item">
+                      <div class="produit-info">
+                        <strong>{{ produit.nom }}</strong>
+                        <br>
+                        <small>{{ produit.code }} - {{ formatCurrency(produit.prix_vente) }}</small>
+                      </div>
+                      <div class="stock-badge">
+                        <p-tag 
+                          [value]="'Stock: ' + (produit.stock_total || 0)" 
+                          [severity]="(produit.stock_total || 0) > 10 ? 'success' : 'warning'"
+                          icon="pi pi-box"
+                        ></p-tag>
+                      </div>
                     </div>
                   </ng-template>
                 </p-dropdown>
@@ -197,7 +214,7 @@
           label="Créer la vente"
           icon="pi pi-check"
           [loading]="loading"
-          [disabled]="venteForm.invalid || loading"
+          [disabled]="venteForm.invalid || loading || produits.length === 0"
           class="p-button-success"
         ></button>
       </div>

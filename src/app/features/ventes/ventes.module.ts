@@ -19,6 +19,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { CalendarModule } from 'primeng/calendar';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { AvatarModule } from 'primeng/avatar';
+import { MessageModule } from 'primeng/message'; // ✅ AJOUT pour afficher le message d'avertissement
 
 // Components
 import { VentesListComponent } from './ventes-list/ventes-list.component';
@@ -56,7 +57,8 @@ const routes: Routes = [
     InputNumberModule,
     CalendarModule,
     ProgressBarModule,
-    AvatarModule
+    AvatarModule,
+    MessageModule // ✅ AJOUT
   ]
 })
 export class VentesModule { }
