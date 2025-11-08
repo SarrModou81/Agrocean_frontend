@@ -243,6 +243,11 @@ export class LayoutComponent implements OnInit {
     this.router.navigate(['/stocks/alertes']);
   }
 
+  // Vérifie si l'utilisateur peut voir les alertes
+  canViewAlertes(): boolean {
+    return this.authService.hasRole(['Administrateur', 'GestionnaireStock']);
+  }
+
   // MÉTHODE AJOUTÉE - Affiche le rôle de manière lisible
   getRoleDisplay(): string {
     if (!this.currentUser) return '';

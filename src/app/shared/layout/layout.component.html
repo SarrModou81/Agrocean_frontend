@@ -22,6 +22,7 @@
 
     <div class="header-right">
       <button
+        *ngIf="canViewAlertes()"
         pButton
         icon="pi pi-bell"
         class="p-button-text p-button-plain"
