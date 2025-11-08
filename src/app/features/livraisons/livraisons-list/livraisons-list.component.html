@@ -1,0 +1,90 @@
+<div class="livraisons-container">
+  <p-card>
+    <div class="header-section">
+      <h2>Gestion des Livraisons</h2>
+      <div class="actions">
+        <p-dropdown [(ngModel)]="selectedStatut" [options]="statuts" optionLabel="label" optionValue="value" (onChange)="loadLivraisons()"></p-dropdown>
+        <button pButton icon="pi pi-plus" label="Nouvelle Livraison" (click)="openNew()"></button>
+      </div>
+    </div>
+
+    <p-table [value]="livraisons" [loading]="loading" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ID</th>
+          <th>Client</th>
+          <th>Date Prévue</th>
+          <th>Adresse</th>
+          <th>Livreur</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-livraison>
+        <tr>
+          <td>{{ livraison.id }}</td>
+          <td>{{ livraison.vente?.client?.nom || '-' }}</td>
+          <td>{{ livraison.date_prevue | date:'dd/MM/yyyy' }}</td>
+          <td>{{ livraison.adresse }}</td>
+          <td>{{ livraison.livreur || '-' }}</td>
+          <td>
+            <p-tag [value]="livraison.statut" [severity]="getStatutSeverity(livraison.statut)"></p-tag>
+          </td>
+          <td>
+            <button *ngIf="livraison.statut === 'Planifiée'" pButton icon="pi pi-play" class="p-button-text p-button-success" (click)="demarrerLivraison(livraison)" pTooltip="Démarrer"></button>
+            <button *ngIf="livraison.statut === 'EnCours'" pButton icon="pi pi-check" class="p-button-text p-button-success" (click)="confirmerLivraison(livraison)" pTooltip="Confirmer"></button>
+            <button *ngIf="livraison.statut !== 'Livrée' && livraison.statut !== 'Annulée'" pButton icon="pi pi-pencil" class="p-button-text" (click)="editLivraison(livraison)" pTooltip="Modifier"></button>
+            <button *ngIf="livraison.statut !== 'Livrée' && livraison.statut !== 'Annulée'" pButton icon="pi pi-times" class="p-button-text p-button-danger" (click)="annulerLivraison(livraison)" pTooltip="Annuler"></button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center">Aucune livraison trouvée</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<!-- Dialog pour créer/modifier -->
+<p-dialog [(visible)]="displayDialog" [header]="selectedLivraison?.id ? 'Modifier la livraison' : 'Nouvelle livraison'" [modal]="true" [style]="{width: '600px'}">
+  <div class="p-fluid" *ngIf="selectedLivraison">
+    <div class="p-field" *ngIf="!selectedLivraison.id">
+      <label>Vente *</label>
+      <p-dropdown [(ngModel)]="selectedLivraison.vente_id" [options]="ventes" optionLabel="reference" optionValue="id" [filter]="true" placeholder="Sélectionner une vente">
+        <ng-template let-vente pTemplate="item">
+          <div>
+            <strong>{{ vente.reference }}</strong> - {{ vente.client?.nom }}
+            <small>({{ vente.created_at | date:'dd/MM/yyyy' }})</small>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+
+    <div class="p-field">
+      <label>Date Prévue *</label>
+      <p-calendar [(ngModel)]="selectedLivraison.date_prevue" dateFormat="dd/mm/yy" [showIcon]="true"></p-calendar>
+    </div>
+
+    <div class="p-field">
+      <label>Adresse de Livraison *</label>
+      <textarea pInputTextarea [(ngModel)]="selectedLivraison.adresse" rows="3" required></textarea>
+    </div>
+
+    <div class="p-field">
+      <label>Livreur</label>
+      <input type="text" pInputText [(ngModel)]="selectedLivraison.livreur" />
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button pButton label="Annuler" icon="pi pi-times" class="p-button-text" (click)="displayDialog = false"></button>
+    <button pButton label="Enregistrer" icon="pi pi-check" (click)="saveLivraison()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

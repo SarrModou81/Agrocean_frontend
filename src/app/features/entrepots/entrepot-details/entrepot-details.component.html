@@ -1,0 +1,73 @@
+<div class="entrepot-details-container" *ngIf="!loading && entrepot">
+  <p-card>
+    <div class="header-section">
+      <button pButton icon="pi pi-arrow-left" label="Retour" class="p-button-text" (click)="goBack()"></button>
+      <h2>{{ entrepot.nom }}</h2>
+    </div>
+
+    <div class="details-grid">
+      <div class="info-card">
+        <h3>Informations Générales</h3>
+        <div class="info-item">
+          <label>Nom:</label>
+          <span>{{ entrepot.nom }}</span>
+        </div>
+        <div class="info-item">
+          <label>Adresse:</label>
+          <span>{{ entrepot.adresse }}</span>
+        </div>
+        <div class="info-item">
+          <label>Type de Froid:</label>
+          <p-tag [value]="entrepot.type_froid" [severity]="getTypeFroidSeverity(entrepot.type_froid)"></p-tag>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h3>Capacité</h3>
+        <div class="info-item">
+          <label>Capacité Totale:</label>
+          <span>{{ entrepot.capacite }} unités</span>
+        </div>
+        <div class="info-item">
+          <label>Capacité Disponible:</label>
+          <span>{{ entrepot.capacite_disponible || 0 }} unités</span>
+        </div>
+        <div class="info-item">
+          <label>Taux de Remplissage:</label>
+          <p-progressBar [value]="getTauxRemplissage()"></p-progressBar>
+          <span class="percentage">{{ getTauxRemplissage() }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stocks-section" *ngIf="entrepot.stocks && entrepot.stocks.length > 0">
+      <h3>Produits Stockés</h3>
+      <p-table [value]="entrepot.stocks" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Produit</th>
+            <th>Code</th>
+            <th>Quantité</th>
+            <th>Stock Min</th>
+            <th>Stock Max</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-stock>
+          <tr>
+            <td>{{ stock.produit?.nom }}</td>
+            <td>{{ stock.produit?.code }}</td>
+            <td>{{ stock.quantite }}</td>
+            <td>{{ stock.stock_min }}</td>
+            <td>{{ stock.stock_max }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </p-card>
+</div>
+
+<div class="loading-container" *ngIf="loading">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
+<p-toast></p-toast>

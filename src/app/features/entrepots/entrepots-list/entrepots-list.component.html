@@ -1,0 +1,87 @@
+<div class="entrepots-container">
+  <p-card>
+    <div class="header-section">
+      <h2>Gestion des Entrepôts</h2>
+      <button pButton icon="pi pi-plus" label="Nouvel Entrepôt" (click)="openNew()"></button>
+    </div>
+
+    <p-table [value]="entrepots" [loading]="loading" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nom</th>
+          <th>Adresse</th>
+          <th>Type Froid</th>
+          <th>Capacité</th>
+          <th>Capacité Disponible</th>
+          <th>Nb Produits</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-entrepot>
+        <tr>
+          <td><strong>{{ entrepot.nom }}</strong></td>
+          <td>{{ entrepot.adresse }}</td>
+          <td>
+            <p-tag [value]="entrepot.type_froid" [severity]="getTypeFroidSeverity(entrepot.type_froid)"></p-tag>
+          </td>
+          <td>{{ entrepot.capacite }}</td>
+          <td>
+            <span [class.text-warning]="entrepot.capacite_disponible < entrepot.capacite * 0.2">
+              {{ entrepot.capacite_disponible || '-' }}
+            </span>
+          </td>
+          <td>{{ entrepot.stocks_count || 0 }}</td>
+          <td>
+            <button pButton icon="pi pi-eye" class="p-button-text p-button-info" (click)="viewDetails(entrepot)" pTooltip="Voir détails"></button>
+            <button pButton icon="pi pi-pencil" class="p-button-text" (click)="editEntrepot(entrepot)" pTooltip="Modifier"></button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center">Aucun entrepôt trouvé</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<!-- Dialog pour créer/modifier -->
+<p-dialog [(visible)]="displayDialog" [header]="selectedEntrepot?.id ? 'Modifier l\'entrepôt' : 'Nouvel entrepôt'" [modal]="true" [style]="{width: '500px'}">
+  <div class="p-fluid" *ngIf="selectedEntrepot">
+    <div class="p-field">
+      <label>Nom *</label>
+      <input type="text" pInputText [(ngModel)]="selectedEntrepot.nom" required />
+    </div>
+
+    <div class="p-field">
+      <label>Adresse *</label>
+      <textarea pInputTextarea [(ngModel)]="selectedEntrepot.adresse" rows="2" required></textarea>
+    </div>
+
+    <div class="p-field">
+      <label>Type de Froid *</label>
+      <p-dropdown [(ngModel)]="selectedEntrepot.type_froid" [options]="[
+        {label: 'Frais', value: 'Frais'},
+        {label: 'Congelé', value: 'Congelé'},
+        {label: 'Ambiant', value: 'Ambiant'},
+        {label: 'Mixte', value: 'Mixte'}
+      ]" optionLabel="label" optionValue="value"></p-dropdown>
+    </div>
+
+    <div class="p-field">
+      <label>Capacité (unités) *</label>
+      <p-inputNumber [(ngModel)]="selectedEntrepot.capacite" [min]="1"></p-inputNumber>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button pButton label="Annuler" icon="pi pi-times" class="p-button-text" (click)="displayDialog = false"></button>
+    <button pButton label="Enregistrer" icon="pi pi-check" (click)="saveEntrepot()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

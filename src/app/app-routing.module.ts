@@ -64,6 +64,21 @@ const routes: Routes = [
         data: { roles: ['Administrateur'] }
       },
       {
+        path: 'entrepots',
+        loadChildren: () => import('./features/entrepots/entrepots.module').then(m => m.EntrepotsModule),
+        data: { roles: ['Administrateur', 'GestionnaireStock'] }
+      },
+      {
+        path: 'categories',
+        loadChildren: () => import('./features/categories/categories.module').then(m => m.CategoriesModule),
+        data: { roles: ['Administrateur'] }
+      },
+      {
+        path: 'livraisons',
+        loadChildren: () => import('./features/livraisons/livraisons.module').then(m => m.LivraisonsModule),
+        data: { roles: ['Administrateur', 'Commercial'] }
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'
