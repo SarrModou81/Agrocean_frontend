@@ -29,7 +29,8 @@ import { VenteDetailsComponent } from './vente-details/vente-details.component';
 const routes: Routes = [
   { path: '', component: VentesListComponent },
   { path: 'create', component: VenteCreateComponent },
-  { path: ':id', component: VenteDetailsComponent }
+  { path: 'devis', component: VentesListComponent }, // Route pour les devis (avant :id)
+  { path: ':id', component: VenteDetailsComponent } // Route dynamique en dernier
 ];
 
 @NgModule({
