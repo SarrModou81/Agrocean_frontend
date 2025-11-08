@@ -26,23 +26,41 @@ export class StockMouvementsComponent implements OnInit {
 
   loadMouvements(): void {
     this.loading = true;
-    
+
     const params = {
       date_debut: this.formatDate(this.dateDebut),
       date_fin: this.formatDate(this.dateFin)
     };
 
+    console.log('📅 Chargement des mouvements:', params);
+
     this.stockService.mouvementsPeriode(params.date_debut, params.date_fin).subscribe({
       next: (data) => {
-        this.mouvements = data;
+        console.log('✅ Réponse API mouvements:', data);
+        console.log('📊 Type de données:', typeof data, Array.isArray(data));
+        console.log('📈 Nombre de mouvements:', Array.isArray(data) ? data.length : 'N/A');
+
+        // Gérer le cas où data n'est pas un tableau
+        if (Array.isArray(data)) {
+          this.mouvements = data;
+        } else if (data && typeof data === 'object') {
+          // Si la réponse est un objet avec une propriété data
+          this.mouvements = data.data || [];
+        } else {
+          this.mouvements = [];
+        }
+
+        console.log('💾 Mouvements stockés:', this.mouvements.length);
         this.loading = false;
       },
       error: (error) => {
+        console.error('❌ Erreur API mouvements:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Erreur',
-          detail: 'Erreur lors du chargement des mouvements'
+          detail: 'Erreur lors du chargement des mouvements: ' + (error.message || 'Erreur inconnue')
         });
+        this.mouvements = [];
         this.loading = false;
       }
     });
