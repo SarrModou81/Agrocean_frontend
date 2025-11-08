@@ -26,8 +26,8 @@
         pButton
         icon="pi pi-bell"
         class="p-button-text p-button-plain"
-        [pBadge]="alertesNonLues > 0 ? alertesNonLues.toString() : ''"
-        [severity]="alertesNonLues > 0 ? 'danger' : 'secondary'"
+        [badge]="alertesNonLues > 0 ? alertesNonLues.toString() : null"
+        [badgeClass]="alertesNonLues > 0 ? 'p-badge-danger' : ''"
         pTooltip="Notifications"
         tooltipPosition="left"
         (click)="navigateToAlertes()"
