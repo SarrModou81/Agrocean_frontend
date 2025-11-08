@@ -415,8 +415,16 @@ export class AlerteService {
     return this.http.get<Models.PaginatedResponse<Models.Alerte>>(this.apiUrl, { params: httpParams });
   }
 
+  getNonLuesCount(): Observable<{count: number}> {
+    return this.http.get<{count: number}>(`${this.apiUrl}/non-lues/count`);
+  }
+
   marquerLue(id: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/${id}/lire`, {});
+  }
+
+  marquerToutesLues(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/tout-lire`, {});
   }
 
   delete(id: number): Observable<any> {

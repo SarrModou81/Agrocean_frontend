@@ -1,27 +1,61 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../../core/services/auth.service';
+import { AlerteService } from '../../core/services/all-services';
 import { MenuItem } from 'primeng/api';
+import { interval, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss']
 })
-export class LayoutComponent implements OnInit {
+export class LayoutComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   menuItems: MenuItem[] = [];
   sidebarVisible = true;
+  alertesNonLues = 0;
+  private alerteSubscription?: Subscription;
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private alerteService: AlerteService
   ) {}
 
   ngOnInit(): void {
     this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
       this.buildMenu();
+
+      // Charger le nombre d'alertes non lues si l'utilisateur a accès
+      if (this.canViewAlertes()) {
+        this.loadAlertesCount();
+        // Rafraîchir toutes les 30 secondes
+        this.alerteSubscription = interval(30000)
+          .pipe(switchMap(() => this.alerteService.getNonLuesCount()))
+          .subscribe(response => {
+            this.alertesNonLues = response.count;
+          });
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.alerteSubscription) {
+      this.alerteSubscription.unsubscribe();
+    }
+  }
+
+  loadAlertesCount(): void {
+    this.alerteService.getNonLuesCount().subscribe({
+      next: (response) => {
+        this.alertesNonLues = response.count;
+      },
+      error: () => {
+        this.alertesNonLues = 0;
+      }
     });
   }
 

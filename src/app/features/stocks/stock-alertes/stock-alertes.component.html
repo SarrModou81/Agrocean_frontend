@@ -3,9 +3,17 @@
     <div class="header-section">
       <h2>Alertes de Stock</h2>
       <div class="actions">
-        <button 
-          pButton 
-          icon="pi pi-refresh" 
+        <button
+          pButton
+          icon="pi pi-check-circle"
+          label="Tout marquer comme lu"
+          class="p-button-success"
+          (click)="marquerToutesLues()"
+          [disabled]="alertes.length === 0"
+        ></button>
+        <button
+          pButton
+          icon="pi pi-refresh"
           label="Actualiser"
           (click)="loadAlertes()"
           [loading]="loading"

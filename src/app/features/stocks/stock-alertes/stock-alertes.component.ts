@@ -98,6 +98,33 @@ export class StockAlertesComponent implements OnInit {
     });
   }
 
+  marquerToutesLues(): void {
+    this.confirmationService.confirm({
+      message: 'Êtes-vous sûr de vouloir marquer toutes les alertes comme lues ?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this.alerteService.marquerToutesLues().subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Succès',
+              detail: 'Toutes les alertes ont été marquées comme lues'
+            });
+            this.loadAlertes();
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erreur',
+              detail: 'Erreur lors de la mise à jour'
+            });
+          }
+        });
+      }
+    });
+  }
+
   supprimerAlerte(alerte: any): void {
     this.confirmationService.confirm({
       message: 'Êtes-vous sûr de vouloir supprimer cette alerte ?',
