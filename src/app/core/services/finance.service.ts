@@ -108,8 +108,8 @@ export class FactureService {
     return this.http.get(`${this.apiUrl}/echues/liste`);
   }
 
-  genererPDF(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/${id}/generer-pdf`);
+  genererPDF(id: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${id}/generer-pdf`, { responseType: 'blob' });
   }
 
   envoyer(id: number): Observable<any> {

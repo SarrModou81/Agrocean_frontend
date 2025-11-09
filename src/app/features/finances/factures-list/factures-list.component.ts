@@ -29,6 +29,7 @@ import { MessageService } from 'primeng/api';
               <th>Payé</th>
               <th>Restant</th>
               <th>Statut</th>
+              <th>Actions</th>
             </tr>
           </ng-template>
 
@@ -42,6 +43,22 @@ import { MessageService } from 'primeng/api';
               <td>{{ formatCurrency(facture.montant_paye || 0) }}</td>
               <td>{{ facture.montant_restant || (facture.montant_ttc - facture.montant_paye) }}</td>              <td>
                 <p-tag [value]="facture.statut" [severity]="getStatutSeverity(facture.statut)"></p-tag>
+              </td>
+              <td>
+                <button
+                  pButton
+                  icon="pi pi-download"
+                  class="p-button-text p-button-info p-button-sm"
+                  (click)="downloadPDF(facture)"
+                  pTooltip="Télécharger PDF"
+                ></button>
+                <button
+                  pButton
+                  icon="pi pi-print"
+                  class="p-button-text p-button-secondary p-button-sm"
+                  (click)="printFacture(facture)"
+                  pTooltip="Imprimer"
+                ></button>
               </td>
             </tr>
           </ng-template>
@@ -112,4 +129,52 @@ export class FacturesListComponent implements OnInit {
   };
   return severityMap[statut] || 'info';
 }
+
+  downloadPDF(facture: Facture): void {
+    this.factureService.genererPDF(facture.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `facture-${facture.numero}.pdf`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: 'Facture téléchargée avec succès'
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: 'Erreur lors du téléchargement de la facture'
+        });
+      }
+    });
+  }
+
+  printFacture(facture: Facture): void {
+    this.factureService.genererPDF(facture.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const printWindow = window.open(url, '_blank');
+        if (printWindow) {
+          printWindow.addEventListener('load', () => {
+            printWindow.print();
+          });
+        }
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: 'Erreur lors de l\'impression de la facture'
+        });
+      }
+    });
+  }
 }
