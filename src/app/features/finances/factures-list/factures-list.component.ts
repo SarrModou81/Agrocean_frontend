@@ -125,6 +125,12 @@ export class FacturesListComponent implements OnInit {
     }) + ' FCFA';
   }
 
+  // Format spécial pour PDF (sans espace insécable)
+  formatCurrencyForPDF(value: number): string {
+    const formatted = value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    return formatted + ' FCFA';
+  }
+
   getStatutSeverity(statut: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined {
     const severityMap: Record<string, 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast'> = {
       'Impayée': 'danger',
@@ -284,8 +290,8 @@ export class FacturesListComponent implements OnInit {
         tableData.push([
           detail.produit?.nom || 'N/A',
           detail.quantite.toString(),
-          this.formatCurrency(detail.prix_unitaire),
-          this.formatCurrency(detail.prix_total || (detail.quantite * detail.prix_unitaire))
+          this.formatCurrencyForPDF(detail.prix_unitaire),
+          this.formatCurrencyForPDF(detail.prix_total || (detail.quantite * detail.prix_unitaire))
         ]);
       });
     }
@@ -327,7 +333,7 @@ export class FacturesListComponent implements OnInit {
     doc.text('Total:', 120, finalY + 8);
     doc.setFontSize(14);
     doc.setTextColor(...bleuOcean);
-    doc.text(this.formatCurrency(facture.montant_ttc), 195, finalY + 8, { align: 'right' });
+    doc.text(this.formatCurrencyForPDF(facture.montant_ttc), 195, finalY + 8, { align: 'right' });
 
     const montantPaye = facture.montant_paye || 0;
     const montantRestant = facture.montant_restant || (facture.montant_ttc - montantPaye);
@@ -337,11 +343,11 @@ export class FacturesListComponent implements OnInit {
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(0, 0, 0);
       doc.text('Montant payé:', 120, finalY + 16);
-      doc.text(this.formatCurrency(montantPaye), 195, finalY + 16, { align: 'right' });
+      doc.text(this.formatCurrencyForPDF(montantPaye), 195, finalY + 16, { align: 'right' });
 
       doc.text('Montant restant:', 120, finalY + 23);
       doc.setFont('helvetica', 'bold');
-      doc.text(this.formatCurrency(montantRestant), 195, finalY + 23, { align: 'right' });
+      doc.text(this.formatCurrencyForPDF(montantRestant), 195, finalY + 23, { align: 'right' });
     }
 
     // Pied de page
