@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { FactureFournisseurService } from '../../../core/services/facture-fournisseur.service';
 import { FactureFournisseur } from '../../../core/models';
 import { MessageService } from 'primeng/api';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-factures-fournisseurs-list',
@@ -103,26 +105,37 @@ export class FacturesFournisseursListComponent implements OnInit {
       return;
     }
 
-    this.factureFournisseurService.genererPDF(facture.id).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `facture-fournisseur-${facture.numero}.pdf`;
-        link.click();
-        window.URL.revokeObjectURL(url);
+    // Récupérer les détails complets de la facture
+    this.factureFournisseurService.getById(facture.id).subscribe({
+      next: (factureComplete) => {
+        console.log('📄 Facture fournisseur complète:', factureComplete);
+        console.log('🛒 Commande achat:', factureComplete.commandeAchat);
+        console.log('📦 Détails commande (detail_commande_achats):', factureComplete.commandeAchat?.detail_commande_achats);
+        console.log('📦 Détails commande (detailCommandeAchats):', (factureComplete.commandeAchat as any)?.detailCommandeAchats);
 
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Succès',
-          detail: 'Facture téléchargée avec succès'
-        });
+        try {
+          const pdf = this.genererPDFDocument(factureComplete);
+          pdf.save(`facture-fournisseur-${factureComplete.numero}.pdf`);
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: 'Facture téléchargée avec succès'
+          });
+        } catch (error) {
+          console.error('Erreur génération PDF:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: 'Erreur lors de la génération du PDF'
+          });
+        }
       },
       error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Erreur',
-          detail: 'Erreur lors du téléchargement de la facture'
+          detail: 'Erreur lors du chargement des données'
         });
       }
     });
@@ -138,24 +151,143 @@ export class FacturesFournisseursListComponent implements OnInit {
       return;
     }
 
-    this.factureFournisseurService.genererPDF(facture.id).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const printWindow = window.open(url, '_blank');
-        if (printWindow) {
-          printWindow.addEventListener('load', () => {
-            printWindow.print();
+    // Récupérer les détails complets de la facture
+    this.factureFournisseurService.getById(facture.id).subscribe({
+      next: (factureComplete) => {
+        try {
+          const pdf = this.genererPDFDocument(factureComplete);
+
+          // Ouvrir le PDF dans une nouvelle fenêtre pour impression
+          const blob = pdf.output('blob');
+          const url = window.URL.createObjectURL(blob);
+          const printWindow = window.open(url, '_blank');
+
+          if (printWindow) {
+            printWindow.addEventListener('load', () => {
+              printWindow.print();
+            });
+          }
+
+          setTimeout(() => window.URL.revokeObjectURL(url), 100);
+        } catch (error) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: 'Erreur lors de la génération du PDF'
           });
         }
-        window.URL.revokeObjectURL(url);
       },
       error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Erreur',
-          detail: 'Erreur lors de l\'impression de la facture'
+          detail: 'Erreur lors du chargement des données'
         });
       }
     });
+  }
+
+  private genererPDFDocument(facture: FactureFournisseur): jsPDF {
+    const doc = new jsPDF();
+
+    // En-tête
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('FACTURE FOURNISSEUR', 105, 20, { align: 'center' });
+
+    doc.setFontSize(16);
+    doc.text(facture.numero, 105, 30, { align: 'center' });
+
+    // Informations fournisseur
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Fournisseur:', 14, 45);
+    doc.setFont('helvetica', 'bold');
+    doc.text(facture.fournisseur?.nom || 'N/A', 14, 51);
+
+    doc.setFont('helvetica', 'normal');
+    if (facture.fournisseur?.adresse) {
+      doc.text('Adresse: ' + facture.fournisseur.adresse, 14, 57);
+    }
+    if (facture.fournisseur?.telephone) {
+      doc.text('Téléphone: ' + facture.fournisseur.telephone, 14, 63);
+    }
+
+    // Dates
+    doc.text('Date d\'émission: ' + new Date(facture.date_emission).toLocaleDateString('fr-FR'), 120, 45);
+    doc.text('Date d\'échéance: ' + new Date(facture.date_echeance).toLocaleDateString('fr-FR'), 120, 51);
+
+    // Tableau des produits - ESSAYER LES DEUX NOTATIONS
+    const tableData: any[] = [];
+
+    // Essayer d'abord detail_commande_achats (snake_case)
+    let details = facture.commandeAchat?.detail_commande_achats;
+
+    // Si pas trouvé, essayer detailCommandeAchats (camelCase)
+    if (!details || details.length === 0) {
+      details = (facture.commandeAchat as any)?.detailCommandeAchats;
+    }
+
+    console.log('🔍 Détails trouvés pour le PDF:', details);
+
+    if (details && details.length > 0) {
+      details.forEach((detail: any) => {
+        tableData.push([
+          detail.produit?.nom || 'N/A',
+          detail.quantite,
+          this.formatCurrency(detail.prix_unitaire),
+          this.formatCurrency(detail.sous_total || (detail.quantite * detail.prix_unitaire))
+        ]);
+      });
+    } else {
+      console.warn('⚠️ Aucun détail de commande trouvé!');
+    }
+
+    autoTable(doc, {
+      startY: 75,
+      head: [['Produit', 'Quantité', 'Prix Unitaire', 'Total']],
+      body: tableData,
+      theme: 'striped',
+      headStyles: { fillColor: [220, 53, 69] },
+      styles: { fontSize: 10 },
+      columnStyles: {
+        0: { cellWidth: 80 },
+        1: { cellWidth: 30, halign: 'center' },
+        2: { cellWidth: 40, halign: 'right' },
+        3: { cellWidth: 40, halign: 'right' }
+      }
+    });
+
+    // Totaux
+    const finalY = (doc as any).lastAutoTable.finalY + 10;
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Total:', 130, finalY);
+    doc.text(this.formatCurrency(facture.montant_total), 190, finalY, { align: 'right' });
+
+    // Informations de paiement
+    const montantPaye = facture.montant_paye || 0;
+    const montantRestant = facture.montant_restant || (facture.montant_total - montantPaye);
+
+    if (montantPaye > 0) {
+      doc.setFont('helvetica', 'normal');
+      doc.text('Montant payé:', 130, finalY + 7);
+      doc.text(this.formatCurrency(montantPaye), 190, finalY + 7, { align: 'right' });
+
+      doc.text('Montant restant:', 130, finalY + 14);
+      doc.setFont('helvetica', 'bold');
+      doc.text(this.formatCurrency(montantRestant), 190, finalY + 14, { align: 'right' });
+    }
+
+    // Statut
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Statut: ' + facture.statut, 14, finalY + 20);
+
+    // Pied de page
+    doc.setFontSize(8);
+    doc.text('Document généré le ' + new Date().toLocaleDateString('fr-FR'), 105, 280, { align: 'center' });
+
+    return doc;
   }
 }
