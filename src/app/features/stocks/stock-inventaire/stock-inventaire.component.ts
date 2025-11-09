@@ -37,21 +37,32 @@ export class StockInventaireComponent implements OnInit {
   genererInventaire(): void {
     this.loading = true;
     const params: any = {};
-    
+
     if (this.selectedEntrepot) {
       params.entrepot_id = this.selectedEntrepot;
     }
 
+    console.log('📦 Chargement inventaire avec params:', params);
+
     this.stockService.inventaire(params).subscribe({
       next: (data) => {
+        console.log('✅ Réponse API inventaire:', data);
+        console.log('📊 Structure:', {
+          total_produits: data?.total_produits,
+          quantite_totale: data?.quantite_totale,
+          valeur_totale: data?.valeur_totale,
+          par_entrepot: data?.par_entrepot?.length,
+          par_categorie: data?.par_categorie?.length
+        });
         this.inventaire = data;
         this.loading = false;
       },
       error: (error) => {
+        console.error('❌ Erreur API inventaire:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Erreur',
-          detail: 'Erreur lors de la génération de l\'inventaire'
+          detail: 'Erreur lors de la génération de l\'inventaire: ' + (error.message || error.error?.message || 'Erreur inconnue')
         });
         this.loading = false;
       }
