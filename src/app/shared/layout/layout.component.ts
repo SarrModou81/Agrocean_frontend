@@ -251,9 +251,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
               routerLink: ['/finances/tresorerie']
             },
             {
-              label: 'Bilans',
-              icon: 'pi pi-chart-bar',
-              routerLink: ['/finances/bilans']
+              label: 'Dashboard Financier',
+              icon: 'pi pi-chart-line',
+              routerLink: ['/finances']
             }
           ]
         }
