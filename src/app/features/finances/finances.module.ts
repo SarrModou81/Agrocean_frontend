@@ -27,7 +27,6 @@ import { SelectButtonModule } from 'primeng/selectbutton';  // AJOUTÉ
 import { MessageService, ConfirmationService } from 'primeng/api';
 
 // Components
-import { FinancesDashboardComponent } from './finances-dashboard/finances-dashboard.component';
 import { PaiementsListComponent } from './paiements-list/paiements-list.component';
 import { PaiementFormComponent } from './paiement-form/paiement-form.component';
 import { FacturesListComponent } from './factures-list/factures-list.component';
@@ -36,7 +35,7 @@ import { CreancesListComponent } from './creances-list/creances-list.component';
 import { TresorerieComponent } from './tresorerie/tresorerie.component';
 
 const routes: Routes = [
-  { path: '', component: FinancesDashboardComponent },
+  { path: '', redirectTo: 'factures', pathMatch: 'full' },
   { path: 'paiements', component: PaiementsListComponent },
   { path: 'factures', component: FacturesListComponent },
   { path: 'factures-fournisseurs', component: FacturesFournisseursListComponent },
@@ -46,7 +45,6 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    FinancesDashboardComponent,
     PaiementsListComponent,
     PaiementFormComponent,
     FacturesListComponent,

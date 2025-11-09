@@ -249,11 +249,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
               label: 'Trésorerie',
               icon: 'pi pi-wallet',
               routerLink: ['/finances/tresorerie']
-            },
-            {
-              label: 'Dashboard Financier',
-              icon: 'pi pi-chart-line',
-              routerLink: ['/finances']
             }
           ]
         }
