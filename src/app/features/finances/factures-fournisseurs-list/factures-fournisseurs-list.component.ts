@@ -89,8 +89,9 @@ export class FacturesFournisseursListComponent implements OnInit {
   }
 
   // Format spécial pour PDF (sans espace insécable)
-  formatCurrencyForPDF(value: number): string {
-    const formatted = value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  formatCurrencyForPDF(value: number | string): string {
+    const numValue = typeof value === 'string' ? parseFloat(value) : value;
+    const formatted = numValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     return formatted + ' FCFA';
   }
 
