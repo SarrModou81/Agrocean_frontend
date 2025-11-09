@@ -304,10 +304,10 @@ export class FacturesListComponent implements OnInit {
         cellPadding: 3
       },
       columnStyles: {
-        0: { halign: 'left', cellWidth: 80 },
-        1: { halign: 'center', cellWidth: 25 },
-        2: { halign: 'right', cellWidth: 35 },
-        3: { halign: 'right', cellWidth: 35, fontStyle: 'bold' }
+        0: { halign: 'left', cellWidth: 60 },
+        1: { halign: 'center', cellWidth: 30 },
+        2: { halign: 'right', cellWidth: 40 },
+        3: { halign: 'right', cellWidth: 45, fontStyle: 'bold' }
       }
     });
 
@@ -321,7 +321,7 @@ export class FacturesListComponent implements OnInit {
     doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...vertAgro);
-    doc.text('Total TTC:', 120, finalY + 8);
+    doc.text('Total:', 120, finalY + 8);
     doc.setFontSize(14);
     doc.setTextColor(...bleuOcean);
     doc.text(this.formatCurrency(facture.montant_ttc), 195, finalY + 8, { align: 'right' });

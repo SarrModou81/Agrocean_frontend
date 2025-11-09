@@ -296,10 +296,10 @@ export class FacturesFournisseursListComponent implements OnInit {
         cellPadding: 3
       },
       columnStyles: {
-        0: { halign: 'left', cellWidth: 80 },
-        1: { halign: 'center', cellWidth: 25 },
-        2: { halign: 'right', cellWidth: 35 },
-        3: { halign: 'right', cellWidth: 35, fontStyle: 'bold' }
+        0: { halign: 'left', cellWidth: 60 },
+        1: { halign: 'center', cellWidth: 30 },
+        2: { halign: 'right', cellWidth: 40 },
+        3: { halign: 'right', cellWidth: 45, fontStyle: 'bold' }
       }
     });
 
