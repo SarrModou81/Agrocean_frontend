@@ -12,8 +12,6 @@ import { MessageService } from 'primeng/api';
 export class FacturesFournisseursListComponent implements OnInit {
   factures: FactureFournisseur[] = [];
   loading = false;
-  displayPaiementDialog = false;
-  selectedFacture: FactureFournisseur | null = null;
 
   totalRecords = 0;
   currentPage = 1;
@@ -63,17 +61,6 @@ export class FacturesFournisseursListComponent implements OnInit {
         this.loading = false;
       }
     });
-  }
-
-  payerFacture(facture: FactureFournisseur): void {
-    this.selectedFacture = facture;
-    this.displayPaiementDialog = true;
-  }
-
-  onPaiementSubmitted(): void {
-    this.displayPaiementDialog = false;
-    this.selectedFacture = null;
-    this.loadFactures();
   }
 
   applyFilters(): void {

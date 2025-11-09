@@ -57,7 +57,6 @@
           <th>Payé</th>
           <th>Restant</th>
           <th>Statut</th>
-          <th>Actions</th>
         </tr>
       </ng-template>
 
@@ -73,41 +72,15 @@
           <td>
             <p-tag [value]="facture.statut" [severity]="getStatutSeverity(facture.statut)"></p-tag>
           </td>
-          <td>
-            <button 
-              pButton 
-              icon="pi pi-dollar" 
-              class="p-button-text p-button-success"
-              (click)="payerFacture(facture)"
-              pTooltip="Payer"
-              *ngIf="facture.statut !== 'Payée' && facture.statut !== 'Annulée'"
-            ></button>
-          </td>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="9" class="text-center">Aucune facture fournisseur trouvée</td>
+          <td colspan="8" class="text-center">Aucune facture fournisseur trouvée</td>
         </tr>
       </ng-template>
     </p-table>
   </p-card>
 </div>
-
-<!-- Dialog Paiement -->
-<p-dialog 
-  [(visible)]="displayPaiementDialog" 
-  header="Payer Facture Fournisseur"
-  [modal]="true" 
-  [style]="{width: '500px'}"
-  [draggable]="false"
-  [resizable]="false"
->
-  <app-paiement-form 
-    [factureFournisseur]="selectedFacture"
-    [typePaiement]="'fournisseur'"
-    (formSubmitted)="onPaiementSubmitted()"
-  ></app-paiement-form>
-</p-dialog>
 
