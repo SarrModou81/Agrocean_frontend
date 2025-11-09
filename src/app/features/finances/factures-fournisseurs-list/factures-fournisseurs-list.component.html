@@ -69,7 +69,7 @@
           <td>{{ facture.date_echeance | date:'dd/MM/yyyy' }}</td>
           <td>{{ formatCurrency(facture.montant_total) }}</td>
           <td>{{ formatCurrency(facture.montant_paye || 0) }}</td>
-          <td class="text-danger"><strong>{{ formatCurrency(facture.montant_restant || facture.montant_total-facture.montant_paye) }}</strong></td>
+          <td class="text-danger"><strong>{{ formatCurrency(facture.montant_restant || (facture.montant_total - (facture.montant_paye || 0))) }}</strong></td>
           <td>
             <p-tag [value]="facture.statut" [severity]="getStatutSeverity(facture.statut)"></p-tag>
           </td>
