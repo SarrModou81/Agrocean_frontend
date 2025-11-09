@@ -304,10 +304,10 @@ export class FacturesListComponent implements OnInit {
         cellPadding: 3
       },
       columnStyles: {
-        0: { halign: 'left', cellWidth: 60 },
+        0: { halign: 'left', cellWidth: 50 },
         1: { halign: 'center', cellWidth: 30 },
-        2: { halign: 'right', cellWidth: 40 },
-        3: { halign: 'right', cellWidth: 45, fontStyle: 'bold' }
+        2: { halign: 'right', cellWidth: 45 },
+        3: { halign: 'right', cellWidth: 50, fontStyle: 'bold' }
       }
     });
 
