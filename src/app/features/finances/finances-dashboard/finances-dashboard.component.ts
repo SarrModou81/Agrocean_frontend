@@ -54,16 +54,19 @@ export class FinancesDashboardComponent implements OnInit {
 
   loadDashboard(): void {
     this.loading = true;
-    
+    console.log('💰 Chargement dashboard financier...');
+
     this.financeService.dashboardFinancier().subscribe({
       next: (data) => {
+        console.log('✅ Réponse API dashboard:', data);
+
         this.dashboard = {
           ...data,
           chiffre_affaires: data.ca_mois || 0,
           charges: data.depenses_mois || 0,
           benefice_net: (data.ca_mois || 0) - (data.depenses_mois || 0),
-          marge_globale: data.ca_mois > 0 
-            ? (((data.ca_mois - data.depenses_mois) / data.ca_mois) * 100) 
+          marge_globale: data.ca_mois > 0
+            ? (((data.ca_mois - data.depenses_mois) / data.ca_mois) * 100)
             : 0,
           tresorerie: (data.ca_mois || 0) - (data.depenses_mois || 0),
           creances: data.creances_totales || 0,
@@ -76,16 +79,18 @@ export class FinancesDashboardComponent implements OnInit {
           ],
           factures_impayees: []
         };
-        
+
+        console.log('💾 Dashboard créé:', this.dashboard);
+
         this.loadFacturesImpayees();
         this.prepareCharts();
       },
       error: (error) => {
-        console.error('Erreur dashboard:', error);
+        console.error('❌ Erreur dashboard:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Erreur',
-          detail: 'Erreur lors du chargement du dashboard'
+          detail: 'Erreur lors du chargement du dashboard: ' + (error.error?.message || error.message || 'Erreur inconnue')
         });
         this.loading = false;
         this.initDefaultDashboard();
