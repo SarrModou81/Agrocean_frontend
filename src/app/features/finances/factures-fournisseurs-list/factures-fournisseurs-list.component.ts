@@ -200,34 +200,117 @@ export class FacturesFournisseursListComponent implements OnInit {
   private genererPDFDocument(facture: FactureFournisseur): jsPDF {
     const doc = new jsPDF();
 
-    // En-tête
-    doc.setFontSize(20);
+    // Couleurs (rouge/orange pour fournisseurs)
+    const primaryColor: [number, number, number] = [192, 57, 43];
+    const accentColor: [number, number, number] = [46, 204, 113];
+
+    // Fond d'en-tête rouge
+    doc.setFillColor(192, 57, 43);
+    doc.rect(0, 0, 210, 50, 'F');
+
+    // Logo (à gauche)
+    try {
+      const logoPath = 'assets/logo.png';
+      doc.addImage(logoPath, 'PNG', 15, 10, 35, 35);
+    } catch (e) {
+      console.log('Logo non trouvé');
+    }
+
+    // Informations entreprise
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(26);
     doc.setFont('helvetica', 'bold');
-    doc.text('FACTURE FOURNISSEUR', 105, 20, { align: 'center' });
+    doc.text('AGROCEAN', 55, 20);
 
-    doc.setFontSize(16);
-    doc.text(facture.numero, 105, 30, { align: 'center' });
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Gestion & Distribution Agro-alimentaire', 55, 28);
+    doc.text('📍 Dakar, Sénégal', 55, 34);
+    doc.text('📞 +221 33 XXX XX XX', 55, 40);
+    doc.text('✉ contact@agrocean.sn', 55, 46);
 
-    // Informations fournisseur
+    // FACTURE FOURNISSEUR (à droite)
+    doc.setFontSize(24);
+    doc.setFont('helvetica', 'bold');
+    doc.text('FACTURE', 210, 20, { align: 'right' });
+    doc.text('FOURNISSEUR', 210, 28, { align: 'right' });
+
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'normal');
+    doc.text(facture.numero, 210, 36, { align: 'right' });
+
+    // Retour couleur normale
+    doc.setTextColor(0, 0, 0);
+
+    // Ligne séparation
+    doc.setDrawColor(...primaryColor);
+    doc.setLineWidth(1);
+    doc.line(15, 55, 195, 55);
+
+    // Cadre FOURNISSEUR (gauche)
+    doc.setFillColor(254, 245, 244);
+    doc.roundedRect(15, 62, 85, 40, 3, 3, 'F');
+    doc.setDrawColor(...primaryColor);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(15, 62, 85, 40, 3, 3, 'S');
+
     doc.setFontSize(11);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Fournisseur:', 14, 45);
     doc.setFont('helvetica', 'bold');
-    doc.text(facture.fournisseur?.nom || 'N/A', 14, 51);
+    doc.setTextColor(...primaryColor);
+    doc.text('FOURNISSEUR', 20, 70);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    doc.text(facture.fournisseur?.nom || 'N/A', 20, 78);
 
     doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
     if (facture.fournisseur?.adresse) {
-      doc.text('Adresse: ' + facture.fournisseur.adresse, 14, 57);
+      doc.text('📍 ' + facture.fournisseur.adresse, 20, 85);
     }
     if (facture.fournisseur?.telephone) {
-      doc.text('Téléphone: ' + facture.fournisseur.telephone, 14, 63);
+      doc.text('📞 ' + facture.fournisseur.telephone, 20, 91);
+    }
+    if (facture.fournisseur?.email) {
+      doc.text('✉ ' + facture.fournisseur.email, 20, 97);
     }
 
-    // Dates
-    doc.text('Date d\'émission: ' + new Date(facture.date_emission).toLocaleDateString('fr-FR'), 120, 45);
-    doc.text('Date d\'échéance: ' + new Date(facture.date_echeance).toLocaleDateString('fr-FR'), 120, 51);
+    // Cadre DÉTAILS (droite)
+    doc.setFillColor(254, 245, 244);
+    doc.roundedRect(110, 62, 85, 40, 3, 3, 'F');
+    doc.setDrawColor(...primaryColor);
+    doc.roundedRect(110, 62, 85, 40, 3, 3, 'S');
 
-    // Tableau des produits - GÉRER LES DEUX NOTATIONS
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...primaryColor);
+    doc.text('DÉTAILS FACTURE', 115, 70);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(9);
+    doc.text('Date émission: ' + new Date(facture.date_emission).toLocaleDateString('fr-FR'), 115, 78);
+    doc.text('Date échéance: ' + new Date(facture.date_echeance).toLocaleDateString('fr-FR'), 115, 84);
+
+    // Badge statut
+    let badgeColor: [number, number, number];
+    switch(facture.statut) {
+      case 'Payée': badgeColor = [46, 204, 113]; break;
+      case 'Partiellement Payée': badgeColor = [243, 156, 18]; break;
+      case 'Impayée': badgeColor = [231, 76, 60]; break;
+      default: badgeColor = [149, 165, 166];
+    }
+    doc.setFillColor(...badgeColor);
+    doc.roundedRect(115, 89, 35, 8, 3, 3, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.text(facture.statut, 132.5, 94.5, { align: 'center' });
+
+    doc.setTextColor(0, 0, 0);
+
+    // Tableau produits - GÉRER LES DEUX NOTATIONS
     const tableData: any[] = [];
 
     // Récupérer commandeAchat (peut être camelCase ou snake_case)
@@ -236,66 +319,94 @@ export class FacturesFournisseursListComponent implements OnInit {
     // Récupérer les détails (peut être camelCase ou snake_case)
     let details = commandeAchat?.detailCommandeAchats || commandeAchat?.detail_commande_achats;
 
-    console.log('🔍 Commande achat dans PDF:', commandeAchat);
-    console.log('🔍 Détails trouvés pour le PDF:', details);
-
     if (details && details.length > 0) {
       details.forEach((detail: any) => {
         tableData.push([
           detail.produit?.nom || 'N/A',
-          detail.quantite,
+          detail.quantite.toString(),
           this.formatCurrency(detail.prix_unitaire),
           this.formatCurrency(detail.sous_total || (detail.quantite * detail.prix_unitaire))
         ]);
       });
-    } else {
-      console.warn('⚠️ Aucun détail de commande trouvé!');
     }
 
     autoTable(doc, {
-      startY: 75,
-      head: [['Produit', 'Quantité', 'Prix Unitaire', 'Total']],
+      startY: 110,
+      head: [['Produit', 'Qté', 'Prix Unit.', 'Total']],
       body: tableData,
-      theme: 'striped',
-      headStyles: { fillColor: [220, 53, 69] },
-      styles: { fontSize: 10 },
+      theme: 'grid',
+      headStyles: {
+        fillColor: primaryColor,
+        textColor: [255, 255, 255],
+        fontSize: 10,
+        fontStyle: 'bold',
+        halign: 'center'
+      },
+      styles: {
+        fontSize: 9,
+        cellPadding: 5
+      },
       columnStyles: {
-        0: { cellWidth: 80 },
-        1: { cellWidth: 30, halign: 'center' },
+        0: { cellWidth: 90 },
+        1: { cellWidth: 20, halign: 'center' },
         2: { cellWidth: 40, halign: 'right' },
-        3: { cellWidth: 40, halign: 'right' }
+        3: { cellWidth: 40, halign: 'right', fontStyle: 'bold' }
+      },
+      alternateRowStyles: {
+        fillColor: [254, 245, 244]
       }
     });
 
     // Totaux
     const finalY = (doc as any).lastAutoTable.finalY + 10;
 
-    doc.setFont('helvetica', 'bold');
-    doc.text('Total:', 130, finalY);
-    doc.text(this.formatCurrency(facture.montant_total), 190, finalY, { align: 'right' });
+    doc.setFillColor(254, 245, 244);
+    doc.roundedRect(115, finalY - 5, 80, 40, 3, 3, 'F');
+    doc.setDrawColor(...primaryColor);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(115, finalY - 5, 80, 40, 3, 3, 'S');
 
-    // Informations de paiement
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Total:', 120, finalY + 2);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(...primaryColor);
+    doc.text(this.formatCurrency(facture.montant_total), 190, finalY + 2, { align: 'right' });
+
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+
     const montantPaye = facture.montant_paye || 0;
     const montantRestant = facture.montant_restant || (facture.montant_total - montantPaye);
 
     if (montantPaye > 0) {
       doc.setFont('helvetica', 'normal');
-      doc.text('Montant payé:', 130, finalY + 7);
-      doc.text(this.formatCurrency(montantPaye), 190, finalY + 7, { align: 'right' });
+      doc.text('Payé:', 120, finalY + 12);
+      doc.setTextColor(...accentColor);
+      doc.text(this.formatCurrency(montantPaye), 190, finalY + 12, { align: 'right' });
 
-      doc.text('Montant restant:', 130, finalY + 14);
+      doc.setTextColor(0, 0, 0);
+      doc.text('Restant:', 120, finalY + 22);
       doc.setFont('helvetica', 'bold');
-      doc.text(this.formatCurrency(montantRestant), 190, finalY + 14, { align: 'right' });
+      doc.setTextColor(231, 76, 60);
+      doc.text(this.formatCurrency(montantRestant), 190, finalY + 22, { align: 'right' });
     }
 
-    // Statut
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Statut: ' + facture.statut, 14, finalY + 20);
-
     // Pied de page
-    doc.setFontSize(8);
-    doc.text('Document généré le ' + new Date().toLocaleDateString('fr-FR'), 105, 280, { align: 'center' });
+    doc.setDrawColor(...primaryColor);
+    doc.setLineWidth(0.5);
+    doc.line(15, 270, 195, 270);
+
+    doc.setTextColor(100, 100, 100);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'italic');
+    doc.text('Merci pour votre collaboration !', 105, 276, { align: 'center' });
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.text('Document généré le ' + new Date().toLocaleString('fr-FR'), 105, 282, { align: 'center' });
+    doc.text('AGROCEAN © ' + new Date().getFullYear() + ' - Tous droits réservés', 105, 287, { align: 'center' });
 
     return doc;
   }
