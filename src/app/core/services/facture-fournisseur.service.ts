@@ -30,4 +30,8 @@ export class FactureFournisseurService {
   impayees(): Observable<FactureFournisseur[]> {
     return this.http.get<FactureFournisseur[]>(`${this.apiUrl}/impayees/liste`);
   }
+
+  genererPDF(id: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${id}/generer-pdf`, { responseType: 'blob' });
+  }
 }

@@ -92,4 +92,70 @@ export class FacturesFournisseursListComponent implements OnInit {
     };
     return severityMap[statut] || 'info';
   }
+
+  downloadPDF(facture: FactureFournisseur): void {
+    if (!facture.id) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'ID de facture invalide'
+      });
+      return;
+    }
+
+    this.factureFournisseurService.genererPDF(facture.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `facture-fournisseur-${facture.numero}.pdf`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: 'Facture téléchargée avec succès'
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: 'Erreur lors du téléchargement de la facture'
+        });
+      }
+    });
+  }
+
+  printFacture(facture: FactureFournisseur): void {
+    if (!facture.id) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'ID de facture invalide'
+      });
+      return;
+    }
+
+    this.factureFournisseurService.genererPDF(facture.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const printWindow = window.open(url, '_blank');
+        if (printWindow) {
+          printWindow.addEventListener('load', () => {
+            printWindow.print();
+          });
+        }
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: 'Erreur lors de l\'impression de la facture'
+        });
+      }
+    });
+  }
 }

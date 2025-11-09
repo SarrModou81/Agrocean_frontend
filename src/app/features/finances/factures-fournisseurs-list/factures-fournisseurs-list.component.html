@@ -57,6 +57,7 @@
           <th>Payé</th>
           <th>Restant</th>
           <th>Statut</th>
+          <th>Actions</th>
         </tr>
       </ng-template>
 
@@ -72,12 +73,28 @@
           <td>
             <p-tag [value]="facture.statut" [severity]="getStatutSeverity(facture.statut)"></p-tag>
           </td>
+          <td>
+            <button
+              pButton
+              icon="pi pi-download"
+              class="p-button-text p-button-info p-button-sm"
+              (click)="downloadPDF(facture)"
+              pTooltip="Télécharger PDF"
+            ></button>
+            <button
+              pButton
+              icon="pi pi-print"
+              class="p-button-text p-button-secondary p-button-sm"
+              (click)="printFacture(facture)"
+              pTooltip="Imprimer"
+            ></button>
+          </td>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="8" class="text-center">Aucune facture fournisseur trouvée</td>
+          <td colspan="9" class="text-center">Aucune facture fournisseur trouvée</td>
         </tr>
       </ng-template>
     </p-table>
