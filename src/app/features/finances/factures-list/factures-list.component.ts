@@ -218,114 +218,58 @@ export class FacturesListComponent implements OnInit {
   private genererPDFDocument(facture: any): jsPDF {
     const doc = new jsPDF();
 
-    // Couleurs
-    const primaryColor: [number, number, number] = [41, 128, 185];
-    const accentColor: [number, number, number] = [46, 204, 113];
+    // Couleurs du logo AGROCEAN
+    const vertAgro: [number, number, number] = [91, 140, 62]; // Vert
+    const bleuOcean: [number, number, number] = [46, 92, 138]; // Bleu
 
-    // Fond d'en-tête avec dégradé simulé
-    doc.setFillColor(41, 128, 185);
-    doc.rect(0, 0, 210, 50, 'F');
-
-    // Logo (à gauche)
+    // Logo en haut à gauche
     try {
-      const logoPath = 'assets/logo.png';
-      doc.addImage(logoPath, 'PNG', 15, 10, 35, 35);
+      doc.addImage('assets/logo.png', 'PNG', 15, 10, 40, 40);
     } catch (e) {
       console.log('Logo non trouvé');
     }
 
-    // Informations entreprise
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(26);
+    // Titre FACTURE en haut à droite
+    doc.setTextColor(...bleuOcean);
+    doc.setFontSize(24);
     doc.setFont('helvetica', 'bold');
-    doc.text('AGROCEAN', 55, 20);
+    doc.text('FACTURE', 195, 25, { align: 'right' });
 
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Gestion & Distribution Agro-alimentaire', 55, 28);
-    doc.text('📍 Dakar, Sénégal', 55, 34);
-    doc.text('📞 +221 33 XXX XX XX', 55, 40);
-    doc.text('✉ contact@agrocean.sn', 55, 46);
-
-    // FACTURE (à droite)
-    doc.setFontSize(30);
-    doc.setFont('helvetica', 'bold');
-    doc.text('FACTURE', 210, 22, { align: 'right' });
-
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'normal');
-    doc.text(facture.numero, 210, 32, { align: 'right' });
-
-    // Retour couleur normale
-    doc.setTextColor(0, 0, 0);
-
-    // Ligne séparation
-    doc.setDrawColor(...primaryColor);
-    doc.setLineWidth(1);
+    // Ligne de séparation
+    doc.setDrawColor(...bleuOcean);
+    doc.setLineWidth(0.5);
     doc.line(15, 55, 195, 55);
 
-    // Cadre CLIENT (gauche)
-    doc.setFillColor(245, 247, 250);
-    doc.roundedRect(15, 62, 85, 40, 3, 3, 'F');
-    doc.setDrawColor(...primaryColor);
-    doc.setLineWidth(0.5);
-    doc.roundedRect(15, 62, 85, 40, 3, 3, 'S');
-
-    doc.setFontSize(11);
+    // Informations CLIENT (gauche)
+    doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...primaryColor);
-    doc.text('CLIENT', 20, 70);
-
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(12);
-    doc.text(facture.vente?.client?.nom || 'N/A', 20, 78);
+    doc.setTextColor(...vertAgro);
+    doc.text('CLIENT', 15, 65);
 
     doc.setFont('helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.text(facture.vente?.client?.nom || 'N/A', 15, 72);
     doc.setFontSize(9);
     if (facture.vente?.client?.adresse) {
-      doc.text('📍 ' + facture.vente.client.adresse, 20, 85);
+      doc.text(facture.vente.client.adresse, 15, 78);
     }
     if (facture.vente?.client?.telephone) {
-      doc.text('📞 ' + facture.vente.client.telephone, 20, 91);
-    }
-    if (facture.vente?.client?.email) {
-      doc.text('✉ ' + facture.vente.client.email, 20, 97);
+      doc.text('Tel: ' + facture.vente.client.telephone, 15, 84);
     }
 
-    // Cadre DÉTAILS (droite)
-    doc.setFillColor(245, 247, 250);
-    doc.roundedRect(110, 62, 85, 40, 3, 3, 'F');
-    doc.setDrawColor(...primaryColor);
-    doc.roundedRect(110, 62, 85, 40, 3, 3, 'S');
-
-    doc.setFontSize(11);
+    // Informations FACTURE (droite)
+    doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...primaryColor);
-    doc.text('DÉTAILS FACTURE', 115, 70);
+    doc.setTextColor(...vertAgro);
+    doc.text('Date émission:', 120, 65);
+    doc.text('Date échéance:', 120, 72);
+    doc.text('Statut:', 120, 79);
 
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(0, 0, 0);
-    doc.setFontSize(9);
-    doc.text('Date émission: ' + new Date(facture.date_emission).toLocaleDateString('fr-FR'), 115, 78);
-    doc.text('Date échéance: ' + new Date(facture.date_echeance).toLocaleDateString('fr-FR'), 115, 84);
-
-    // Badge statut
-    let badgeColor: [number, number, number];
-    switch(facture.statut) {
-      case 'Payée': badgeColor = [46, 204, 113]; break;
-      case 'Partiellement Payée': badgeColor = [243, 156, 18]; break;
-      case 'Impayée': badgeColor = [231, 76, 60]; break;
-      default: badgeColor = [149, 165, 166];
-    }
-    doc.setFillColor(...badgeColor);
-    doc.roundedRect(115, 89, 35, 8, 3, 3, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
-    doc.text(facture.statut, 132.5, 94.5, { align: 'center' });
-
-    doc.setTextColor(0, 0, 0);
+    doc.text(new Date(facture.date_emission).toLocaleDateString('fr-FR'), 160, 65);
+    doc.text(new Date(facture.date_echeance).toLocaleDateString('fr-FR'), 160, 72);
+    doc.text(facture.statut, 160, 79);
 
     // Tableau produits
     const tableData: any[] = [];
@@ -344,82 +288,62 @@ export class FacturesListComponent implements OnInit {
     }
 
     autoTable(doc, {
-      startY: 110,
-      head: [['Produit', 'Qté', 'Prix Unit.', 'Total']],
+      startY: 95,
+      head: [['Produit', 'Quantité', 'Prix Unit.', 'Total']],
       body: tableData,
-      theme: 'grid',
+      theme: 'striped',
       headStyles: {
-        fillColor: primaryColor,
+        fillColor: bleuOcean,
         textColor: [255, 255, 255],
         fontSize: 10,
-        fontStyle: 'bold',
-        halign: 'center'
+        fontStyle: 'bold'
       },
       styles: {
-        fontSize: 9,
-        cellPadding: 5
+        fontSize: 9
       },
       columnStyles: {
-        0: { cellWidth: 90 },
-        1: { cellWidth: 20, halign: 'center' },
-        2: { cellWidth: 40, halign: 'right' },
-        3: { cellWidth: 40, halign: 'right', fontStyle: 'bold' }
-      },
-      alternateRowStyles: {
-        fillColor: [250, 250, 250]
+        1: { halign: 'center' },
+        2: { halign: 'right' },
+        3: { halign: 'right', fontStyle: 'bold' }
       }
     });
 
     // Totaux
     const finalY = (doc as any).lastAutoTable.finalY + 10;
 
-    doc.setFillColor(245, 247, 250);
-    doc.roundedRect(115, finalY - 5, 80, 40, 3, 3, 'F');
-    doc.setDrawColor(...primaryColor);
+    doc.setDrawColor(...bleuOcean);
     doc.setLineWidth(0.5);
-    doc.roundedRect(115, finalY - 5, 80, 40, 3, 3, 'S');
+    doc.line(120, finalY, 195, finalY);
 
     doc.setFontSize(11);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Total TTC:', 120, finalY + 2);
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(16);
-    doc.setTextColor(...primaryColor);
-    doc.text(this.formatCurrency(facture.montant_ttc), 190, finalY + 2, { align: 'right' });
-
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(10);
+    doc.setTextColor(...vertAgro);
+    doc.text('Total TTC:', 120, finalY + 8);
+    doc.setFontSize(14);
+    doc.setTextColor(...bleuOcean);
+    doc.text(this.formatCurrency(facture.montant_ttc), 195, finalY + 8, { align: 'right' });
 
     const montantPaye = facture.montant_paye || 0;
     const montantRestant = facture.montant_restant || (facture.montant_ttc - montantPaye);
 
     if (montantPaye > 0) {
+      doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
-      doc.text('Payé:', 120, finalY + 12);
-      doc.setTextColor(...accentColor);
-      doc.text(this.formatCurrency(montantPaye), 190, finalY + 12, { align: 'right' });
-
       doc.setTextColor(0, 0, 0);
-      doc.text('Restant:', 120, finalY + 22);
+      doc.text('Montant payé:', 120, finalY + 16);
+      doc.text(this.formatCurrency(montantPaye), 195, finalY + 16, { align: 'right' });
+
+      doc.text('Montant restant:', 120, finalY + 23);
       doc.setFont('helvetica', 'bold');
-      doc.setTextColor(231, 76, 60);
-      doc.text(this.formatCurrency(montantRestant), 190, finalY + 22, { align: 'right' });
+      doc.text(this.formatCurrency(montantRestant), 195, finalY + 23, { align: 'right' });
     }
 
     // Pied de page
-    doc.setDrawColor(...primaryColor);
-    doc.setLineWidth(0.5);
-    doc.line(15, 270, 195, 270);
-
-    doc.setTextColor(100, 100, 100);
-    doc.setFontSize(9);
+    doc.setFontSize(8);
     doc.setFont('helvetica', 'italic');
-    doc.text('Merci pour votre confiance !', 105, 276, { align: 'center' });
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7);
-    doc.text('Document généré le ' + new Date().toLocaleString('fr-FR'), 105, 282, { align: 'center' });
-    doc.text('AGROCEAN © ' + new Date().getFullYear() + ' - Tous droits réservés', 105, 287, { align: 'center' });
+    doc.setTextColor(128, 128, 128);
+    doc.text('Merci pour votre confiance', 105, 280, { align: 'center' });
+    doc.text('AGROCEAN - Terre & Mer Durables', 105, 285, { align: 'center' });
 
     return doc;
   }
