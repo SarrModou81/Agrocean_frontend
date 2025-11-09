@@ -119,7 +119,10 @@ export class FacturesListComponent implements OnInit {
   }
 
   formatCurrency(value: number): string {
-    return value.toLocaleString('fr-FR') + ' FCFA';
+    return value.toLocaleString('fr-FR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }) + ' FCFA';
   }
 
   getStatutSeverity(statut: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined {
