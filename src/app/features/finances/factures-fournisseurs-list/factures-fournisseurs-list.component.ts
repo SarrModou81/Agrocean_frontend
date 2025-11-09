@@ -281,22 +281,25 @@ export class FacturesFournisseursListComponent implements OnInit {
 
     autoTable(doc, {
       startY: 95,
-      head: [['Produit', 'Quantité', 'Prix Unit.', 'Total']],
+      head: [['Produit', 'Quantité', 'Prix Unitaire', 'Total']],
       body: tableData,
       theme: 'striped',
       headStyles: {
         fillColor: bleuOcean,
         textColor: [255, 255, 255],
         fontSize: 10,
-        fontStyle: 'bold'
+        fontStyle: 'bold',
+        halign: 'center'
       },
       styles: {
-        fontSize: 9
+        fontSize: 9,
+        cellPadding: 3
       },
       columnStyles: {
-        1: { halign: 'center' },
-        2: { halign: 'right' },
-        3: { halign: 'right', fontStyle: 'bold' }
+        0: { halign: 'left', cellWidth: 80 },
+        1: { halign: 'center', cellWidth: 25 },
+        2: { halign: 'right', cellWidth: 35 },
+        3: { halign: 'right', cellWidth: 35, fontStyle: 'bold' }
       }
     });
 
