@@ -131,6 +131,15 @@ export class FacturesListComponent implements OnInit {
 }
 
   downloadPDF(facture: Facture): void {
+    if (!facture.id) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'ID de facture invalide'
+      });
+      return;
+    }
+
     this.factureService.genererPDF(facture.id).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
@@ -157,6 +166,15 @@ export class FacturesListComponent implements OnInit {
   }
 
   printFacture(facture: Facture): void {
+    if (!facture.id) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'ID de facture invalide'
+      });
+      return;
+    }
+
     this.factureService.genererPDF(facture.id).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
