@@ -107,14 +107,24 @@ export class FacturesFournisseursListComponent implements OnInit {
 
     // Récupérer les détails complets de la facture
     this.factureFournisseurService.getById(facture.id).subscribe({
-      next: (factureComplete) => {
+      next: (factureComplete: any) => {
         console.log('📄 Facture fournisseur complète:', factureComplete);
-        console.log('🛒 Commande achat:', factureComplete.commandeAchat);
-        console.log('📦 Détails commande (detail_commande_achats):', factureComplete.commandeAchat?.detail_commande_achats);
-        console.log('📦 Détails commande (detailCommandeAchats):', (factureComplete.commandeAchat as any)?.detailCommandeAchats);
+
+        // Laravel peut retourner en snake_case ou camelCase
+        const commandeAchat = factureComplete.commandeAchat || factureComplete.commande_achat;
+        console.log('🛒 Commande achat:', commandeAchat);
+
+        const details = commandeAchat?.detailCommandeAchats || commandeAchat?.detail_commande_achats;
+        console.log('📦 Détails commande:', details);
 
         try {
-          const pdf = this.genererPDFDocument(factureComplete);
+          // Créer un objet normalisé avec la bonne structure
+          const factureNormalized = {
+            ...factureComplete,
+            commandeAchat: commandeAchat
+          };
+
+          const pdf = this.genererPDFDocument(factureNormalized);
           pdf.save(`facture-fournisseur-${factureComplete.numero}.pdf`);
 
           this.messageService.add({
@@ -217,17 +227,16 @@ export class FacturesFournisseursListComponent implements OnInit {
     doc.text('Date d\'émission: ' + new Date(facture.date_emission).toLocaleDateString('fr-FR'), 120, 45);
     doc.text('Date d\'échéance: ' + new Date(facture.date_echeance).toLocaleDateString('fr-FR'), 120, 51);
 
-    // Tableau des produits - ESSAYER LES DEUX NOTATIONS
+    // Tableau des produits - GÉRER LES DEUX NOTATIONS
     const tableData: any[] = [];
 
-    // Essayer d'abord detail_commande_achats (snake_case)
-    let details = facture.commandeAchat?.detail_commande_achats;
+    // Récupérer commandeAchat (peut être camelCase ou snake_case)
+    const commandeAchat = (facture as any).commandeAchat || (facture as any).commande_achat;
 
-    // Si pas trouvé, essayer detailCommandeAchats (camelCase)
-    if (!details || details.length === 0) {
-      details = (facture.commandeAchat as any)?.detailCommandeAchats;
-    }
+    // Récupérer les détails (peut être camelCase ou snake_case)
+    let details = commandeAchat?.detailCommandeAchats || commandeAchat?.detail_commande_achats;
 
+    console.log('🔍 Commande achat dans PDF:', commandeAchat);
     console.log('🔍 Détails trouvés pour le PDF:', details);
 
     if (details && details.length > 0) {
