@@ -32,14 +32,8 @@ export class StockMouvementsComponent implements OnInit {
       date_fin: this.formatDate(this.dateFin)
     };
 
-    console.log('📅 Chargement des mouvements:', params);
-
     this.stockService.mouvementsPeriode(params.date_debut, params.date_fin).subscribe({
       next: (data) => {
-        console.log('✅ Réponse API mouvements:', data);
-        console.log('📊 Type de données:', typeof data, Array.isArray(data));
-        console.log('📈 Nombre de mouvements:', Array.isArray(data) ? data.length : 'N/A');
-
         // Gérer le cas où data n'est pas un tableau
         if (Array.isArray(data)) {
           this.mouvements = data;
@@ -50,15 +44,13 @@ export class StockMouvementsComponent implements OnInit {
           this.mouvements = [];
         }
 
-        console.log('💾 Mouvements stockés:', this.mouvements.length);
         this.loading = false;
       },
       error: (error) => {
-        console.error('❌ Erreur API mouvements:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Erreur',
-          detail: 'Erreur lors du chargement des mouvements: ' + (error.message || 'Erreur inconnue')
+          detail: 'Erreur lors du chargement des mouvements'
         });
         this.mouvements = [];
         this.loading = false;

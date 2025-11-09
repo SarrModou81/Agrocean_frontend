@@ -52,15 +52,6 @@
       </div>
     </div>
 
-    <!-- Debug info -->
-    <div class="debug-info" style="background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 4px;">
-      <small>
-        <strong>Debug:</strong> Loading: {{ loading }} |
-        Mouvements count: {{ mouvements?.length || 0 }} |
-        Is Array: {{ mouvements && mouvements.constructor?.name }}
-      </small>
-    </div>
-
     <div *ngIf="loading" class="loading-section">
       <p-progressBar mode="indeterminate"></p-progressBar>
     </div>
@@ -125,9 +116,6 @@
       <p>Aucun mouvement de stock trouvé pour cette période</p>
       <p style="color: #666; font-size: 0.9em;">
         Période: {{ dateDebut | date:'dd/MM/yyyy' }} - {{ dateFin | date:'dd/MM/yyyy' }}
-      </p>
-      <p style="color: #999; font-size: 0.85em;">
-        Vérifiez la console du navigateur (F12) pour plus de détails
       </p>
     </div>
   </p-card>
