@@ -272,9 +272,6 @@ export class FacturesFournisseursListComponent implements OnInit {
     if (facture.fournisseur?.telephone) {
       doc.text('📞 ' + facture.fournisseur.telephone, 20, 91);
     }
-    if (facture.fournisseur?.email) {
-      doc.text('✉ ' + facture.fournisseur.email, 20, 97);
-    }
 
     // Cadre DÉTAILS (droite)
     doc.setFillColor(254, 245, 244);
