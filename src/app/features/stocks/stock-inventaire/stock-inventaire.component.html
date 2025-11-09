@@ -41,17 +41,6 @@
       <p-progressBar mode="indeterminate"></p-progressBar>
     </div>
 
-    <!-- Debug info -->
-    <div *ngIf="!loading" class="debug-info" style="background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 4px;">
-      <small>
-        <strong>Debug:</strong>
-        Inventaire: {{ inventaire ? 'Chargé' : 'null' }} |
-        Total produits: {{ inventaire?.total_produits || 0 }} |
-        Entrepôts: {{ inventaire?.par_entrepot?.length || 0 }} |
-        Catégories: {{ inventaire?.par_categorie?.length || 0 }}
-      </small>
-    </div>
-
     <div *ngIf="!loading && inventaire" class="inventaire-content">
       <!-- Statistiques globales -->
       <div class="stats-grid">
@@ -127,12 +116,9 @@
     <!-- État vide -->
     <div *ngIf="!loading && !inventaire" class="empty-state" style="text-align: center; padding: 40px;">
       <p><i class="pi pi-inbox" style="font-size: 3rem; color: #ccc;"></i></p>
-      <p>Aucune donnée d'inventaire disponible</p>
-      <p style="color: #666; font-size: 0.9em;">
-        Vérifiez que des stocks existent dans la base de données
-      </p>
-      <p style="color: #999; font-size: 0.85em;">
-        Consultez la console (F12) pour plus de détails
+      <p style="font-size: 1.1em; color: #666;">Aucune donnée d'inventaire disponible</p>
+      <p style="color: #999; font-size: 0.9em;">
+        L'inventaire sera généré automatiquement dès que des stocks seront enregistrés
       </p>
     </div>
   </p-card>
