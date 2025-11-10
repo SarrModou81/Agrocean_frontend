@@ -1,0 +1,194 @@
+.rapport-stocks-container {
+  padding: 1rem;
+
+  .header-card {
+    margin-bottom: 1.5rem;
+  }
+
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    h2 {
+      margin: 0;
+      color: #2c3e50;
+      font-size: 1.75rem;
+    }
+
+    .subtitle {
+      margin: 0.25rem 0 0 0;
+      color: #7f8c8d;
+      font-size: 0.95rem;
+    }
+  }
+
+  // Grille des KPI
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .kpi-card {
+      border-left: 4px solid;
+      transition: transform 0.2s, box-shadow 0.2s;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+
+      &.value-card {
+        border-left-color: #3498db;
+        .kpi-icon { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+      }
+
+      &.products-card {
+        border-left-color: #9b59b6;
+        .kpi-icon { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); }
+      }
+
+      &.alert-card {
+        border-left-color: #f39c12;
+        .kpi-icon { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); }
+      }
+
+      &.rupture-card {
+        border-left-color: #e74c3c;
+        .kpi-icon { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+      }
+    }
+
+    .kpi-content {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .kpi-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.75rem;
+        flex-shrink: 0;
+      }
+
+      .kpi-details {
+        flex: 1;
+
+        .kpi-label {
+          font-size: 0.85rem;
+          color: #7f8c8d;
+          font-weight: 500;
+          margin-bottom: 0.25rem;
+        }
+
+        .kpi-value {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #2c3e50;
+        }
+      }
+    }
+  }
+
+  // Graphiques
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  // Alertes
+  .alerts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  // Message pas de données
+  .no-data {
+    text-align: center;
+    padding: 3rem;
+    color: #7f8c8d;
+
+    i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: block;
+      opacity: 0.5;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin: 0;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .rapport-stocks-container {
+    .header-section {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .kpi-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .charts-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .alerts-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// Customisation PrimeNG
+:host ::ng-deep {
+  .p-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+
+    .p-card-header {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #2c3e50;
+    }
+
+    .p-card-body {
+      padding: 1.25rem;
+    }
+  }
+
+  .p-progressbar {
+    height: 4px;
+    margin-bottom: 1.5rem;
+
+    .p-progressbar-value {
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+  }
+
+  .p-datatable {
+    font-size: 0.95rem;
+
+    .p-datatable-thead > tr > th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+  }
+}

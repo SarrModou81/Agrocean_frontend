@@ -1,0 +1,160 @@
+<div class="rapport-financier-container">
+  <!-- Header avec filtres -->
+  <p-card styleClass="header-card">
+    <div class="header-section">
+      <div>
+        <h2>Rapport Financier</h2>
+        <p class="subtitle">Analyse financière détaillée de votre activité</p>
+      </div>
+      <div class="filters">
+        <p-calendar
+          [(ngModel)]="dateDebut"
+          placeholder="Date début"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true"
+        ></p-calendar>
+        <p-calendar
+          [(ngModel)]="dateFin"
+          placeholder="Date fin"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true"
+        ></p-calendar>
+        <button
+          pButton
+          label="Générer"
+          icon="pi pi-refresh"
+          (click)="generer()"
+          [disabled]="loading"
+          class="p-button-primary"
+        ></button>
+      </div>
+    </div>
+  </p-card>
+
+  <p-progressBar *ngIf="loading" mode="indeterminate"></p-progressBar>
+
+  <!-- Contenu du rapport -->
+  <div *ngIf="rapport && !loading" class="rapport-content">
+
+    <!-- Cartes KPI -->
+    <div class="kpi-grid">
+      <p-card styleClass="kpi-card ca-card">
+        <div class="kpi-content">
+          <div class="kpi-icon">
+            <i class="pi pi-chart-line"></i>
+          </div>
+          <div class="kpi-details">
+            <div class="kpi-label">Chiffre d'Affaires</div>
+            <div class="kpi-value">{{ formatCurrency(rapport.chiffre_affaires) }}</div>
+          </div>
+        </div>
+      </p-card>
+
+      <p-card styleClass="kpi-card marge-card">
+        <div class="kpi-content">
+          <div class="kpi-icon">
+            <i class="pi pi-dollar"></i>
+          </div>
+          <div class="kpi-details">
+            <div class="kpi-label">Marge Globale</div>
+            <div class="kpi-value">{{ formatCurrency(rapport.marge_globale) }}</div>
+            <div class="kpi-percentage">{{ getTauxMarge().toFixed(1) }}%</div>
+          </div>
+        </div>
+      </p-card>
+
+      <p-card styleClass="kpi-card benefice-card">
+        <div class="kpi-content">
+          <div class="kpi-icon">
+            <i class="pi pi-wallet"></i>
+          </div>
+          <div class="kpi-details">
+            <div class="kpi-label">Bénéfice Net</div>
+            <div class="kpi-value">{{ formatCurrency(rapport.benefice_net) }}</div>
+            <div class="kpi-percentage">{{ getTauxBenefice().toFixed(1) }}%</div>
+          </div>
+        </div>
+      </p-card>
+
+      <p-card styleClass="kpi-card tresorerie-card">
+        <div class="kpi-content">
+          <div class="kpi-icon">
+            <i class="pi pi-money-bill"></i>
+          </div>
+          <div class="kpi-details">
+            <div class="kpi-label">Trésorerie</div>
+            <div class="kpi-value">{{ formatCurrency(rapport.tresorerie) }}</div>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Graphiques -->
+    <div class="charts-grid">
+      <!-- Évolution mensuelle -->
+      <p-card header="Évolution du Chiffre d'Affaires" *ngIf="chartEvolution">
+        <p-chart
+          type="line"
+          [data]="chartEvolution"
+          [options]="getChartOptions()"
+          height="300px"
+        ></p-chart>
+      </p-card>
+
+      <!-- Répartition -->
+      <p-card header="Répartition Financière" *ngIf="chartRepartition">
+        <p-chart
+          type="doughnut"
+          [data]="chartRepartition"
+          [options]="getDoughnutOptions()"
+          height="300px"
+        ></p-chart>
+      </p-card>
+    </div>
+
+    <!-- Détails financiers -->
+    <p-card header="Détails Financiers">
+      <div class="details-grid">
+        <div class="detail-row">
+          <span class="detail-label">Chiffre d'Affaires</span>
+          <span class="detail-value positive">{{ formatCurrency(rapport.chiffre_affaires) }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Coût d'Achat</span>
+          <span class="detail-value negative">- {{ formatCurrency(rapport.cout_achat) }}</span>
+        </div>
+        <div class="detail-row highlight">
+          <span class="detail-label"><strong>Marge Brute</strong></span>
+          <span class="detail-value positive"><strong>{{ formatCurrency(rapport.marge_globale) }}</strong></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Charges d'Exploitation</span>
+          <span class="detail-value negative">- {{ formatCurrency(rapport.charges_exploitation) }}</span>
+        </div>
+        <div class="detail-row highlight total">
+          <span class="detail-label"><strong>Bénéfice Net</strong></span>
+          <span class="detail-value" [class.positive]="rapport.benefice_net >= 0" [class.negative]="rapport.benefice_net < 0">
+            <strong>{{ formatCurrency(rapport.benefice_net) }}</strong>
+          </span>
+        </div>
+        <div class="divider"></div>
+        <div class="detail-row">
+          <span class="detail-label">Créances Clients</span>
+          <span class="detail-value">{{ formatCurrency(rapport.creances) }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Trésorerie</span>
+          <span class="detail-value positive">{{ formatCurrency(rapport.tresorerie) }}</span>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Message si pas de données -->
+  <p-card *ngIf="!rapport && !loading">
+    <div class="no-data">
+      <i class="pi pi-info-circle"></i>
+      <p>Sélectionnez une période et cliquez sur "Générer" pour voir le rapport</p>
+    </div>
+  </p-card>
+</div>

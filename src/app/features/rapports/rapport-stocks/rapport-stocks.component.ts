@@ -1,64 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RapportService } from '../../../core/services/all-services';
 import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-rapport-stocks',
-  template: `
-    <div class="rapport-container">
-      <p-card header="Rapport des Stocks">
-        <button pButton label="Générer" (click)="generer()" [disabled]="loading" class="p-button-primary"></button>
-        <div *ngIf="rapport" class="content">
-          <p-table [value]="rapport.produits" [paginator]="true" [rows]="10">
-            <ng-template pTemplate="header">
-              <tr>
-                <th>Produit</th>
-                <th>Quantité</th>
-                <th>Valeur</th>
-                <th>Statut</th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-item>
-              <tr>
-                <td>{{ item.nom }}</td>
-                <td>{{ item.quantite }}</td>
-                <td>{{ formatCurrency(item.valeur) }}</td>
-                <td>
-                  <p-tag 
-                    [value]="item.quantite > item.seuil ? 'OK' : 'Faible'" 
-                    [severity]="item.quantite > item.seuil ? 'success' : 'danger'"
-                  ></p-tag>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
-        </div>
-        <p-progressBar *ngIf="loading" mode="indeterminate"></p-progressBar>
-      </p-card>
-    </div>
-  `,
-  styles: [`
-    .rapport-container {
-      padding: 0;
-      button { margin-bottom: 1.5rem; }
-      .content { padding-top: 1rem; }
-    }
-  `]
+  templateUrl: './rapport-stocks.component.html',
+  styleUrls: ['./rapport-stocks.component.scss']
 })
-export class RapportStocksComponent {
+export class RapportStocksComponent implements OnInit {
   rapport: any = null;
   loading = false;
+
+  chartCategorie: any;
+  chartEntrepot: any;
 
   constructor(
     private rapportService: RapportService,
     private messageService: MessageService
   ) {}
 
+  ngOnInit(): void {
+    this.generer();
+  }
+
   generer(): void {
     this.loading = true;
     this.rapportService.rapportStocks().subscribe({
       next: (data) => {
         this.rapport = data;
+        this.prepareCharts();
         this.loading = false;
       },
       error: () => {
@@ -72,7 +42,82 @@ export class RapportStocksComponent {
     });
   }
 
-  formatCurrency(value: number): string {
-    return value.toLocaleString('fr-FR') + ' FCFA';
+  prepareCharts(): void {
+    // Graphique par catégorie
+    if (this.rapport.stock_par_categorie) {
+      const categories = Object.entries(this.rapport.stock_par_categorie);
+      this.chartCategorie = {
+        labels: categories.map((c: any) => c[0]),
+        datasets: [{
+          data: categories.map((c: any) => c[1].valeur),
+          backgroundColor: [
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56',
+            '#4BC0C0',
+            '#9966FF',
+            '#FF9F40'
+          ]
+        }]
+      };
+    }
+
+    // Graphique par entrepôt
+    if (this.rapport.stock_par_entrepot) {
+      const entrepots = Object.values(this.rapport.stock_par_entrepot);
+      this.chartEntrepot = {
+        labels: entrepots.map((e: any) => e.entrepot),
+        datasets: [{
+          label: 'Capacité Utilisée (%)',
+          data: entrepots.map((e: any) => e.capacite_utilisee),
+          backgroundColor: '#36A2EB'
+        }]
+      };
+    }
+  }
+
+  formatCurrency(value: any): string {
+    const numValue = typeof value === 'string' ? parseFloat(value) : value;
+    if (isNaN(numValue)) return '0 FCFA';
+    return numValue.toLocaleString('fr-FR') + ' FCFA';
+  }
+
+  getPieOptions(): any {
+    return {
+      plugins: {
+        legend: {
+          display: true,
+          position: 'bottom'
+        },
+        tooltip: {
+          callbacks: {
+            label: (context: any) => {
+              const label = context.label || '';
+              const value = this.formatCurrency(context.parsed);
+              return label + ': ' + value;
+            }
+          }
+        }
+      }
+    };
+  }
+
+  getBarOptions(): any {
+    return {
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          ticks: {
+            callback: (value: any) => value + '%'
+          }
+        }
+      }
+    };
   }
 }
