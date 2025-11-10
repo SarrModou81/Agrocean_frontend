@@ -48,7 +48,7 @@ export class ProduitFormComponent implements OnInit, OnChanges {
 
   initForm(): void {
     this.produitForm = this.fb.group({
-      code: ['', Validators.required],
+      // Le code n'est plus dans le formulaire car il est généré automatiquement
       nom: ['', Validators.required],
       description: [''],
       categorie_id: ['', Validators.required],
@@ -66,7 +66,7 @@ export class ProduitFormComponent implements OnInit, OnChanges {
   updateForm(): void {
     if (this.produit) {
       this.produitForm.patchValue({
-        code: this.produit.code,
+        // Le code n'est pas dans le formulaire
         nom: this.produit.nom,
         description: this.produit.description || '',
         categorie_id: this.produit.categorie_id,

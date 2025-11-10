@@ -1,28 +1,29 @@
 <!-- src/app/features/produits/produit-form/produit-form.component.html -->
 <form [formGroup]="produitForm" (ngSubmit)="onSubmit()">
   <div class="p-fluid">
-    <div class="field-group">
-      <div class="field">
-        <label for="code">Code Produit *</label>
-        <input 
-          id="code" 
-          type="text" 
-          pInputText 
-          formControlName="code"
-          placeholder="Ex: PRD001"
-          [class.ng-invalid]="isFieldInvalid('code')"
-        >
-        <small class="p-error" *ngIf="isFieldInvalid('code')">
-          Le code est requis
-        </small>
-      </div>
+    <!-- Code généré automatiquement - affiché uniquement en mode édition -->
+    <div class="field" *ngIf="isEditing && produit?.code">
+      <label for="code">Code Produit</label>
+      <input
+        id="code"
+        type="text"
+        pInputText
+        [value]="produit?.code || ''"
+        [disabled]="true"
+        class="code-readonly"
+      >
+      <small class="text-info">
+        <i class="pi pi-info-circle"></i> Le code est généré automatiquement et ne peut pas être modifié
+      </small>
+    </div>
 
+    <div class="field-group" [class.single-field]="isEditing">
       <div class="field">
         <label for="nom">Nom *</label>
-        <input 
-          id="nom" 
-          type="text" 
-          pInputText 
+        <input
+          id="nom"
+          type="text"
+          pInputText
           formControlName="nom"
           placeholder="Nom du produit"
           [class.ng-invalid]="isFieldInvalid('nom')"

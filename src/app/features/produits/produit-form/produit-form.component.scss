@@ -8,12 +8,35 @@
     color: #495057;
     font-weight: 600;
   }
+
+  .text-info {
+    display: block;
+    margin-top: 0.5rem;
+    color: #6c757d;
+    font-size: 0.875rem;
+
+    i {
+      margin-right: 0.25rem;
+      color: #17a2b8;
+    }
+  }
 }
 
 .field-group {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
+
+  &.single-field {
+    grid-template-columns: 1fr;
+  }
+}
+
+.code-readonly {
+  background-color: #e9ecef !important;
+  cursor: not-allowed !important;
+  font-weight: 600;
+  color: #495057 !important;
 }
 
 .checkbox-wrapper {
