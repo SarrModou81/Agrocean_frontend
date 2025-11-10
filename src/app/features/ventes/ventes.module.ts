@@ -25,11 +25,12 @@ import { MessageModule } from 'primeng/message'; // ✅ AJOUT pour afficher le m
 import { VentesListComponent } from './ventes-list/ventes-list.component';
 import { VenteCreateComponent } from './vente-create/vente-create.component';
 import { VenteDetailsComponent } from './vente-details/vente-details.component';
+import { DevisListComponent } from './devis-list/devis-list.component';
 
 const routes: Routes = [
   { path: '', component: VentesListComponent },
   { path: 'create', component: VenteCreateComponent },
-  { path: 'devis', component: VentesListComponent }, // Route pour les devis (avant :id)
+  { path: 'devis', component: DevisListComponent }, // Route pour les devis
   { path: ':id', component: VenteDetailsComponent } // Route dynamique en dernier
 ];
 
@@ -37,7 +38,8 @@ const routes: Routes = [
   declarations: [
     VentesListComponent,
     VenteCreateComponent,
-    VenteDetailsComponent
+    VenteDetailsComponent,
+    DevisListComponent
   ],
   imports: [
     CommonModule,

@@ -24,10 +24,12 @@ import { ProgressBarModule } from 'primeng/progressbar';  // ADDED THIS
 import { CommandesAchatListComponent } from './commandes-achat-list/commandes-achat-list.component';
 import { CommandeAchatCreateComponent } from './commande-achat-create/commande-achat-create.component';
 import { CommandeAchatDetailsComponent } from './commande-achat-details/commande-achat-details.component';
+import { ReceptionsListComponent } from './receptions-list/receptions-list.component';
 
 const routes: Routes = [
   { path: '', component: CommandesAchatListComponent },
   { path: 'create', component: CommandeAchatCreateComponent },
+  { path: 'receptions', component: ReceptionsListComponent }, // Route pour les réceptions
   { path: ':id', component: CommandeAchatDetailsComponent }
 ];
 
@@ -35,7 +37,8 @@ const routes: Routes = [
   declarations: [
     CommandesAchatListComponent,
     CommandeAchatCreateComponent,
-    CommandeAchatDetailsComponent
+    CommandeAchatDetailsComponent,
+    ReceptionsListComponent
   ],
   imports: [
     CommonModule,

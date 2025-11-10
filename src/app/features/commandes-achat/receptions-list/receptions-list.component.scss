@@ -1,0 +1,62 @@
+.receptions-container {
+  padding: 1rem;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  h2 {
+    margin: 0;
+    color: #333;
+  }
+}
+
+.filters-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+      font-weight: 500;
+      color: #495057;
+    }
+  }
+
+  .filter-actions {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+}
+
+:host ::ng-deep {
+  .p-datatable {
+    .p-datatable-thead > tr > th {
+      background-color: #f8f9fa;
+      color: #495057;
+      font-weight: 600;
+    }
+
+    .p-datatable-tbody > tr {
+      &:hover {
+        background-color: #f8f9fa;
+      }
+    }
+  }
+
+  .p-button-text {
+    padding: 0.25rem 0.5rem;
+  }
+}

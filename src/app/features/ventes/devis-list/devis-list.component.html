@@ -1,0 +1,131 @@
+<div class="devis-container">
+  <p-card>
+    <div class="header-section">
+      <h2>Gestion des Devis</h2>
+      <button
+        pButton
+        icon="pi pi-plus"
+        label="Nouveau Devis"
+        (click)="nouveauDevis()"
+        class="p-button-success"
+      ></button>
+    </div>
+
+    <div class="filters-section">
+      <div class="filter-group">
+        <label>Client</label>
+        <p-dropdown
+          [(ngModel)]="selectedClient"
+          [options]="clients"
+          optionLabel="nom"
+          optionValue="id"
+          placeholder="Tous les clients"
+          [showClear]="true"
+          (onChange)="applyFilters()"
+        ></p-dropdown>
+      </div>
+
+      <div class="filter-group">
+        <label>Date début</label>
+        <p-calendar
+          [(ngModel)]="dateDebut"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true"
+          (onSelect)="applyFilters()"
+        ></p-calendar>
+      </div>
+
+      <div class="filter-group">
+        <label>Date fin</label>
+        <p-calendar
+          [(ngModel)]="dateFin"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true"
+          (onSelect)="applyFilters()"
+        ></p-calendar>
+      </div>
+
+      <div class="filter-actions">
+        <button
+          pButton
+          icon="pi pi-times"
+          label="Effacer"
+          class="p-button-secondary"
+          (click)="clearFilters()"
+        ></button>
+      </div>
+    </div>
+
+    <p-table
+      [value]="devis"
+      [loading]="loading"
+      [paginator]="true"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords"
+      [lazy]="true"
+      (onLazyLoad)="onPageChange($event)"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} devis"
+      responsiveLayout="scroll"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Numéro</th>
+          <th>Client</th>
+          <th>Date</th>
+          <th>Montant Total</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td>
+            <strong>{{ item.numero }}</strong>
+          </td>
+          <td>{{ item.client?.nom || 'N/A' }}</td>
+          <td>{{ item.date | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <strong>{{ formatCurrency(item.montant_total) }}</strong>
+          </td>
+          <td>
+            <p-tag
+              [value]="item.statut"
+              [severity]="getStatutSeverity(item.statut)"
+            ></p-tag>
+          </td>
+          <td>
+            <button
+              pButton
+              icon="pi pi-eye"
+              class="p-button-text p-button-info"
+              (click)="voirDetails(item)"
+              pTooltip="Voir détails"
+            ></button>
+            <button
+              pButton
+              icon="pi pi-check"
+              class="p-button-text p-button-success"
+              (click)="validerDevis(item)"
+              pTooltip="Valider le devis"
+            ></button>
+            <button
+              pButton
+              icon="pi pi-times"
+              class="p-button-text p-button-danger"
+              (click)="annulerDevis(item)"
+              pTooltip="Annuler"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center">Aucun devis trouvé</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
