@@ -1,82 +1,38 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RapportService } from '../../../core/services/all-services';
 import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-rapport-performances',
-  template: `
-    <div class="rapport-container">
-      <p-card header="Analyse des Performances">
-        <button pButton label="Générer" (click)="generer()" [disabled]="loading" class="p-button-primary"></button>
-        <div *ngIf="rapport" class="stats-grid">
-          <div class="stat-card">
-            <h4>Taux de rotation des stocks</h4>
-            <p class="value">{{ rapport.taux_rotation?.toFixed(2) || 0 }}%</p>
-          </div>
-          <div class="stat-card">
-            <h4>Marge moyenne</h4>
-            <p class="value">{{ rapport.marge_moyenne?.toFixed(2) || 0 }}%</p>
-          </div>
-          <div class="stat-card">
-            <h4>Taux de satisfaction client</h4>
-            <p class="value">{{ rapport.taux_satisfaction?.toFixed(2) || 0 }}%</p>
-          </div>
-          <div class="stat-card">
-            <h4>Délai moyen de livraison</h4>
-            <p class="value">{{ rapport.delai_moyen || 0 }} jours</p>
-          </div>
-        </div>
-        <p-progressBar *ngIf="loading" mode="indeterminate"></p-progressBar>
-      </p-card>
-    </div>
-  `,
-  styles: [`
-    .rapport-container {
-      padding: 0;
-      button { margin-bottom: 1.5rem; }
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-top: 1rem;
-        .stat-card {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          padding: 1.5rem;
-          border-radius: 8px;
-          text-align: center;
-          h4 {
-            margin: 0 0 1rem 0;
-            font-size: 0.9rem;
-            opacity: 0.9;
-          }
-          .value {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0;
-          }
-        }
-      }
-    }
-    @media (max-width: 768px) {
-      .stats-grid {
-        grid-template-columns: 1fr !important;
-      }
-    }
-  `]
+  templateUrl: './rapport-performances.component.html',
+  styleUrls: ['./rapport-performances.component.scss']
 })
-export class RapportPerformancesComponent {
+export class RapportPerformancesComponent implements OnInit {
   rapport: any = null;
   loading = false;
+  dateDebut: Date | null = null;
+  dateFin: Date | null = null;
 
   constructor(
     private rapportService: RapportService,
     private messageService: MessageService
   ) {}
 
+  ngOnInit(): void {
+    // Charger le rapport de l'année en cours par défaut
+    const now = new Date();
+    this.dateDebut = new Date(now.getFullYear(), 0, 1);
+    this.dateFin = now;
+    this.generer();
+  }
+
   generer(): void {
     this.loading = true;
-    this.rapportService.analysePerformances().subscribe({
+    const params: any = {};
+    if (this.dateDebut) params.date_debut = this.formatDate(this.dateDebut);
+    if (this.dateFin) params.date_fin = this.formatDate(this.dateFin);
+
+    this.rapportService.analysePerformances(params).subscribe({
       next: (data) => {
         this.rapport = data;
         this.loading = false;
@@ -90,5 +46,29 @@ export class RapportPerformancesComponent {
         this.loading = false;
       }
     });
+  }
+
+  formatDate(date: Date): string {
+    return date.toISOString().split('T')[0];
+  }
+
+  formatCurrency(value: any): string {
+    const numValue = typeof value === 'string' ? parseFloat(value) : value;
+    if (isNaN(numValue)) return '0 FCFA';
+    return numValue.toLocaleString('fr-FR') + ' FCFA';
+  }
+
+  formatDateRange(): string {
+    if (!this.dateDebut || !this.dateFin) return '';
+    const debut = this.dateDebut.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+    const fin = this.dateFin.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+    return `${debut} - ${fin}`;
+  }
+
+  getPerformancePercentage(commercial: any, allCommerciaux: any[]): number {
+    if (!allCommerciaux || allCommerciaux.length === 0) return 0;
+    const maxCA = Math.max(...allCommerciaux.map((c: any) => c.chiffre_affaires || 0));
+    if (maxCA === 0) return 0;
+    return (commercial.chiffre_affaires / maxCA) * 100;
   }
 }

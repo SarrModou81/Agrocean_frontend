@@ -1,0 +1,202 @@
+<div class="rapport-ventes-container">
+  <!-- Header avec filtres -->
+  <p-card styleClass="header-card">
+    <div class="header-section">
+      <div>
+        <h2>Rapport des Ventes</h2>
+        <p class="subtitle">Analyse détaillée des performances commerciales</p>
+      </div>
+      <div class="filters">
+        <p-calendar
+          [(ngModel)]="dateDebut"
+          placeholder="Date début"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true"
+        ></p-calendar>
+        <p-calendar
+          [(ngModel)]="dateFin"
+          placeholder="Date fin"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true"
+        ></p-calendar>
+        <button
+          pButton
+          label="Générer"
+          icon="pi pi-refresh"
+          (click)="generer()"
+          [disabled]="loading"
+          class="p-button-primary"
+        ></button>
+      </div>
+    </div>
+  </p-card>
+
+  <p-progressBar *ngIf="loading" mode="indeterminate"></p-progressBar>
+
+  <!-- Contenu du rapport -->
+  <div *ngIf="rapport && !loading" class="rapport-content">
+
+    <!-- Cartes KPI -->
+    <div class="kpi-grid">
+      <p-card styleClass="kpi-card ventes-card">
+        <div class="kpi-content">
+          <div class="kpi-icon">
+            <i class="pi pi-shopping-cart"></i>
+          </div>
+          <div class="kpi-details">
+            <div class="kpi-label">Total Ventes</div>
+            <div class="kpi-value">{{ rapport.statistiques?.total_ventes || 0 }}</div>
+          </div>
+        </div>
+      </p-card>
+
+      <p-card styleClass="kpi-card montant-card">
+        <div class="kpi-content">
+          <div class="kpi-icon">
+            <i class="pi pi-money-bill"></i>
+          </div>
+          <div class="kpi-details">
+            <div class="kpi-label">Montant Total</div>
+            <div class="kpi-value">{{ formatCurrency(rapport.statistiques?.montant_total) }}</div>
+          </div>
+        </div>
+      </p-card>
+
+      <p-card styleClass="kpi-card panier-card">
+        <div class="kpi-content">
+          <div class="kpi-icon">
+            <i class="pi pi-chart-bar"></i>
+          </div>
+          <div class="kpi-details">
+            <div class="kpi-label">Panier Moyen</div>
+            <div class="kpi-value">{{ formatCurrency(rapport.statistiques?.panier_moyen) }}</div>
+          </div>
+        </div>
+      </p-card>
+
+      <p-card styleClass="kpi-card clients-card">
+        <div class="kpi-content">
+          <div class="kpi-icon">
+            <i class="pi pi-users"></i>
+          </div>
+          <div class="kpi-details">
+            <div class="kpi-label">Clients Actifs</div>
+            <div class="kpi-value">{{ rapport.ventes_par_client?.length || 0 }}</div>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Graphique évolution -->
+    <p-card header="Évolution des Ventes" *ngIf="chartTendances">
+      <p-chart
+        type="line"
+        [data]="chartTendances"
+        [options]="getLineOptions()"
+        height="300px"
+      ></p-chart>
+    </p-card>
+
+    <!-- Top produits et clients -->
+    <div class="tables-grid">
+      <!-- Top Produits -->
+      <p-card header="Top 10 Produits Vendus">
+        <p-table [value]="rapport.ventes_par_produit || []" [paginator]="false">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Produit</th>
+              <th>Qté Vendue</th>
+              <th>CA</th>
+              <th>Marge</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item let-i="rowIndex">
+            <tr>
+              <td>
+                <span class="rank-badge">{{ i + 1 }}</span>
+                {{ item.produit }}
+              </td>
+              <td><strong>{{ item.quantite_vendue }}</strong></td>
+              <td>{{ formatCurrency(item.chiffre_affaires) }}</td>
+              <td class="positive">{{ formatCurrency(item.marge) }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="4" class="text-center">Aucune donnée disponible</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+
+      <!-- Top Clients -->
+      <p-card header="Top 10 Clients">
+        <p-table [value]="rapport.ventes_par_client || []" [paginator]="false">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Client</th>
+              <th>Nb Ventes</th>
+              <th>Montant Total</th>
+              <th>Panier Moy.</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item let-i="rowIndex">
+            <tr>
+              <td>
+                <span class="rank-badge">{{ i + 1 }}</span>
+                {{ item.client }}
+              </td>
+              <td><strong>{{ item.nombre_ventes }}</strong></td>
+              <td>{{ formatCurrency(item.montant_total) }}</td>
+              <td>{{ formatCurrency(item.panier_moyen) }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="4" class="text-center">Aucune donnée disponible</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    </div>
+
+    <!-- Analyse des marges -->
+    <p-card header="Analyse des Marges par Produit">
+      <p-table [value]="rapport.analyse_marges || []" [paginator]="true" [rows]="10">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Produit</th>
+            <th>Marge Unitaire</th>
+            <th>Marge Totale</th>
+            <th>Taux de Marge</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td>{{ item.produit }}</td>
+            <td>{{ formatCurrency(item.marge_unitaire) }}</td>
+            <td class="positive"><strong>{{ formatCurrency(item.marge_totale) }}</strong></td>
+            <td>
+              <span class="percentage" [class.high]="item.taux_marge > 30" [class.medium]="item.taux_marge > 15 && item.taux_marge <= 30" [class.low]="item.taux_marge <= 15">
+                {{ item.taux_marge.toFixed(1) }}%
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="4" class="text-center">Aucune donnée disponible</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+
+  <!-- Message si pas de données -->
+  <p-card *ngIf="!rapport && !loading">
+    <div class="no-data">
+      <i class="pi pi-info-circle"></i>
+      <p>Sélectionnez une période et cliquez sur "Générer" pour voir le rapport</p>
+    </div>
+  </p-card>
+</div>
