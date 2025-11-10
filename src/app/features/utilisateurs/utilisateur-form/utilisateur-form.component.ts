@@ -39,6 +39,19 @@ export class UtilisateurFormComponent implements OnInit, OnChanges {
     if (changes['utilisateur'] && this.utilisateurForm) {
       this.updateForm();
     }
+
+    // Gérer le changement du mode édition
+    if (changes['isEditing'] && this.utilisateurForm) {
+      const passwordControl = this.utilisateurForm.get('password');
+      if (this.isEditing) {
+        // Retirer les validateurs en mode édition
+        passwordControl?.clearValidators();
+      } else {
+        // Ajouter les validateurs en mode création
+        passwordControl?.setValidators([Validators.required, Validators.minLength(6)]);
+      }
+      passwordControl?.updateValueAndValidity();
+    }
   }
 
   initForm(): void {
@@ -67,7 +80,12 @@ export class UtilisateurFormComponent implements OnInit, OnChanges {
         role: this.utilisateur.role,
         is_active: this.utilisateur.is_active !== false
       });
-      // Ne pas patcher le password lors de l'édition
+
+      // Retirer les validateurs du mot de passe en mode édition
+      if (this.isEditing) {
+        this.utilisateurForm.get('password')?.clearValidators();
+        this.utilisateurForm.get('password')?.updateValueAndValidity();
+      }
     }
   }
 
