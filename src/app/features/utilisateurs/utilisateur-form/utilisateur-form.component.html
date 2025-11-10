@@ -57,7 +57,7 @@
 
     <div class="field">
       <label for="role">Rôle *</label>
-      <p-dropdown 
+      <p-dropdown
         id="role"
         formControlName="role"
         [options]="roles"
@@ -71,19 +71,20 @@
       </small>
     </div>
 
-    <div class="field">
-      <label for="password">Mot de passe {{ isEditing ? '' : '*' }}</label>
-      <p-password 
+    <div class="field" *ngIf="!isEditing">
+      <label for="password">Mot de passe *</label>
+      <p-password
         id="password"
         formControlName="password"
         [toggleMask]="true"
-        [feedback]="!isEditing"
+        [feedback]="true"
         [class.ng-invalid]="isFieldInvalid('password')"
-        [placeholder]="isEditing ? 'Laisser vide pour ne pas changer' : 'Minimum 6 caractères'"
+        placeholder="Minimum 6 caractères"
       ></p-password>
       <small class="p-error" *ngIf="isFieldInvalid('password')">
         Mot de passe requis (min. 6 caractères)
       </small>
+      <small class="text-500">L'utilisateur pourra modifier son mot de passe depuis son profil</small>
     </div>
 
     <div class="field" *ngIf="isEditing">
