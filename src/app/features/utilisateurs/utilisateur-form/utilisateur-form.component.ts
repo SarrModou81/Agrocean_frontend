@@ -1,5 +1,5 @@
 // src/app/features/utilisateurs/utilisateur-form/utilisateur-form.component.ts
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../../core/services/all-services';
 import { MessageService } from 'primeng/api';
@@ -9,7 +9,7 @@ import { MessageService } from 'primeng/api';
   templateUrl: './utilisateur-form.component.html',
   styleUrls: ['./utilisateur-form.component.scss']
 })
-export class UtilisateurFormComponent implements OnInit {
+export class UtilisateurFormComponent implements OnInit, OnChanges {
   @Input() utilisateur: any = null;
   @Input() isEditing = false;
   @Output() formSubmitted = new EventEmitter<void>();
@@ -35,16 +35,40 @@ export class UtilisateurFormComponent implements OnInit {
     this.initForm();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['utilisateur'] && this.utilisateurForm) {
+      this.updateForm();
+    }
+  }
+
   initForm(): void {
     this.utilisateurForm = this.fb.group({
-      nom: [this.utilisateur?.nom || '', Validators.required],
-      prenom: [this.utilisateur?.prenom || '', Validators.required],
-      email: [this.utilisateur?.email || '', [Validators.required, Validators.email]],
-      telephone: [this.utilisateur?.telephone || ''],
-      role: [this.utilisateur?.role || 'Commercial', Validators.required],
+      nom: ['', Validators.required],
+      prenom: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      telephone: [''],
+      role: ['Commercial', Validators.required],
       password: ['', this.isEditing ? [] : [Validators.required, Validators.minLength(6)]],
-      is_active: [this.utilisateur?.is_active !== false]
+      is_active: [true]
     });
+
+    if (this.utilisateur) {
+      this.updateForm();
+    }
+  }
+
+  updateForm(): void {
+    if (this.utilisateur) {
+      this.utilisateurForm.patchValue({
+        nom: this.utilisateur.nom,
+        prenom: this.utilisateur.prenom,
+        email: this.utilisateur.email,
+        telephone: this.utilisateur.telephone || '',
+        role: this.utilisateur.role,
+        is_active: this.utilisateur.is_active !== false
+      });
+      // Ne pas patcher le password lors de l'édition
+    }
   }
 
   onSubmit(): void {

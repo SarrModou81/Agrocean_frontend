@@ -22,16 +22,16 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadUser();
     this.initForms();
+    this.loadUser();
   }
 
   loadUser(): void {
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem('agrocean_user');
     if (userData) {
       this.user = JSON.parse(userData);
       this.profileForm.patchValue({
-        name: this.user.name,
+        name: this.user.nom + ' ' + this.user.prenom,
         email: this.user.email,
         telephone: this.user.telephone || ''
       });

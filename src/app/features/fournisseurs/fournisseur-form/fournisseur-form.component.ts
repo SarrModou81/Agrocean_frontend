@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FournisseurService } from '../../../core/services/all-services';
 import { Fournisseur } from '../../../core/models';
@@ -9,7 +9,7 @@ import { MessageService } from 'primeng/api';
   templateUrl: './fournisseur-form.component.html',
   styleUrls: ['./fournisseur-form.component.scss']
 })
-export class FournisseurFormComponent implements OnInit {
+export class FournisseurFormComponent implements OnInit, OnChanges {
   @Input() fournisseur: Fournisseur | null = null;
   @Input() isEditing = false;
   @Output() formSubmitted = new EventEmitter<void>();
@@ -27,14 +27,36 @@ export class FournisseurFormComponent implements OnInit {
     this.initForm();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['fournisseur'] && this.fournisseurForm) {
+      this.updateForm();
+    }
+  }
+
   initForm(): void {
     this.fournisseurForm = this.fb.group({
-      nom: [this.fournisseur?.nom || '', Validators.required],
-      contact: [this.fournisseur?.contact || '', Validators.required],
-      telephone: [this.fournisseur?.telephone || '', Validators.required],
-      adresse: [this.fournisseur?.adresse || '', Validators.required],
-      conditions: [this.fournisseur?.conditions || '']
+      nom: ['', Validators.required],
+      contact: ['', Validators.required],
+      telephone: ['', Validators.required],
+      adresse: ['', Validators.required],
+      conditions: ['']
     });
+
+    if (this.fournisseur) {
+      this.updateForm();
+    }
+  }
+
+  updateForm(): void {
+    if (this.fournisseur) {
+      this.fournisseurForm.patchValue({
+        nom: this.fournisseur.nom,
+        contact: this.fournisseur.contact,
+        telephone: this.fournisseur.telephone,
+        adresse: this.fournisseur.adresse,
+        conditions: this.fournisseur.conditions || ''
+      });
+    }
   }
 
   onSubmit(): void {

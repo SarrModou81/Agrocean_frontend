@@ -1,5 +1,5 @@
 // src/app/features/produits/produit-form/produit-form.component.ts
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CategorieService } from '../../../core/services/all-services';
 import { Produit, Categorie } from '../../../core/models';
@@ -11,7 +11,7 @@ import { ProduitService } from '../../../core/services/produit.service';
   templateUrl: './produit-form.component.html',
   styleUrls: ['./produit-form.component.scss']
 })
-export class ProduitFormComponent implements OnInit {
+export class ProduitFormComponent implements OnInit, OnChanges {
   @Input() produit: Produit | null = null;
   @Input() isEditing = false;
   @Output() formSubmitted = new EventEmitter<void>();
@@ -32,6 +32,12 @@ export class ProduitFormComponent implements OnInit {
     this.initForm();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['produit'] && this.produitForm) {
+      this.updateForm();
+    }
+  }
+
   loadCategories(): void {
     this.categorieService.getAll().subscribe({
       next: (data) => {
@@ -42,15 +48,34 @@ export class ProduitFormComponent implements OnInit {
 
   initForm(): void {
     this.produitForm = this.fb.group({
-      code: [this.produit?.code || '', Validators.required],
-      nom: [this.produit?.nom || '', Validators.required],
-      description: [this.produit?.description || ''],
-      categorie_id: [this.produit?.categorie_id || '', Validators.required],
-      prix_achat: [this.produit?.prix_achat || 0, [Validators.required, Validators.min(0)]],
-      prix_vente: [this.produit?.prix_vente || 0, [Validators.required, Validators.min(0)]],
-      seuil_minimum: [this.produit?.seuil_minimum || 10, [Validators.required, Validators.min(0)]],
-      peremption: [this.produit?.peremption || false]
+      code: ['', Validators.required],
+      nom: ['', Validators.required],
+      description: [''],
+      categorie_id: ['', Validators.required],
+      prix_achat: [0, [Validators.required, Validators.min(0)]],
+      prix_vente: [0, [Validators.required, Validators.min(0)]],
+      seuil_minimum: [10, [Validators.required, Validators.min(0)]],
+      peremption: [false]
     });
+
+    if (this.produit) {
+      this.updateForm();
+    }
+  }
+
+  updateForm(): void {
+    if (this.produit) {
+      this.produitForm.patchValue({
+        code: this.produit.code,
+        nom: this.produit.nom,
+        description: this.produit.description || '',
+        categorie_id: this.produit.categorie_id,
+        prix_achat: this.produit.prix_achat,
+        prix_vente: this.produit.prix_vente,
+        seuil_minimum: this.produit.seuil_minimum,
+        peremption: this.produit.peremption
+      });
+    }
   }
 
   onSubmit(): void {

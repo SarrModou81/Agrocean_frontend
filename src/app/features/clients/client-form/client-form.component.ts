@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ClientService } from '../../../core/services/all-services';
 import { Client } from '../../../core/models';
@@ -9,7 +9,7 @@ import { MessageService } from 'primeng/api';
   templateUrl: './client-form.component.html',
   styleUrls: ['./client-form.component.scss']
 })
-export class ClientFormComponent implements OnInit {
+export class ClientFormComponent implements OnInit, OnChanges {
   @Input() client: Client | null = null;
   @Input() isEditing = false;
   @Output() formSubmitted = new EventEmitter<void>();
@@ -35,16 +35,40 @@ export class ClientFormComponent implements OnInit {
     this.initForm();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['client'] && this.clientForm) {
+      this.updateForm();
+    }
+  }
+
   initForm(): void {
     this.clientForm = this.fb.group({
-      nom: [this.client?.nom || '', Validators.required],
-      email: [this.client?.email || '', Validators.email],
-      telephone: [this.client?.telephone || '', Validators.required],
-      adresse: [this.client?.adresse || '', Validators.required],
-      type: [this.client?.type || 'Menage', Validators.required],
-      credit_max: [this.client?.credit_max || 0, [Validators.required, Validators.min(0)]],
-      solde: [{ value: this.client?.solde || 0, disabled: true }]
+      nom: ['', Validators.required],
+      email: ['', Validators.email],
+      telephone: ['', Validators.required],
+      adresse: ['', Validators.required],
+      type: ['Menage', Validators.required],
+      credit_max: [0, [Validators.required, Validators.min(0)]],
+      solde: [{ value: 0, disabled: true }]
     });
+
+    if (this.client) {
+      this.updateForm();
+    }
+  }
+
+  updateForm(): void {
+    if (this.client) {
+      this.clientForm.patchValue({
+        nom: this.client.nom,
+        email: this.client.email || '',
+        telephone: this.client.telephone,
+        adresse: this.client.adresse,
+        type: this.client.type,
+        credit_max: this.client.credit_max,
+        solde: this.client.solde
+      });
+    }
   }
 
   onSubmit(): void {
