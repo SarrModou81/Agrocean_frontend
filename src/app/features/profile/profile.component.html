@@ -1,0 +1,148 @@
+<div class="profile-container">
+  <div class="grid">
+    <!-- Informations du profil -->
+    <div class="col-12 lg:col-6">
+      <p-card header="Informations du profil">
+        <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+          <div class="field">
+            <label for="name">Nom complet *</label>
+            <input
+              id="name"
+              type="text"
+              pInputText
+              formControlName="name"
+              class="w-full"
+            />
+            <small class="p-error" *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+              Le nom est requis
+            </small>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              pInputText
+              formControlName="email"
+              class="w-full"
+              disabled
+            />
+            <small class="text-500">L'email ne peut pas être modifié</small>
+          </div>
+
+          <div class="field">
+            <label for="telephone">Téléphone</label>
+            <input
+              id="telephone"
+              type="text"
+              pInputText
+              formControlName="telephone"
+              class="w-full"
+              placeholder="+221 XX XXX XX XX"
+            />
+            <small class="p-error" *ngIf="profileForm.get('telephone')?.invalid && profileForm.get('telephone')?.touched">
+              Format de téléphone invalide
+            </small>
+          </div>
+
+          <div class="flex justify-content-end gap-2 mt-4">
+            <button
+              pButton
+              type="submit"
+              label="Mettre à jour"
+              icon="pi pi-save"
+              [loading]="loading"
+              [disabled]="profileForm.invalid"
+            ></button>
+          </div>
+        </form>
+      </p-card>
+    </div>
+
+    <!-- Changer le mot de passe -->
+    <div class="col-12 lg:col-6">
+      <p-card header="Changer le mot de passe">
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+          <div class="field">
+            <label for="current_password">Mot de passe actuel *</label>
+            <p-password
+              id="current_password"
+              formControlName="current_password"
+              [toggleMask]="true"
+              [feedback]="false"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+            ></p-password>
+            <small class="p-error" *ngIf="passwordForm.get('current_password')?.invalid && passwordForm.get('current_password')?.touched">
+              Le mot de passe actuel est requis
+            </small>
+          </div>
+
+          <div class="field">
+            <label for="new_password">Nouveau mot de passe *</label>
+            <p-password
+              id="new_password"
+              formControlName="new_password"
+              [toggleMask]="true"
+              [feedback]="true"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+            ></p-password>
+            <small class="p-error" *ngIf="passwordForm.get('new_password')?.invalid && passwordForm.get('new_password')?.touched">
+              Le mot de passe doit contenir au moins 6 caractères
+            </small>
+          </div>
+
+          <div class="field">
+            <label for="new_password_confirmation">Confirmer le nouveau mot de passe *</label>
+            <p-password
+              id="new_password_confirmation"
+              formControlName="new_password_confirmation"
+              [toggleMask]="true"
+              [feedback]="false"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+            ></p-password>
+            <small class="p-error" *ngIf="passwordForm.hasError('passwordMismatch') && passwordForm.get('new_password_confirmation')?.touched">
+              Les mots de passe ne correspondent pas
+            </small>
+          </div>
+
+          <div class="flex justify-content-end gap-2 mt-4">
+            <button
+              pButton
+              type="button"
+              label="Annuler"
+              class="p-button-secondary"
+              (click)="passwordForm.reset()"
+              [disabled]="changingPassword"
+            ></button>
+            <button
+              pButton
+              type="submit"
+              label="Changer le mot de passe"
+              icon="pi pi-lock"
+              [loading]="changingPassword"
+              [disabled]="passwordForm.invalid"
+            ></button>
+          </div>
+        </form>
+      </p-card>
+    </div>
+
+    <!-- Informations du compte -->
+    <div class="col-12" *ngIf="user">
+      <p-card header="Informations du compte">
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <p><strong>Rôle:</strong> {{ user.role }}</p>
+          </div>
+          <div class="col-12 md:col-6">
+            <p><strong>Date de création:</strong> {{ user.created_at | date:'dd/MM/yyyy' }}</p>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+</div>

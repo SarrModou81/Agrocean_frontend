@@ -107,4 +107,19 @@ export class AuthService {
   isAgentApprovisionnement(): boolean {
     return this.hasRole(['AgentApprovisionnement']);
   }
+
+  updateProfile(profileData: any): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/auth/profile`, profileData).pipe(
+      tap((response: any) => {
+        if (response.user) {
+          localStorage.setItem(this.userKey, JSON.stringify(response.user));
+          this.currentUserSubject.next(response.user);
+        }
+      })
+    );
+  }
+
+  changePassword(passwordData: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/auth/change-password`, passwordData);
+  }
 }

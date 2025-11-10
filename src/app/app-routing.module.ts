@@ -79,6 +79,10 @@ const routes: Routes = [
         data: { roles: ['Administrateur', 'Commercial'] }
       },
       {
+        path: 'profile',
+        loadChildren: () => import('./features/profile/profile.module').then(m => m.ProfileModule)
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

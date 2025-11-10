@@ -1,0 +1,24 @@
+.profile-container {
+  padding: 2rem;
+
+  .field {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #495057;
+    }
+
+    input {
+      width: 100%;
+    }
+  }
+
+  p-card {
+    ::ng-deep .p-card {
+      height: 100%;
+    }
+  }
+}

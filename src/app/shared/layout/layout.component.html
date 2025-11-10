@@ -44,9 +44,17 @@
           <span class="user-name">{{ currentUser.prenom }} {{ currentUser.nom }}</span>
           <span class="user-role">{{ getRoleDisplay() }}</span>
         </div>
-        <button 
-          pButton 
-          icon="pi pi-sign-out" 
+        <button
+          pButton
+          icon="pi pi-user"
+          class="p-button-text p-button-plain"
+          routerLink="/profile"
+          pTooltip="Mon profil"
+          tooltipPosition="bottom"
+        ></button>
+        <button
+          pButton
+          icon="pi pi-sign-out"
           class="p-button-text p-button-plain p-button-danger"
           (click)="logout()"
           pTooltip="Déconnexion"
