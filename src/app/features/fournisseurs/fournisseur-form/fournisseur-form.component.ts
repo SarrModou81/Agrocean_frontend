@@ -29,7 +29,12 @@ export class FournisseurFormComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['fournisseur'] && this.fournisseurForm) {
-      this.updateForm();
+      if (this.fournisseur) {
+        this.updateForm();
+      } else {
+        // Réinitialiser le formulaire si fournisseur devient null (mode création)
+        this.resetForm();
+      }
     }
   }
 
@@ -57,6 +62,16 @@ export class FournisseurFormComponent implements OnInit, OnChanges {
         conditions: this.fournisseur.conditions || ''
       });
     }
+  }
+
+  resetForm(): void {
+    this.fournisseurForm.reset({
+      nom: '',
+      contact: '',
+      telephone: '',
+      adresse: '',
+      conditions: ''
+    });
   }
 
   onSubmit(): void {

@@ -34,7 +34,12 @@ export class ProduitFormComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['produit'] && this.produitForm) {
-      this.updateForm();
+      if (this.produit) {
+        this.updateForm();
+      } else {
+        // Réinitialiser le formulaire si produit devient null (mode création)
+        this.resetForm();
+      }
     }
   }
 
@@ -76,6 +81,18 @@ export class ProduitFormComponent implements OnInit, OnChanges {
         peremption: this.produit.peremption
       });
     }
+  }
+
+  resetForm(): void {
+    this.produitForm.reset({
+      nom: '',
+      description: '',
+      categorie_id: '',
+      prix_achat: 0,
+      prix_vente: 0,
+      seuil_minimum: 10,
+      peremption: false
+    });
   }
 
   onSubmit(): void {

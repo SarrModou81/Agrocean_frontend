@@ -37,7 +37,12 @@ export class ClientFormComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['client'] && this.clientForm) {
-      this.updateForm();
+      if (this.client) {
+        this.updateForm();
+      } else {
+        // Réinitialiser le formulaire si client devient null (mode création)
+        this.resetForm();
+      }
     }
   }
 
@@ -69,6 +74,18 @@ export class ClientFormComponent implements OnInit, OnChanges {
         solde: this.client.solde
       });
     }
+  }
+
+  resetForm(): void {
+    this.clientForm.reset({
+      nom: '',
+      email: '',
+      telephone: '',
+      adresse: '',
+      type: 'Menage',
+      credit_max: 0,
+      solde: 0
+    });
   }
 
   onSubmit(): void {

@@ -37,7 +37,12 @@ export class UtilisateurFormComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['utilisateur'] && this.utilisateurForm) {
-      this.updateForm();
+      if (this.utilisateur) {
+        this.updateForm();
+      } else {
+        // Réinitialiser le formulaire si utilisateur devient null (mode création)
+        this.resetForm();
+      }
     }
 
     // Gérer le changement du mode édition
@@ -87,6 +92,23 @@ export class UtilisateurFormComponent implements OnInit, OnChanges {
         this.utilisateurForm.get('password')?.updateValueAndValidity();
       }
     }
+  }
+
+  resetForm(): void {
+    this.utilisateurForm.reset({
+      nom: '',
+      prenom: '',
+      email: '',
+      telephone: '',
+      role: 'Commercial',
+      password: '',
+      is_active: true
+    });
+
+    // Réactiver les validateurs du mot de passe en mode création
+    const passwordControl = this.utilisateurForm.get('password');
+    passwordControl?.setValidators([Validators.required, Validators.minLength(6)]);
+    passwordControl?.updateValueAndValidity();
   }
 
   onSubmit(): void {
