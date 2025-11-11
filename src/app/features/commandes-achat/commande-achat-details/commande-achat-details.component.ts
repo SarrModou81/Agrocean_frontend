@@ -16,6 +16,7 @@ export class CommandeAchatDetailsComponent implements OnInit {
   entrepots: Entrepot[] = [];
   selectedEntrepot: number | null = null;
   produitsReception: any[] = [];
+  minDate = new Date();
 
   constructor(
     private route: ActivatedRoute,

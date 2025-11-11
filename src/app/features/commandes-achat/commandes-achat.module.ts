@@ -18,7 +18,8 @@ import { CalendarModule } from 'primeng/calendar';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { MessageModule } from 'primeng/message';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { ProgressBarModule } from 'primeng/progressbar';  // ADDED THIS
+import { ProgressBarModule } from 'primeng/progressbar';
+import { BadgeModule } from 'primeng/badge';
 
 // Components
 import { CommandesAchatListComponent } from './commandes-achat-list/commandes-achat-list.component';
@@ -59,7 +60,8 @@ const routes: Routes = [
     InputNumberModule,
     MessageModule,
     InputTextareaModule,
-    ProgressBarModule  // ADDED THIS
+    ProgressBarModule,
+    BadgeModule
   ]
 })
 export class CommandesAchatModule { }
