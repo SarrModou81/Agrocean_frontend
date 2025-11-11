@@ -29,6 +29,14 @@
           (click)="openReceptionDialog()"
           *ngIf="commande.statut === 'Validée' || commande.statut === 'EnCours'"
         ></button>
+        <button
+          pButton
+          icon="pi pi-times"
+          label="Annuler"
+          class="p-button-danger"
+          (click)="annuler()"
+          *ngIf="commande.statut !== 'Reçue' && commande.statut !== 'Annulée'"
+        ></button>
       </div>
     </div>
 

@@ -144,6 +144,38 @@ export class CommandeAchatDetailsComponent implements OnInit {
     return date.toISOString().split('T')[0];
   }
 
+  annuler(): void {
+    if (!this.commande) return;
+
+    this.confirmationService.confirm({
+      message: `Voulez-vous vraiment annuler la commande ${this.commande.numero} ?`,
+      header: 'Confirmation d\'annulation',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Oui, annuler',
+      rejectLabel: 'Non',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        this.commandeService.annuler(this.commande!.id!).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Succès',
+              detail: 'Commande annulée avec succès'
+            });
+            this.loadCommande(this.commande!.id!);
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erreur',
+              detail: 'Erreur lors de l\'annulation'
+            });
+          }
+        });
+      }
+    });
+  }
+
   retour(): void {
     this.router.navigate(['/commandes-achat']);
   }

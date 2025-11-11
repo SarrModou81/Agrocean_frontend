@@ -173,6 +173,18 @@ export class CommandeAchatService {
   receptionner(id: number, data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/${id}/receptionner`, data);
   }
+
+  annuler(id: number, motif?: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/annuler`, { motif });
+  }
+
+  update(id: number, commande: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, commande);
+  }
+
+  delete(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }
 
 // ==================== FOURNISSEUR SERVICE ====================
