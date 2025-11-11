@@ -13,7 +13,6 @@ export class StocksListComponent implements OnInit {
   stocks: Stock[] = [];
   entrepots: Entrepot[] = [];
   loading = false;
-  displayDialog = false;
   displayAjustement = false;
   selectedStock: Stock | null = null;
 
@@ -87,10 +86,6 @@ export class StocksListComponent implements OnInit {
         this.loading = false;
       }
     });
-  }
-
-  openNew(): void {
-    this.displayDialog = true;
   }
 
   ajusterStock(stock: Stock): void {

@@ -3,19 +3,12 @@
     <div class="header-section">
       <h2>Gestion des Stocks</h2>
       <div class="actions">
-        <button 
-          pButton 
-          icon="pi pi-chart-bar" 
-          label="Inventaire" 
+        <button
+          pButton
+          icon="pi pi-chart-bar"
+          label="Inventaire"
           routerLink="/stocks/inventaire"
           class="p-button-secondary"
-        ></button>
-        <button 
-          pButton 
-          icon="pi pi-plus" 
-          label="Entrée de Stock" 
-          (click)="openNew()"
-          class="p-button-success"
         ></button>
       </div>
     </div>
@@ -156,19 +149,6 @@
     </p-table>
   </p-card>
 </div>
-
-<!-- Dialog Nouvelle Entrée -->
-<p-dialog 
-  [(visible)]="displayDialog" 
-  header="Nouvelle Entrée de Stock"
-  [modal]="true" 
-  [style]="{width: '50vw'}"
-  (onHide)="onDialogHide()"
->
-  <app-stock-form 
-    (formSubmitted)="displayDialog = false"
-  ></app-stock-form>
-</p-dialog>
 
 <!-- Dialog Ajustement -->
 <p-dialog 
