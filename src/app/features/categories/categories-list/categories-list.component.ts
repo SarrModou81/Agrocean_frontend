@@ -45,7 +45,8 @@ export class CategoriesListComponent implements OnInit {
     this.selectedCategorie = {
       nom: '',
       description: '',
-      type_stockage: 'AmbiantSec'
+      type_stockage: 'AmbiantSec',
+      code_prefix: null // Ne pas envoyer de code_prefix, il sera généré automatiquement
     };
     this.displayDialog = true;
   }
@@ -57,6 +58,7 @@ export class CategoriesListComponent implements OnInit {
 
   saveCategorie(): void {
     if (this.selectedCategorie.id) {
+      // Mode édition - on envoie toutes les données
       this.categorieService.update(this.selectedCategorie.id, this.selectedCategorie).subscribe({
         next: () => {
           this.messageService.add({
@@ -76,7 +78,9 @@ export class CategoriesListComponent implements OnInit {
         }
       });
     } else {
-      this.categorieService.create(this.selectedCategorie).subscribe({
+      // Mode création - on ne doit pas envoyer code_prefix (sera généré automatiquement par le backend)
+      const { code_prefix, ...categorieData } = this.selectedCategorie;
+      this.categorieService.create(categorieData).subscribe({
         next: () => {
           this.messageService.add({
             severity: 'success',

@@ -9,6 +9,7 @@
       <ng-template pTemplate="header">
         <tr>
           <th>Nom</th>
+          <th>Code Préfixe</th>
           <th>Description</th>
           <th>Type de Stockage</th>
           <th>Nb Produits</th>
@@ -19,6 +20,10 @@
       <ng-template pTemplate="body" let-categorie>
         <tr>
           <td><strong>{{ categorie.nom }}</strong></td>
+          <td>
+            <span class="code-badge" *ngIf="categorie.code_prefix">{{ categorie.code_prefix }}</span>
+            <span *ngIf="!categorie.code_prefix" class="text-muted">-</span>
+          </td>
           <td>{{ categorie.description || '-' }}</td>
           <td>
             <p-tag [value]="categorie.type_stockage" [severity]="getTypeStockageSeverity(categorie.type_stockage)"></p-tag>
@@ -33,7 +38,7 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="5" class="text-center">Aucune catégorie trouvée</td>
+          <td colspan="6" class="text-center">Aucune catégorie trouvée</td>
         </tr>
       </ng-template>
     </p-table>
@@ -43,6 +48,21 @@
 <!-- Dialog pour créer/modifier -->
 <p-dialog [(visible)]="displayDialog" [header]="selectedCategorie?.id ? 'Modifier la catégorie' : 'Nouvelle catégorie'" [modal]="true" [style]="{width: '500px'}">
   <div class="p-fluid" *ngIf="selectedCategorie">
+    <!-- Code Prefix généré automatiquement - affiché uniquement en mode édition -->
+    <div class="p-field" *ngIf="selectedCategorie.id && selectedCategorie.code_prefix">
+      <label>Code Préfixe</label>
+      <input
+        type="text"
+        pInputText
+        [value]="selectedCategorie.code_prefix"
+        [disabled]="true"
+        class="code-readonly"
+      />
+      <small class="text-info">
+        <i class="pi pi-info-circle"></i> Le code préfixe est généré automatiquement et ne peut pas être modifié
+      </small>
+    </div>
+
     <div class="p-field">
       <label>Nom *</label>
       <input type="text" pInputText [(ngModel)]="selectedCategorie.nom" required />

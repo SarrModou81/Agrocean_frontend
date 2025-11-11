@@ -113,11 +113,11 @@ export class StocksListComponent implements OnInit {
             });
             this.loadStocks();
           },
-          error: () => {
+          error: (error) => {
             this.messageService.add({
               severity: 'error',
               summary: 'Erreur',
-              detail: 'Erreur lors de la suppression'
+              detail: error.error?.message || error.error?.error || 'Erreur lors de la suppression'
             });
           }
         });

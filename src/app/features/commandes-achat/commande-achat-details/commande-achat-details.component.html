@@ -85,6 +85,7 @@
             <th>Produit</th>
             <th>Quantité</th>
             <th>Prix Unitaire</th>
+            <th>Date de Péremption</th>
             <th>Sous-total</th>
           </tr>
         </ng-template>
@@ -97,6 +98,12 @@
             </td>
             <td>{{ detail.quantite }}</td>
             <td>{{ formatCurrency(detail.prix_unitaire) }}</td>
+            <td>
+              <span *ngIf="detail.date_peremption">
+                {{ detail.date_peremption | date:'dd/MM/yyyy' }}
+              </span>
+              <span *ngIf="!detail.date_peremption" class="text-muted">N/A</span>
+            </td>
             <td><strong>{{ formatCurrency(detail.sous_total) }}</strong></td>
           </tr>
         </ng-template>

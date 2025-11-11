@@ -84,18 +84,19 @@
             <div class="col-produit">Produit</div>
             <div class="col-quantite">Quantité</div>
             <div class="col-prix">Prix Unitaire</div>
+            <div class="col-peremption">Date de Péremption</div>
             <div class="col-total">Sous-total</div>
             <div class="col-action">Action</div>
           </div>
 
           <div class="table-body" formArrayName="produits">
-            <div 
-              class="table-row" 
+            <div
+              class="table-row"
               *ngFor="let ligne of produitsArray.controls; let i = index"
               [formGroupName]="i"
             >
               <div class="col-produit">
-                <p-dropdown 
+                <p-dropdown
                   formControlName="produit_id"
                   [options]="produits"
                   optionLabel="nom"
@@ -116,7 +117,7 @@
               </div>
 
               <div class="col-quantite">
-                <p-inputNumber 
+                <p-inputNumber
                   formControlName="quantite"
                   [showButtons]="true"
                   [min]="1"
@@ -125,7 +126,7 @@
               </div>
 
               <div class="col-prix">
-                <p-inputNumber 
+                <p-inputNumber
                   formControlName="prix_unitaire"
                   mode="decimal"
                   [minFractionDigits]="0"
@@ -134,15 +135,25 @@
                 ></p-inputNumber>
               </div>
 
+              <div class="col-peremption">
+                <p-calendar
+                  formControlName="date_peremption"
+                  [showIcon]="true"
+                  dateFormat="dd/mm/yy"
+                  placeholder="Optionnel"
+                  [minDate]="new Date()"
+                ></p-calendar>
+              </div>
+
               <div class="col-total">
                 <strong>{{ formatCurrency(calculerSousTotal(i)) }}</strong>
               </div>
 
               <div class="col-action">
-                <button 
-                  pButton 
+                <button
+                  pButton
                   type="button"
-                  icon="pi pi-trash" 
+                  icon="pi pi-trash"
                   class="p-button-danger p-button-text"
                   (click)="supprimerLigne(i)"
                   [disabled]="produitsArray.length === 1"
