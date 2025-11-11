@@ -84,7 +84,6 @@
             <div class="col-produit">Produit</div>
             <div class="col-quantite">Quantité</div>
             <div class="col-prix">Prix Unitaire</div>
-            <div class="col-peremption">Date de Péremption</div>
             <div class="col-total">Sous-total</div>
             <div class="col-action">Action</div>
           </div>
@@ -133,16 +132,6 @@
                   [min]="0"
                   [class.ng-invalid]="ligne.get('prix_unitaire')?.invalid && ligne.get('prix_unitaire')?.touched"
                 ></p-inputNumber>
-              </div>
-
-              <div class="col-peremption">
-                <p-calendar
-                  formControlName="date_peremption"
-                  [showIcon]="true"
-                  dateFormat="dd/mm/yy"
-                  placeholder="Optionnel"
-                  [minDate]="new Date()"
-                ></p-calendar>
               </div>
 
               <div class="col-total">

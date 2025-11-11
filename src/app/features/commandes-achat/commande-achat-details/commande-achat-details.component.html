@@ -21,12 +21,12 @@
           (click)="valider()"
           *ngIf="commande.statut === 'Brouillon'"
         ></button>
-        <button 
-          pButton 
-          icon="pi pi-inbox" 
+        <button
+          pButton
+          icon="pi pi-inbox"
           label="Réceptionner"
           class="p-button-info"
-          (click)="showReceptionDialog = true"
+          (click)="openReceptionDialog()"
           *ngIf="commande.statut === 'Validée' || commande.statut === 'EnCours'"
         ></button>
       </div>
@@ -85,7 +85,6 @@
             <th>Produit</th>
             <th>Quantité</th>
             <th>Prix Unitaire</th>
-            <th>Date de Péremption</th>
             <th>Sous-total</th>
           </tr>
         </ng-template>
@@ -98,12 +97,6 @@
             </td>
             <td>{{ detail.quantite }}</td>
             <td>{{ formatCurrency(detail.prix_unitaire) }}</td>
-            <td>
-              <span *ngIf="detail.date_peremption">
-                {{ detail.date_peremption | date:'dd/MM/yyyy' }}
-              </span>
-              <span *ngIf="!detail.date_peremption" class="text-muted">N/A</span>
-            </td>
             <td><strong>{{ formatCurrency(detail.sous_total) }}</strong></td>
           </tr>
         </ng-template>
@@ -127,9 +120,11 @@
   [(visible)]="showReceptionDialog"
   header="Réceptionner la Commande"
   [modal]="true"
-  [style]="{width: '600px'}"
+  [style]="{width: '900px'}"
+  [contentStyle]="{overflow: 'visible'}"
 >
-  <div class="p-fluid">
+  <div class="reception-content">
+    <!-- Sélection de l'entrepôt -->
     <div class="field">
       <label for="entrepot_id">Entrepôt de Réception *</label>
       <p-dropdown
@@ -143,28 +138,70 @@
         filterPlaceholder="Rechercher un entrepôt"
         [showClear]="true"
         appendTo="body"
+        styleClass="w-full"
       >
         <ng-template let-entrepot pTemplate="item">
           <div class="entrepot-option">
             <strong>{{ entrepot.nom }}</strong>
+            <br>
             <small>{{ entrepot.adresse }}</small>
           </div>
         </ng-template>
       </p-dropdown>
     </div>
+
+    <!-- Tableau des produits avec dates de péremption -->
+    <div class="produits-section">
+      <h4>Dates de Péremption (optionnelles)</h4>
+      <p-table [value]="produitsReception" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Produit</th>
+            <th style="width: 100px">Quantité</th>
+            <th style="width: 200px">Date de Péremption</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-produit>
+          <tr>
+            <td>
+              <strong>{{ produit.produit_nom }}</strong>
+              <br>
+              <small class="text-muted">{{ produit.produit_code }}</small>
+            </td>
+            <td class="text-center">
+              <p-badge [value]="produit.quantite" severity="info"></p-badge>
+            </td>
+            <td>
+              <p-calendar
+                [(ngModel)]="produit.date_peremption"
+                [showIcon]="true"
+                dateFormat="dd/mm/yy"
+                placeholder="Optionnel"
+                [minDate]="new Date()"
+                appendTo="body"
+              ></p-calendar>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <small class="help-text">
+        <i class="pi pi-info-circle"></i>
+        Saisissez la date de péremption uniquement pour les produits périssables. Laissez vide pour les produits non périssables.
+      </small>
+    </div>
   </div>
 
   <ng-template pTemplate="footer">
-    <button 
-      pButton 
-      label="Annuler" 
+    <button
+      pButton
+      label="Annuler"
       icon="pi pi-times"
       class="p-button-text"
       (click)="showReceptionDialog = false"
     ></button>
-    <button 
-      pButton 
-      label="Confirmer" 
+    <button
+      pButton
+      label="Confirmer la Réception"
       icon="pi pi-check"
       (click)="receptionner()"
       [disabled]="!selectedEntrepot"

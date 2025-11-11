@@ -15,6 +15,7 @@ export class CommandeAchatDetailsComponent implements OnInit {
   showReceptionDialog = false;
   entrepots: Entrepot[] = [];
   selectedEntrepot: number | null = null;
+  produitsReception: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -87,13 +88,37 @@ export class CommandeAchatDetailsComponent implements OnInit {
     });
   }
 
+  openReceptionDialog(): void {
+    if (!this.commande) return;
+
+    // Initialiser le tableau des produits avec les dates de péremption vides
+    this.produitsReception = this.commande.detail_commande_achats?.map(detail => ({
+      detail_commande_achat_id: detail.id,
+      produit_nom: detail.produit?.nom,
+      produit_code: detail.produit?.code,
+      quantite: detail.quantite,
+      date_peremption: null
+    })) || [];
+
+    this.selectedEntrepot = null;
+    this.showReceptionDialog = true;
+  }
+
   receptionner(): void {
     if (!this.commande || !this.selectedEntrepot) return;
 
     this.showReceptionDialog = false;
     this.loading = true;
 
-    this.commandeService.receptionner(this.commande.id!, this.selectedEntrepot).subscribe({
+    const data = {
+      entrepot_id: this.selectedEntrepot,
+      produits: this.produitsReception.map(p => ({
+        detail_commande_achat_id: p.detail_commande_achat_id,
+        date_peremption: p.date_peremption ? this.formatDate(p.date_peremption) : null
+      }))
+    };
+
+    this.commandeService.receptionner(this.commande.id!, data).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -112,6 +137,10 @@ export class CommandeAchatDetailsComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  formatDate(date: Date): string {
+    return date.toISOString().split('T')[0];
   }
 
   retour(): void {

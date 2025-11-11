@@ -49,8 +49,7 @@ export class CommandeAchatCreateComponent implements OnInit {
     return this.fb.group({
       produit_id: ['', Validators.required],
       quantite: [1, [Validators.required, Validators.min(1)]],
-      prix_unitaire: [0, [Validators.required, Validators.min(0)]],
-      date_peremption: [null]
+      prix_unitaire: [0, [Validators.required, Validators.min(0)]]
     });
   }
 
@@ -132,11 +131,7 @@ export class CommandeAchatCreateComponent implements OnInit {
       date_commande: this.formatDate(this.commandeForm.value.date_commande),
       date_livraison_prevue: this.commandeForm.value.date_livraison_prevue
         ? this.formatDate(this.commandeForm.value.date_livraison_prevue)
-        : null,
-      produits: this.commandeForm.value.produits.map((p: any) => ({
-        ...p,
-        date_peremption: p.date_peremption ? this.formatDate(p.date_peremption) : null
-      }))
+        : null
     };
 
     this.commandeService.create(formData).subscribe({

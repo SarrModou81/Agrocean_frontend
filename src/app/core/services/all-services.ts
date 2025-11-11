@@ -170,8 +170,8 @@ export class CommandeAchatService {
     return this.http.post(`${this.apiUrl}/${id}/valider`, {});
   }
 
-  receptionner(id: number, entrepot_id: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${id}/receptionner`, { entrepot_id });
+  receptionner(id: number, data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/receptionner`, data);
   }
 }
 
